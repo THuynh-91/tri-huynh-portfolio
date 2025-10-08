@@ -1,0 +1,55 @@
+{
+  "languages": [
+    "Python",
+    "Java",
+    "JavaScript",
+    "TypeScript",
+    "SQL",
+    "R",
+    "HTML/CSS",
+    "Racket",
+    "LISP"
+  ],
+  "frameworks": [
+    "FastAPI",
+    "Next.js",
+    "React",
+    "Express.js",
+    "Flask",
+    "Tailwind CSS"
+  ],
+  "libraries": [
+    "TensorFlow",
+    "Keras",
+    "scikit-learn",
+    "NumPy",
+    "Pandas",
+    "Matplotlib",
+    "librosa",
+    "spotipy",
+    "FAISS"
+  ],
+  "databases": [
+    "PostgreSQL",
+    "Redis",
+    "MongoDB",
+    "MySQL"
+  ],
+  "tools": [
+    "Git",
+    "GitHub",
+    "Docker",
+    "VS Code",
+    "Linux (Ubuntu)",
+    "Bash/Shell",
+    "Jupyter Notebook",
+    "PyCharm",
+    "Eclipse"
+  ],
+  "cloud": [
+    "AWS (Certified Cloud Practitioner)",
+    "GitHub Actions (CI/CD)",
+    "Render",
+    "Vercel"
+  ]
+}

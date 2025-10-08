@@ -1,0 +1,172 @@
+[
+  {
+    "id": 1,
+    "title": "Rock Paper Scissor Mind Game",
+    "tagline": "ML-driven adaptive game with online learning",
+    "description": "An intelligent game that learns and adapts to player patterns in real-time using TensorFlow/Keras",
+    "tech": ["TensorFlow/Keras", "Next.js", "FastAPI", "Docker", "Tailwind CSS"],
+    "impact": [
+      "Launched publicly and reached 1,000+ unique visitors",
+      "Combined deep learning with behavioral frequency heuristics and streak detection",
+      "Deployed production-ready FastAPI backend accessible via Vercel",
+      "Implemented Docker Compose for reproducible environments"
+    ],
+    "demoUrl": "https://rock-paper-scissor-mind-game.vercel.app",
+    "githubUrl": "https://github.com/THuynh-91/Rock-Paper-Scissor-Mind-Game",
+    "imageUrl": "/images/rps-ai.png",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "title": "Spotify Music Recommendation App",
+    "tagline": "ML-powered personalized music discovery",
+    "description": "Full-stack web app that generates personalized Spotify recommendations with explanations",
+    "tech": ["Python", "FastAPI", "Next.js", "Spotipy", "Docker", "PostgreSQL", "FAISS", "librosa"],
+    "impact": [
+      "Accepts Spotify track or playlist URLs and generates personalized recommendations",
+      "Architected full-stack solution with FastAPI backend",
+      "Leverages audio feature extraction (librosa) and vector similarity search (FAISS)",
+      "Provides explanation for each recommendation"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/music-recommendation-spotify",
+    "imageUrl": "/images/spotify-rec.png",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "AAOC Planner",
+    "tagline": "Average Age of Credit Calculator & Financial Planning Tool",
+    "description": "Comprehensive financial planning tool that automates credit management workflows",
+    "tech": ["Python", "OOP", "CLI", "GitHub Actions"],
+    "impact": [
+      "Automates Average Age of Credit calculations",
+      "Engineered object-oriented architecture with modular classes",
+      "Enables extensible functionality and maintainable codebase",
+      "Streamlines credit management workflows"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/aaoc-planner",
+    "imageUrl": "/images/aaoc-img1.png",
+    "featured": true
+  },
+  {
+    "id": 4,
+    "title": "FreeCodeCamp Daily Challenge Solutions",
+    "tagline": "Daily coding challenge solutions with detailed explanations",
+    "description": "Repository of daily FreeCodeCamp challenge solutions with approach explanations",
+    "tech": ["JavaScript", "Python", "Algorithms", "Problem Solving"],
+    "impact": [
+      "Consistent daily problem-solving practice",
+      "Documented thought process and approach for each challenge",
+      "Demonstrates algorithmic thinking and code clarity",
+      "Growing collection of solutions across multiple months"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/FCC_DailyChallenge",
+    "imageUrl": null,
+    "featured": false
+  },
+  {
+    "id": 5,
+    "title": "Portfolio Website",
+    "tagline": "Modern, interactive personal portfolio with Easter eggs",
+    "description": "Fully responsive portfolio website built with Next.js, featuring interactive elements and smooth animations",
+    "tech": ["Next.js", "React", "Tailwind CSS", "Framer Motion"],
+    "impact": [
+      "Designed custom interactive terminal emulator",
+      "Implemented Konami Code easter egg with animations",
+      "Optimized for performance and SEO",
+      "Fully responsive across all devices"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/portfolio",
+    "imageUrl": null,
+    "featured": false
+  },
+  {
+    "id": 6,
+    "title": "Algorithm Visualizer",
+    "tagline": "Interactive visualization of sorting and pathfinding algorithms",
+    "description": "Educational tool for visualizing popular algorithms with step-by-step animations",
+    "tech": ["React", "TypeScript", "Canvas API", "Tailwind CSS"],
+    "impact": [
+      "Visualizes 5+ sorting algorithms (Quick, Merge, Bubble, etc.)",
+      "Implements A* and Dijkstra pathfinding algorithms",
+      "Interactive speed controls and step-through mode",
+      "Clean, intuitive UI for learning data structures"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": null,
+    "featured": false
+  },
+  {
+    "id": 7,
+    "title": "Weather Dashboard",
+    "tagline": "Real-time weather data with 7-day forecasts",
+    "description": "Clean weather app using OpenWeather API with location search and favorites",
+    "tech": ["React", "OpenWeather API", "Chart.js", "Geolocation"],
+    "impact": [
+      "Real-time weather data for any location worldwide",
+      "7-day forecast with hourly breakdowns",
+      "Temperature trend visualizations",
+      "Save favorite locations for quick access"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": null,
+    "featured": false
+  },
+  {
+    "id": 8,
+    "title": "Expense Tracker",
+    "tagline": "Personal finance management with analytics",
+    "description": "Full-stack expense tracking app with budget management and spending insights",
+    "tech": ["Node.js", "Express", "MongoDB", "React", "Chart.js"],
+    "impact": [
+      "Track income and expenses with categories",
+      "Set monthly budgets and spending limits",
+      "Visualize spending patterns with charts",
+      "Export data to CSV for analysis"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": null,
+    "featured": false
+  },
+  {
+    "id": 9,
+    "title": "Task Management System",
+    "tagline": "Collaborative project management tool",
+    "description": "Kanban-style task manager with team collaboration features",
+    "tech": ["React", "Firebase", "Tailwind CSS", "Drag & Drop API"],
+    "impact": [
+      "Real-time collaboration with team members",
+      "Drag-and-drop task organization",
+      "Priority levels and due date tracking",
+      "Activity logs and notifications"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": null,
+    "featured": false
+  },
+  {
+    "id": 10,
+    "title": "Chat Application",
+    "tagline": "Real-time messaging with WebSocket",
+    "description": "Instant messaging app with group chats and file sharing",
+    "tech": ["Socket.io", "Node.js", "React", "MongoDB"],
+    "impact": [
+      "Real-time messaging with WebSocket technology",
+      "Create and manage group chats",
+      "Share files and images",
+      "Online/offline status indicators"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": null,
+    "featured": false
+  }
+]
