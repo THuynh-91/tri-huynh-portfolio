@@ -15,7 +15,6 @@ import Skills from '../components/Skills';
 import Education from '../components/Education';
 import Certifications from '../components/Certifications';
 import About from '../components/About';
-import GitHubActivity from '../components/GitHubActivity';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 
@@ -51,12 +50,11 @@ export default function Home() {
       {/* Main Content */}
       <main className="relative">
         <Hero />
+        <About />
         <Projects />
         <Skills />
         <Education />
         <Certifications />
-        <About />
-        <GitHubActivity />
         <Contact />
         <Footer />
       </main>

@@ -5,6 +5,7 @@ export default function SpotifyPlayer() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [tracks, setTracks] = useState([]);
+  const [autoPlay, setAutoPlay] = useState(true);
 
   // Load songs from songs.md
   useEffect(() => {
@@ -39,6 +40,17 @@ export default function SpotifyPlayer() {
     setCurrentTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
   };
 
+  // Auto-play next track after ~3 minutes (180 seconds)
+  useEffect(() => {
+    if (!autoPlay || tracks.length === 0) return;
+
+    const timer = setTimeout(() => {
+      nextTrack();
+    }, 180000); // 3 minutes in milliseconds
+
+    return () => clearTimeout(timer);
+  }, [currentTrackIndex, autoPlay, tracks.length]);
+
   if (tracks.length === 0) {
     return null; // Don't render until songs are loaded
   }
@@ -61,7 +73,7 @@ export default function SpotifyPlayer() {
           {/* Header */}
           <div className="mb-3">
             <p className="text-center text-sm text-gray-300 mb-3">
-              🎵 <span className="text-primary font-semibold">What I'm listening to</span>
+              <span className="text-primary font-semibold">Listen to my favorite songs while browsing!</span>
             </p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -123,9 +135,18 @@ export default function SpotifyPlayer() {
                   <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                 </svg>
               </button>
+              <button
+                onClick={() => setAutoPlay(!autoPlay)}
+                className={`p-2 rounded-lg transition-colors ${autoPlay ? 'bg-primary/50 text-white' : 'bg-slate-700/50 text-gray-300 hover:bg-slate-700'}`}
+                title={autoPlay ? "Auto-play On" : "Auto-play Off"}
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                </svg>
+              </button>
             </div>
             <div className="text-xs text-gray-400">
-              Track {currentTrackIndex + 1} of {tracks.length}
+              {currentTrackIndex + 1}/{tracks.length}
             </div>
           </div>
         </div>

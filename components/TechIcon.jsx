@@ -81,7 +81,7 @@ export default function TechIcon({ name, size = 'md' }) {
     return (
       <div className="relative inline-block">
         <div
-          className={`${sizeClasses[size]} bg-slate-700 rounded-lg flex items-center justify-center text-primary font-bold cursor-help`}
+          className={`${sizeClasses[size]} bg-slate-700/95 rounded-lg flex items-center justify-center text-primary font-bold cursor-help`}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
         >
@@ -104,16 +104,10 @@ export default function TechIcon({ name, size = 'md' }) {
     );
   }
 
-  // Icons that need a white/light background for visibility
-  const needsWhiteBg = ['Next.js', 'Express.js', 'GitHub', 'Vercel', 'Eclipse'];
-  const bgClass = needsWhiteBg.includes(name)
-    ? 'bg-white/90 hover:bg-white'
-    : 'bg-slate-700/50 hover:bg-slate-700';
-
   return (
     <div className="relative inline-block group">
       <motion.div
-        className={`${sizeClasses[size]} p-2 ${bgClass} rounded-lg transition-all cursor-help`}
+        className={`${sizeClasses[size]} p-2 bg-slate-700/95 hover:bg-slate-600/95 rounded-lg transition-all cursor-help shadow-sm`}
         whileHover={{ scale: 1.1, rotate: 5 }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}

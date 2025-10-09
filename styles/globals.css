@@ -12,6 +12,48 @@
   --color-text: #e2e8f0;
 }
 
+.light {
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f1f5f9;
+  --color-text: #0f172a;
+}
+
+.light body {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.light .bg-slate-900,
+.light .bg-slate-800 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.light .text-white {
+  color: #0f172a !important;
+}
+
+.light .text-gray-300 {
+  color: #1e293b !important;
+}
+
+.light .text-gray-400 {
+  color: #475569 !important;
+}
+
+.light .border-slate-700,
+.light .border-slate-600 {
+  border-color: #cbd5e1 !important;
+}
+
+.light .bg-gradient-to-br {
+  background: rgba(241, 245, 249, 0.9) !important;
+}
+
+.light .shadow-2xl {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
 * {
   margin: 0;
   padding: 0;

@@ -3,7 +3,17 @@ import TypingEffect from './TypingEffect';
 
 export default function Hero() {
   const scrollToSection = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    const element = document.getElementById(id);
+    if (element) {
+      const navbarHeight = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const roles = [
@@ -48,27 +58,10 @@ export default function Hero() {
           </motion.p>
 
           <motion.div
-            className="flex flex-wrap gap-3 justify-center mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <span className="px-3 py-1 bg-slate-800 text-gray-300 rounded-full text-sm border border-slate-700">
-              AWS Certified
-            </span>
-            <span className="px-3 py-1 bg-slate-800 text-gray-300 rounded-full text-sm border border-slate-700">
-              Machine Learning
-            </span>
-            <span className="px-3 py-1 bg-slate-800 text-gray-300 rounded-full text-sm border border-slate-700">
-              Backend Dev
-            </span>
-          </motion.div>
-
-          <motion.div
             className="flex flex-wrap gap-4 justify-center mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
           >
             <button
               onClick={() => scrollToSection('projects')}

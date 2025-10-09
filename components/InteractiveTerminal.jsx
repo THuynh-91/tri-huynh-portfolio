@@ -7,19 +7,25 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     { type: 'system', text: 'Welcome to Tri\'s Portfolio Terminal!' },
     { type: 'system', text: 'Type "help" for available commands.' },
   ]);
+  const [commandHistory, setCommandHistory] = useState([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [suggestions, setSuggestions] = useState([]);
   const inputRef = useRef(null);
   const historyRef = useRef(null);
 
   const commands = {
     help: {
       description: 'Show available commands',
-      action: () => [
-        { type: 'output', text: 'Available commands:' },
-        { type: 'output', text: '  about, whoami, skills, projects, contact' },
-        { type: 'output', text: '  quote, joke, easteregg' },
-        { type: 'output', text: '  resume, github, hire' },
-        { type: 'output', text: '  clear, exit, sudo' },
-      ]
+      action: () => {
+        const cmdList = Object.entries(commands)
+          .filter(([cmd]) => !['secret', 'matrix', 'coffee'].includes(cmd))
+          .map(([cmd, { description }]) => `  ${cmd.padEnd(10)} - ${description}`);
+        return [
+          { type: 'output', text: 'Available commands:' },
+          { type: 'output', text: '' },
+          ...cmdList.map(text => ({ type: 'output', text })),
+        ];
+      }
     },
     about: {
       description: 'Learn about Tri',
@@ -61,20 +67,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Download resume',
       action: () => {
         window.open('/resume.pdf', '_blank');
-        return [{ type: 'output', text: '📄 Opening resume in new tab...' }];
-      }
-    },
-    joke: {
-      description: 'Get a programming joke',
-      action: () => {
-        const jokes = [
-          'Why do programmers prefer dark mode? Because light attracts bugs! 🐛',
-          'How many programmers does it take to change a light bulb? None, that\'s a hardware problem! 💡',
-          'Why do Java developers wear glasses? Because they don\'t C#! 👓',
-          'A SQL query walks into a bar, walks up to two tables and asks... "Can I JOIN you?" 🍺',
-          'Why did the programmer quit his job? Because he didn\'t get arrays! 📊',
-        ];
-        return [{ type: 'output', text: jokes[Math.floor(Math.random() * jokes.length)] }];
+        return [{ type: 'output', text: '📄 Opening resume...' }];
       }
     },
     clear: {
@@ -89,34 +82,11 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       }
     },
     whoami: {
-      description: 'Display current user info',
+      description: 'Who am I?',
       action: () => [
         { type: 'output', text: 'tri-huynh' },
-        { type: 'output', text: 'CS Student @ Northeastern (AI Concentration)' },
-        { type: 'output', text: 'Available for Co-op/Internship' },
-      ]
-    },
-    quote: {
-      description: 'Random coding quote',
-      action: () => {
-        const quotes = [
-          '"Code is like humor. When you have to explain it, it\'s bad." - Cory House',
-          '"First, solve the problem. Then, write the code." - John Johnson',
-          '"Experience is the name everyone gives to their mistakes." - Oscar Wilde',
-          '"Knowledge is power." - Francis Bacon',
-          '"Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday\'s code." - Dan Salomon',
-          '"The best error message is the one that never shows up." - Thomas Fuchs',
-          '"Simplicity is the soul of efficiency." - Austin Freeman',
-          '"Before software can be reusable it first has to be usable." - Ralph Johnson',
-        ];
-        return [{ type: 'output', text: quotes[Math.floor(Math.random() * quotes.length)] }];
-      }
-    },
-    easteregg: {
-      description: 'Discover hidden features',
-      action: () => [
-        { type: 'output', text: 'Try the Konami Code: ↑ ↑ ↓ ↓ ← → ← → B A' },
-        { type: 'output', text: '(Use arrow keys, then B and A keys)' },
+        { type: 'output', text: 'CS Student @ Northeastern' },
+        { type: 'output', text: 'Seeking Summer/Fall 2026 opportunities' },
       ]
     },
     matrix: {
@@ -171,6 +141,13 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         return [{ type: 'output', text: 'Opening GitHub profile...' }];
       }
     },
+    linkedin: {
+      description: 'Open LinkedIn',
+      action: () => {
+        window.open('https://www.linkedin.com/in/tri-huynh-81735326a', '_blank');
+        return [{ type: 'output', text: 'Opening LinkedIn...' }];
+      }
+    },
     hire: {
       description: 'Why you should hire Tri',
       action: () => [
@@ -198,6 +175,10 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
 
     const newHistory = [...history, { type: 'input', text: `$ ${input}` }];
 
+    // Add to command history
+    setCommandHistory(prev => [...prev, trimmedInput]);
+    setHistoryIndex(-1);
+
     // Parse command and arguments
     const parts = trimmedInput.split(' ');
     const command = parts[0].toLowerCase();
@@ -215,6 +196,57 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     }
 
     setInput('');
+    setSuggestions([]);
+  };
+
+  const handleKeyDown = (e) => {
+    // Tab completion
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const matches = Object.keys(commands).filter(cmd => cmd.startsWith(input.toLowerCase()));
+      if (matches.length === 1) {
+        setInput(matches[0]);
+        setSuggestions([]);
+      } else if (matches.length > 1) {
+        setSuggestions(matches);
+      }
+    }
+    // Up arrow - previous command
+    else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (commandHistory.length > 0) {
+        const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1);
+        setHistoryIndex(newIndex);
+        setInput(commandHistory[newIndex]);
+      }
+    }
+    // Down arrow - next command
+    else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex >= 0) {
+        const newIndex = historyIndex + 1;
+        if (newIndex >= commandHistory.length) {
+          setHistoryIndex(-1);
+          setInput('');
+        } else {
+          setHistoryIndex(newIndex);
+          setInput(commandHistory[newIndex]);
+        }
+      }
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+
+    // Show suggestions as user types
+    if (value) {
+      const matches = Object.keys(commands).filter(cmd => cmd.startsWith(value.toLowerCase()));
+      setSuggestions(matches.slice(0, 5));
+    } else {
+      setSuggestions([]);
+    }
   };
 
   useEffect(() => {
@@ -277,17 +309,34 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
           </div>
 
           {/* Terminal Input */}
-          <form onSubmit={handleSubmit} className="bg-slate-800 px-4 py-3 flex items-center gap-2 border-t border-slate-700">
-            <span className="text-green-400 font-mono">$</span>
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="flex-1 bg-transparent text-white font-mono outline-none"
-              placeholder="Type a command..."
-              autoFocus
-            />
+          <form onSubmit={handleSubmit} className="bg-slate-800 px-4 py-3 border-t border-slate-700">
+            <div className="flex items-center gap-2">
+              <span className="text-green-400 font-mono">$</span>
+              <div className="flex-1 relative">
+                {/* Inline suggestion */}
+                {suggestions.length === 1 && input && (
+                  <div className="absolute inset-0 font-mono text-gray-600 pointer-events-none">
+                    {suggestions[0]}
+                  </div>
+                )}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={handleInputChange}
+                  onKeyDown={handleKeyDown}
+                  className="w-full bg-transparent text-white font-mono outline-none relative z-10"
+                  placeholder="Type a command..."
+                  autoFocus
+                />
+              </div>
+            </div>
+            {/* Multiple suggestions below */}
+            {suggestions.length > 1 && (
+              <div className="mt-2 text-xs text-gray-400">
+                Suggestions: {suggestions.join(', ')}
+              </div>
+            )}
           </form>
         </motion.div>
       </motion.div>

@@ -26,7 +26,6 @@
     "Pandas",
     "Matplotlib",
     "librosa",
-    "spotipy",
     "FAISS"
   ],
   "databases": [
