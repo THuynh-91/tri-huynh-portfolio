@@ -14,7 +14,8 @@
       "WebFetch(domain:custom-ai-wordle.vercel.app)",
       "Bash(vercel --version)",
       "Bash(vercel --yes)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Bash(git add -A)"
     ],
     "deny": [],
     "ask": []
