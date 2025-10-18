@@ -1,9 +1,14 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 export default function ProjectCard({ project }) {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+
+  // Get base path from Next.js router
+  const basePath = router.basePath || '';
+  const imageSrc = project.imageUrl ? `${basePath}${project.imageUrl}` : null;
 
   return (
     <motion.div
@@ -14,12 +19,11 @@ export default function ProjectCard({ project }) {
     >
       {/* Image area — uniform height for every card */}
       <div className="relative h-48 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
-        {project.imageUrl ? (
-          <Image
-            src={project.imageUrl}
+        {imageSrc ? (
+          <img
+            src={imageSrc}
             alt={project.title}
-            fill
-            className="object-cover"
+            className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
