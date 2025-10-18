@@ -21,14 +21,12 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Show available commands',
       action: () => {
         const cmdList = Object.entries(commands)
-          .filter(([cmd]) => !['secret', 'matrix', 'coffee', 'sudo', 'konami'].includes(cmd))
+          .filter(([cmd]) => !['matrix', 'coffee', 'sudo', 'easteregg'].includes(cmd))
           .map(([cmd, { description }]) => `  ${cmd.padEnd(10)} - ${description}`);
         return [
           { type: 'output', text: 'Available commands:' },
           { type: 'output', text: '' },
           ...cmdList.map(text => ({ type: 'output', text })),
-          { type: 'output', text: '' },
-          { type: 'output', text: 'Hint: Try typing "secret" for hidden commands...' },
         ];
       }
     },
@@ -112,8 +110,8 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         ];
       }
     },
-    konami: {
-      description: 'Unlock the Konami Code',
+    easteregg: {
+      description: 'Find the easter egg',
       action: () => [
         { type: 'output', text: '🎮 KONAMI CODE DISCOVERED! 🎮' },
         { type: 'output', text: '' },
@@ -130,21 +128,10 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         return [
           { type: 'output', text: '[sudo] password for tri-huynh: ****' },
           { type: 'output', text: 'Access granted! Opening privileged content...' },
+          { type: 'output', text: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
           { type: 'output', text: '🎵 Never gonna give you up... 🎵' },
         ];
       }
-    },
-    secret: {
-      description: 'Hidden command',
-      action: () => [
-        { type: 'output', text: 'You found a secret!' },
-        { type: 'output', text: 'Here are all hidden commands:' },
-        { type: 'output', text: '  matrix  - Enter the Matrix' },
-        { type: 'output', text: '  konami  - Unlock the Konami Code' },
-        { type: 'output', text: '  sudo    - Run with superuser privileges' },
-        { type: 'output', text: '  secret  - This command' },
-        { type: 'output', text: '  coffee  - Get some virtual coffee' },
-      ]
     },
     coffee: {
       description: 'Get virtual coffee',
