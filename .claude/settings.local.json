@@ -35,7 +35,22 @@
       "Bash(git add components/Navbar.jsx components/InteractiveTerminal.jsx public/Resume_Tri_Huynh.pdf)",
       "Bash(git commit -m \"Update resume to Resume_Tri_Huynh.pdf\")",
       "Bash(git add pages/index.jsx components/Navbar.jsx components/InteractiveTerminal.jsx components/KonamiCode.jsx)",
-      "Bash(git commit -m \"Fix title, favicon, resume paths, and enhance Konami code\")"
+      "Bash(git commit -m \"Fix title, favicon, resume paths, and enhance Konami code\")",
+      "Bash(git pull)",
+      "Bash(git add data/skills.json components/TechIcon.jsx)",
+      "Bash(git commit -m \"Add PyTorch to tech stack\")",
+      "Bash(git commit -m \"Add trailingSlash for GitHub Pages compatibility\")",
+      "Bash(git add components/Hero.jsx components/Contact.jsx components/InteractiveTerminal.jsx)",
+      "Bash(git commit -m \"Update co-op timeline to Spring/Summer 2026\")",
+      "Bash(git add components/InteractiveTerminal.jsx components/TechIcon.jsx public/images/vercel-icon.svg)",
+      "Bash(git commit -m \"Add Konami command to terminal and update Vercel icon\")",
+      "Bash(git add components/KonamiCode.jsx components/KonamiHint.jsx pages/_document.jsx components/TechIcon.jsx)",
+      "Bash(git commit -m \"Fix Vercel icon path, reduce Konami emojis, fix hint timing and favicon\")",
+      "Bash(git add components/KonamiHint.jsx components/InteractiveTerminal.jsx)",
+      "Bash(git commit -m \"Add sudo rickroll and emoji to easter eggs\")",
+      "Bash(git commit -m \"Update easter eggs: change hint text, add easteregg cmd, show rickroll link\")",
+      "Bash(git add components/InteractiveTerminal.jsx)",
+      "Bash(git commit -m \"Remove duplicate sudo, show sudo and easteregg in help\")"
     ],
     "deny": [],
     "ask": []
