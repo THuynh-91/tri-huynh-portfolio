@@ -110,12 +110,24 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         ];
       }
     },
+    konami: {
+      description: 'Unlock the Konami Code',
+      action: () => [
+        { type: 'output', text: '🎮 KONAMI CODE DISCOVERED! 🎮' },
+        { type: 'output', text: '' },
+        { type: 'output', text: 'Try this on the main page:' },
+        { type: 'output', text: '⬆️ ⬆️ ⬇️ ⬇️ ⬅️ ➡️ ⬅️ ➡️ B A' },
+        { type: 'output', text: '' },
+        { type: 'output', text: 'Press those keys for a surprise! 🎉' },
+      ]
+    },
     secret: {
       description: 'Hidden command',
       action: () => [
         { type: 'output', text: 'You found a secret!' },
         { type: 'output', text: 'Here are all hidden commands:' },
         { type: 'output', text: '  matrix  - Enter the Matrix' },
+        { type: 'output', text: '  konami  - Unlock the Konami Code' },
         { type: 'output', text: '  secret  - This command' },
         { type: 'output', text: '  coffee  - Get some virtual coffee' },
       ]
