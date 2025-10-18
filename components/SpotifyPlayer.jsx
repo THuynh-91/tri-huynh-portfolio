@@ -1,15 +1,18 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export default function SpotifyPlayer() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [tracks, setTracks] = useState([]);
   const [autoPlay, setAutoPlay] = useState(true);
+  const router = useRouter();
 
   // Load songs from songs.md
   useEffect(() => {
-    fetch('/songs.md')
+    const basePath = router.basePath || '';
+    fetch(`${basePath}/songs.md`)
       .then(res => res.text())
       .then(text => {
         const lines = text.split('\n').filter(line => line.includes('|'));
