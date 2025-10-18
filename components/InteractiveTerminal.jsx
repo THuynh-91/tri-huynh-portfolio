@@ -21,12 +21,14 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Show available commands',
       action: () => {
         const cmdList = Object.entries(commands)
-          .filter(([cmd]) => !['secret', 'matrix', 'coffee'].includes(cmd))
+          .filter(([cmd]) => !['secret', 'matrix', 'coffee', 'sudo', 'konami'].includes(cmd))
           .map(([cmd, { description }]) => `  ${cmd.padEnd(10)} - ${description}`);
         return [
           { type: 'output', text: 'Available commands:' },
           { type: 'output', text: '' },
           ...cmdList.map(text => ({ type: 'output', text })),
+          { type: 'output', text: '' },
+          { type: 'output', text: 'Hint: Try typing "secret" for hidden commands...' },
         ];
       }
     },
@@ -121,6 +123,17 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         { type: 'output', text: 'Press those keys for a surprise! 🎉' },
       ]
     },
+    sudo: {
+      description: 'Run with superuser privileges',
+      action: () => {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+        return [
+          { type: 'output', text: '[sudo] password for tri-huynh: ****' },
+          { type: 'output', text: 'Access granted! Opening privileged content...' },
+          { type: 'output', text: '🎵 Never gonna give you up... 🎵' },
+        ];
+      }
+    },
     secret: {
       description: 'Hidden command',
       action: () => [
@@ -128,6 +141,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         { type: 'output', text: 'Here are all hidden commands:' },
         { type: 'output', text: '  matrix  - Enter the Matrix' },
         { type: 'output', text: '  konami  - Unlock the Konami Code' },
+        { type: 'output', text: '  sudo    - Run with superuser privileges' },
         { type: 'output', text: '  secret  - This command' },
         { type: 'output', text: '  coffee  - Get some virtual coffee' },
       ]
