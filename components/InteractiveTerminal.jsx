@@ -21,7 +21,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Show available commands',
       action: () => {
         const cmdList = Object.entries(commands)
-          .filter(([cmd]) => !['matrix', 'coffee', 'sudo', 'easteregg'].includes(cmd))
+          .filter(([cmd]) => !['matrix', 'coffee'].includes(cmd))
           .map(([cmd, { description }]) => `  ${cmd.padEnd(10)} - ${description}`);
         return [
           { type: 'output', text: 'Available commands:' },
@@ -171,13 +171,6 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         { type: 'output', text: 'Full-stack: React, Next.js, FastAPI, Docker' },
         { type: 'output', text: '1000+ users on deployed ML application' },
         { type: 'output', text: 'Contact: triqhuynh91@gmail.com' },
-      ]
-    },
-    sudo: {
-      description: 'Try it and see',
-      action: () => [
-        { type: 'error', text: 'Permission denied' },
-        { type: 'output', text: 'tri is not in the sudoers file.' },
       ]
     }
   };
