@@ -88,7 +88,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       action: () => [
         { type: 'output', text: 'tri-huynh' },
         { type: 'output', text: 'CS Student @ Northeastern' },
-        { type: 'output', text: 'Seeking Summer/Fall 2026 opportunities' },
+        { type: 'output', text: 'Seeking Spring/Summer 2026 opportunities' },
       ]
     },
     matrix: {

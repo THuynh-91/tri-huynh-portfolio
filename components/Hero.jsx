@@ -54,7 +54,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            I build ML-powered applications and scalable backends. Currently seeking internships and co-op opportunities for Summer/Fall 2026.
+            I build ML-powered applications and scalable backends. Currently seeking internships and co-op opportunities for Spring/Summer 2026.
           </motion.p>
 
           <motion.div

@@ -15,7 +15,7 @@ export default function Contact() {
             Get In <span className="text-gradient">Touch</span>
           </h2>
           <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            Looking for Summer/Fall 2026 internships and co-op opportunities
+            Looking for Spring/Summer 2026 internships and co-op opportunities
           </p>
         </motion.div>
 
@@ -101,7 +101,7 @@ export default function Contact() {
               Ready to Connect
             </h3>
             <p className="text-gray-400 mb-6">
-              Actively seeking Summer/Fall 2026 internships and co-op opportunities
+              Actively seeking Spring/Summer 2026 internships and co-op opportunities
             </p>
             <a
               href="https://www.linkedin.com/in/tri-huynh-81735326a"
