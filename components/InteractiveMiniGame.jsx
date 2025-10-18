@@ -117,7 +117,7 @@ export default function InteractiveMiniGame() {
                 animate={clicked ? { scale: [1, 1.3, 1] } : {}}
                 transition={{ duration: 0.2 }}
               >
-                <span className="text-2xl">🎯</span>
+                <span className="text-2xl font-bold text-white">+</span>
               </motion.button>
             )}
           </div>

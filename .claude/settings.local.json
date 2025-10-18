@@ -6,7 +6,12 @@
       "Read(//c/Users/altus/FCC_DailyChallenge/**)",
       "Read(//c/Users/altus/**)",
       "Bash(npm run dev:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(gh repo list --limit 100)",
+      "Bash(git config user.name)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:custom-ai-wordle.vercel.app)"
     ],
     "deny": [],
     "ask": []

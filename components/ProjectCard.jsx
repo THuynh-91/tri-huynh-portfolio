@@ -21,7 +21,7 @@ export default function ProjectCard({ project }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className="text-6xl opacity-30">🚀</div>
+            <div className="text-4xl opacity-30 text-primary font-bold">PROJECT</div>
           </div>
         )}
 

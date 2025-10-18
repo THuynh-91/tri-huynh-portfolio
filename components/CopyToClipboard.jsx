@@ -44,7 +44,7 @@ export default function CopyToClipboard({ text, children }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.8 }}
           >
-            ✓ Copied!
+            Copied!
             <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-green-500"></div>
           </motion.div>
         )}

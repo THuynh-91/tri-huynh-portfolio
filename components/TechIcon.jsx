@@ -47,9 +47,10 @@ const techIcons = {
 
   // Cloud
   'AWS (Certified Cloud Practitioner)': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg',
-  'Vercel': 'https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_light_background.png',
+  'Vercel': '/images/vercel-icon.svg',
 
   // Additional Tools
+  'Vite': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vitejs/vitejs-original.svg',
   'Eclipse': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/eclipse/eclipse-original.svg',
   'GitHub Actions': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/githubactions/githubactions-original.svg',
   'Bash': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg',

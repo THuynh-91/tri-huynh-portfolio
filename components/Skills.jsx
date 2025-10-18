@@ -4,12 +4,12 @@ import skillsData from '../data/skills.json';
 
 export default function Skills() {
   const skillCategories = [
-    { title: 'Languages', items: skillsData.languages, icon: '💻' },
-    { title: 'Frameworks', items: skillsData.frameworks, icon: '🔧' },
-    { title: 'Libraries', items: skillsData.libraries, icon: '📚' },
-    { title: 'Databases', items: skillsData.databases, icon: '🗄️' },
-    { title: 'Tools', items: skillsData.tools, icon: '⚙️' },
-    { title: 'Cloud & Infrastructure', items: skillsData.cloud, icon: '☁️' },
+    { title: 'Languages', items: skillsData.languages, icon: '▸' },
+    { title: 'Frameworks', items: skillsData.frameworks, icon: '▸' },
+    { title: 'Libraries', items: skillsData.libraries, icon: '▸' },
+    { title: 'Databases', items: skillsData.databases, icon: '▸' },
+    { title: 'Tools', items: skillsData.tools, icon: '▸' },
+    { title: 'Cloud & Infrastructure', items: skillsData.cloud, icon: '▸' },
   ];
 
   return (

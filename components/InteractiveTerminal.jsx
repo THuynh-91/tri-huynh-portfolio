@@ -49,10 +49,9 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     projects: {
       description: 'List featured projects',
       action: () => [
-        { type: 'output', text: '1. Rock Paper Scissor Mind Game (1000+ visitors)' },
-        { type: 'output', text: '2. Spotify Recommendation App' },
-        { type: 'output', text: '3. AAOC Planner' },
-        { type: 'output', text: '4. FreeCodeCamp Daily Challenges' },
+        { type: 'output', text: '1. AI Wordle Duel (multiple game modes, AI opponents)' },
+        { type: 'output', text: '2. Rock Paper Scissor Mind Game (1000+ visitors)' },
+        { type: 'output', text: '3. Spotify Recommendation App' },
       ]
     },
     contact: {
@@ -67,7 +66,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Download resume',
       action: () => {
         window.open('/resume.pdf', '_blank');
-        return [{ type: 'output', text: '📄 Opening resume...' }];
+        return [{ type: 'output', text: 'Opening resume...' }];
       }
     },
     clear: {
@@ -111,7 +110,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     secret: {
       description: 'Hidden command',
       action: () => [
-        { type: 'output', text: 'You found a secret! 🎉' },
+        { type: 'output', text: 'You found a secret!' },
         { type: 'output', text: 'Here are all hidden commands:' },
         { type: 'output', text: '  matrix  - Enter the Matrix' },
         { type: 'output', text: '  secret  - This command' },
@@ -131,7 +130,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         { type: 'output', text: '   \'_________\'' },
         { type: 'output', text: '    \'-------\'' },
         { type: 'output', text: '' },
-        { type: 'output', text: 'Here\'s your coffee! ☕' },
+        { type: 'output', text: 'Here\'s your coffee!' },
       ]
     },
     github: {
@@ -290,7 +289,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
               <span className="ml-4 text-gray-400 text-sm font-mono">tri@portfolio:~$</span>
             </div>
             <button onClick={onClose} className="text-gray-400 hover:text-white">
-              ✕
+              X
             </button>
           </div>
 

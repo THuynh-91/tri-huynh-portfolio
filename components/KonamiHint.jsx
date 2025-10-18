@@ -43,7 +43,7 @@ export default function KonamiHint() {
           <div className="bg-gradient-to-r from-primary to-accent p-1 rounded-xl shadow-2xl">
             <div className="bg-slate-800 rounded-xl p-4">
               <div className="flex items-start gap-3">
-                <div className="text-3xl">🎮</div>
+                <div className="text-2xl font-bold text-primary">CODE</div>
                 <div className="flex-1">
                   <h3 className="text-white font-semibold mb-1 text-sm">
                     Secret Easter Egg!
@@ -59,13 +59,13 @@ export default function KonamiHint() {
                       onClick={handleTryIt}
                       className="flex-1 bg-primary hover:bg-blue-600 text-white text-xs py-1.5 px-3 rounded-lg transition-colors"
                     >
-                      Got it! 🎉
+                      Got it!
                     </button>
                     <button
                       onClick={handleDismiss}
                       className="text-gray-400 hover:text-white text-xs px-2 transition-colors"
                     >
-                      ✕
+                      X
                     </button>
                   </div>
                 </div>

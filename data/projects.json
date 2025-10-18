@@ -1,6 +1,23 @@
 [
   {
     "id": 1,
+    "title": "AI Wordle Duel",
+    "tagline": "Intelligent word puzzle game with AI solvers and multiple game modes",
+    "description": "Full-stack word-guessing game featuring advanced AI opponents powered by algorithmic intelligence. Compete against optimized solvers, challenge them with custom words, or race head-to-head across multiple word lengths",
+    "tech": ["TypeScript", "React", "Vite", "Node.js", "Express", "Python", "Vercel"],
+    "impact": [
+      "Multiple game modes: Daily Wordle, Challenge AI, Race Mode, and Human Play",
+      "Supports variable word lengths (3-7 letters) with intelligent AI solving",
+      "Real-time competitive gameplay with live scoreboard and turn indicators",
+      "Built with full-stack TypeScript architecture for seamless performance"
+    ],
+    "demoUrl": "https://custom-ai-wordle.vercel.app",
+    "githubUrl": "https://github.com/THuynh-91/custom_wordle",
+    "imageUrl": "/images/ai-wordle.png",
+    "featured": true
+  },
+  {
+    "id": 2,
     "title": "Rock Paper Scissor Mind Game",
     "tagline": "ML-driven adaptive game with online learning",
     "description": "An intelligent game that learns and adapts to player patterns in real-time using TensorFlow/Keras",
@@ -17,7 +34,7 @@
     "featured": true
   },
   {
-    "id": 2,
+    "id": 3,
     "title": "Spotify Music Recommendation App",
     "tagline": "ML-powered personalized music discovery",
     "description": "Full-stack web app that generates personalized Spotify recommendations with explanations",
@@ -34,7 +51,7 @@
     "featured": true
   },
   {
-    "id": 3,
+    "id": 4,
     "title": "AAOC Planner",
     "tagline": "Average Age of Credit Calculator & Financial Planning Tool",
     "description": "Comprehensive financial planning tool that automates credit management workflows",
@@ -48,10 +65,10 @@
     "demoUrl": null,
     "githubUrl": "https://github.com/THuynh-91/aaoc-planner",
     "imageUrl": "/images/aaoc-img1.png",
-    "featured": true
+    "featured": false
   },
   {
-    "id": 4,
+    "id": 5,
     "title": "FreeCodeCamp Daily Challenge Solutions",
     "tagline": "Daily coding challenge solutions with detailed explanations",
     "description": "Repository of daily FreeCodeCamp challenge solutions with approach explanations",
@@ -68,7 +85,7 @@
     "featured": false
   },
   {
-    "id": 5,
+    "id": 6,
     "title": "Portfolio Website",
     "tagline": "Modern, interactive personal portfolio",
     "description": "Fully responsive portfolio website built with Next.js, featuring interactive elements and smooth animations",

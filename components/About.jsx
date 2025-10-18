@@ -79,23 +79,23 @@ export default function About() {
                 <h3 className="text-2xl font-bold text-white mb-4">Quick Facts</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">🎓</span>
+                    <span className="text-primary mr-2">•</span>
                     <span className="text-gray-300">CS student at Northeastern University</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">🤖</span>
+                    <span className="text-primary mr-2">•</span>
                     <span className="text-gray-300">Specializing in Artificial Intelligence</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">☁️</span>
+                    <span className="text-primary mr-2">•</span>
                     <span className="text-gray-300">AWS Certified Cloud Practitioner</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">📍</span>
+                    <span className="text-primary mr-2">•</span>
                     <span className="text-gray-300">Based in Boston, MA</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">🚀</span>
+                    <span className="text-primary mr-2">•</span>
                     <span className="text-gray-300">Seeking Summer/Fall 2026 opportunities</span>
                   </li>
                 </ul>
