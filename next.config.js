@@ -9,7 +9,8 @@ const nextConfig = {
     unoptimized: true,
   },
   basePath: isProd ? `/${repoName}` : '',
-  assetPrefix: isProd ? `/${repoName}/` : '',
+  assetPrefix: isProd ? `/${repoName}` : '',
+  trailingSlash: true,
 }
 
 module.exports = nextConfig
