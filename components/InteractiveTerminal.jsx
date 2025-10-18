@@ -65,7 +65,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     resume: {
       description: 'Download resume',
       action: () => {
-        window.open('/resume.pdf', '_blank');
+        window.open('/Resume_Tri_Huynh.pdf', '_blank');
         return [{ type: 'output', text: 'Opening resume...' }];
       }
     },

@@ -105,7 +105,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="/resume.pdf"
+              href="/Resume_Tri_Huynh.pdf"
               download
               className="btn-primary text-sm"
             >
@@ -178,7 +178,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="/resume.pdf"
+              href="/Resume_Tri_Huynh.pdf"
               download
               className="block btn-primary text-sm text-center"
             >
