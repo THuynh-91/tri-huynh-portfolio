@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function ProjectCard({ project }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -14,10 +15,11 @@ export default function ProjectCard({ project }) {
       {/* Image area — uniform height for every card */}
       <div className="relative h-48 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
         {project.imageUrl ? (
-          <img
+          <Image
             src={project.imageUrl}
             alt={project.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

@@ -98,10 +98,10 @@ export default function KonamiCode() {
               exit={{ scale: 0, rotate: 180 }}
               transition={{ type: 'spring', duration: 0.5 }}
             >
-              <div className="text-6xl mb-4 font-bold">!</div>
-              <h2 className="text-4xl font-bold mb-2">KONAMI CODE!</h2>
-              <p className="text-xl">You found the secret!</p>
-              <p className="text-sm mt-2 opacity-80">True gamers know the code</p>
+              <div className="text-6xl mb-4 font-bold">🎮✨🎉</div>
+              <h2 className="text-4xl font-bold mb-2">KONAMI CODE! 🕹️</h2>
+              <p className="text-xl">You found the secret! 🏆</p>
+              <p className="text-sm mt-2 opacity-80">True gamers know the code 👾</p>
             </motion.div>
           </motion.div>
         )}
