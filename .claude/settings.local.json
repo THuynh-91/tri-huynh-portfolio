@@ -11,7 +11,10 @@
       "Bash(git config user.name)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:custom-ai-wordle.vercel.app)"
+      "WebFetch(domain:custom-ai-wordle.vercel.app)",
+      "Bash(vercel --version)",
+      "Bash(vercel --yes)",
+      "Bash(npm run build)"
     ],
     "deny": [],
     "ask": []

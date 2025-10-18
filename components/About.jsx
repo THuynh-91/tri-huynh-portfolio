@@ -14,7 +14,7 @@ export default function About() {
             About <span className="text-gradient">Me</span>
           </h2>
           <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            CS student at Northeastern focusing on AI and backend systems
+            A passionate developer on a mission to build impactful solutions
           </p>
         </motion.div>
 
@@ -27,26 +27,28 @@ export default function About() {
           >
             <div className="space-y-4 text-gray-300">
               <p>
-                I'm a sophomore at Northeastern University's Khoury College, majoring in Computer Science
-                with a concentration in Artificial Intelligence. I'm drawn to problems that combine machine
-                learning with practical software engineering—building systems that are both intelligent and
-                reliable.
+                I'm a Computer Science student at Northeastern University's Khoury College,
+                concentrating in Artificial Intelligence. My passion lies in creating intelligent
+                systems that bridge the gap between complex machine learning algorithms and
+                practical, user-friendly applications.
               </p>
               <p>
-                My projects range from an ML-powered Rock Paper Scissors game that attracted 1,000+ players,
-                to a full-stack music recommendation system with Redis caching and API integrations. I'm
-                experienced with Python, Java, AWS, and modern web frameworks. I enjoy the entire development
-                lifecycle—from designing data pipelines to deploying production-ready applications.
+                Currently pursuing my B.S. with an expected graduation in April 2027, I've built
+                a strong foundation in algorithms, data structures, and AI while gaining hands-on
+                experience through personal projects. From developing an ML-driven Rock Paper Scissors
+                game with 1,000+ visitors to building scalable backend systems for music recommendations,
+                I love turning theoretical knowledge into real-world solutions.
               </p>
               <p>
-                Outside of tech, I work part-time at Gyu-Kaku Japanese BBQ, which has taught me how to stay
-                calm under pressure and work effectively with diverse teams. I'm AWS Certified and completed
-                Stanford's Machine Learning Specialization. Expected graduation: April 2027.
+                As an AWS Certified Cloud Practitioner and Machine Learning Specialization graduate,
+                I'm constantly expanding my technical toolkit. When I'm not coding or studying, you'll
+                find me working part-time at Gyu-Kaku Japanese BBQ, where I've learned the value of
+                teamwork, time management, and delivering excellence under pressure.
               </p>
             </div>
 
             <motion.div
-              className="mt-8 grid grid-cols-3 gap-4"
+              className="mt-8 grid grid-cols-2 gap-4"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -55,6 +57,10 @@ export default function About() {
               <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
                 <p className="text-3xl font-bold text-primary">2027</p>
                 <p className="text-gray-400 text-sm">Expected Graduation</p>
+              </div>
+              <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                <p className="text-3xl font-bold text-primary">3.</p>
+                <p className="text-gray-400 text-sm">GPA</p>
               </div>
               <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
                 <p className="text-3xl font-bold text-primary">15+</p>
@@ -79,24 +85,24 @@ export default function About() {
                 <h3 className="text-2xl font-bold text-white mb-4">Quick Facts</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
+                    <span className="text-primary mr-2">🎓</span>
                     <span className="text-gray-300">CS student at Northeastern University</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
+                    <span className="text-primary mr-2">🤖</span>
                     <span className="text-gray-300">Specializing in Artificial Intelligence</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
+                    <span className="text-primary mr-2">☁️</span>
                     <span className="text-gray-300">AWS Certified Cloud Practitioner</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
+                    <span className="text-primary mr-2">📍</span>
                     <span className="text-gray-300">Based in Boston, MA</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
-                    <span className="text-gray-300">Seeking Summer/Fall 2026 opportunities</span>
+                    <span className="text-primary mr-2">🚀</span>
+                    <span className="text-gray-300">Always building and learning new tech</span>
                   </li>
                 </ul>
               </div>
