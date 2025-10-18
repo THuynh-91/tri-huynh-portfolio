@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 export default function InteractiveTerminal({ isOpen, onClose }) {
   const [input, setInput] = useState('');
@@ -12,6 +13,8 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
   const [suggestions, setSuggestions] = useState([]);
   const inputRef = useRef(null);
   const historyRef = useRef(null);
+  const router = useRouter();
+  const basePath = router.basePath || '';
 
   const commands = {
     help: {
@@ -65,7 +68,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     resume: {
       description: 'Download resume',
       action: () => {
-        window.open('/Resume_Tri_Huynh.pdf', '_blank');
+        window.open(`${basePath}/Resume_Tri_Huynh.pdf`, '_blank');
         return [{ type: 'output', text: 'Opening resume...' }];
       }
     },

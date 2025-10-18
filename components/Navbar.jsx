@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const router = useRouter();
+  const basePath = router.basePath || '';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -105,7 +108,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="/Resume_Tri_Huynh.pdf"
+              href={`${basePath}/Resume_Tri_Huynh.pdf`}
               download
               className="btn-primary text-sm"
             >
@@ -178,7 +181,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="/Resume_Tri_Huynh.pdf"
+              href={`${basePath}/Resume_Tri_Huynh.pdf`}
               download
               className="block btn-primary text-sm text-center"
             >

@@ -22,13 +22,12 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Tri Huynh | Backend & ML Engineer @ Northeastern</title>
+        <title>Portfolio</title>
         <meta name="description" content="Computer Science student at Northeastern University specializing in AI and Backend Development. Building intelligent systems with machine learning and scalable architectures." />
         <meta name="keywords" content="Tri Huynh, Computer Science, AI, Machine Learning, Backend Developer, Software Engineer, Northeastern University, AWS Certified" />
         <meta property="og:title" content="Tri Huynh | Backend & ML Engineer" />
         <meta property="og:description" content="Backend & ML Engineer specializing in scalable systems and artificial intelligence" />
         <meta property="og:type" content="website" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* Background & Progress */}
