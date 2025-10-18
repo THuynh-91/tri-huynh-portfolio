@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 // Tech stack icon URLs from Simple Icons CDN
 const techIcons = {
@@ -69,6 +70,8 @@ const techIcons = {
 
 export default function TechIcon({ name, size = 'md' }) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const router = useRouter();
+  const basePath = router.basePath || '';
 
   const sizeClasses = {
     sm: 'w-8 h-8',
@@ -76,7 +79,12 @@ export default function TechIcon({ name, size = 'md' }) {
     lg: 'w-16 h-16',
   };
 
-  const iconUrl = techIcons[name];
+  let iconUrl = techIcons[name];
+
+  // Add basePath to local images
+  if (iconUrl && iconUrl.startsWith('/')) {
+    iconUrl = `${basePath}${iconUrl}`;
+  }
 
   // Fallback to first letter if no icon found
   if (!iconUrl) {

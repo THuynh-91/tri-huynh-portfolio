@@ -6,17 +6,15 @@ export default function KonamiHint() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    // Check if user has already dismissed the hint
-    const hasSeenHint = localStorage.getItem('konamiHintDismissed');
-
-    if (!hasSeenHint) {
-      // Show hint after 5 seconds
-      const timer = setTimeout(() => {
+    // Show hint after 3 seconds on first visit
+    const timer = setTimeout(() => {
+      const hasSeenHint = localStorage.getItem('konamiHintDismissed');
+      if (!hasSeenHint) {
         setShowHint(true);
-      }, 5000);
+      }
+    }, 3000);
 
-      return () => clearTimeout(timer);
-    }
+    return () => clearTimeout(timer);
   }, []);
 
   const handleDismiss = () => {
