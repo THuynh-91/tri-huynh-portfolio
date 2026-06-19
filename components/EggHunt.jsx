@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 // The hidden character's image. Swap this for any image you drop in
 // /public/images to change the mascot.
-const CHARACTER_SRC = '/images/mascot.svg';
+const CHARACTER_SRC = '/images/waldo.png';
 
 // A hidden mascot that peeks from the LEFT edge and stays pinned to the page as
 // you scroll. After 10s a "click!" arrow points it out; clicking it reveals a
