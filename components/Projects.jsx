@@ -1,104 +1,86 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ProjectCard from './ProjectCard';
+import SectionHeader from './SectionHeader';
 import projectsData from '../data/projects.json';
 
 export default function Projects() {
-  const [showAllProjects, setShowAllProjects] = useState(false);
-  const featuredProjects = projectsData.filter(p => p.featured);
-  const otherProjects = projectsData.filter(p => !p.featured);
+  const [filter, setFilter] = useState('All');
+  const [showAll, setShowAll] = useState(false);
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
-  };
+  const tags = useMemo(
+    () => ['All', ...Array.from(new Set(projectsData.map((p) => p.tag)))],
+    []
+  );
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
+  const filtered = useMemo(() => {
+    let list = filter === 'All' ? projectsData : projectsData.filter((p) => p.tag === filter);
+    if (!showAll && filter === 'All') list = list.filter((p) => p.featured).slice(0, 3);
+    return list;
+  }, [filter, showAll]);
 
   return (
-    <section id="projects" className="section-padding bg-slate-900">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Featured <span className="text-gradient">Projects</span>
-          </h2>
-          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            Recent projects in AI, full-stack development, and backend systems
-          </p>
+    <section id="projects" className="section-padding">
+      <div className="mx-auto max-w-wide">
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <SectionHeader
+            index="03"
+            eyebrow="selected work"
+            title="Things I've"
+            accent="built."
+            note="A mix of AI products, ML experiments, and full-stack apps. Most have live code you can dig into."
+          />
+
+          {/* filter pills */}
+          <div className="flex flex-wrap gap-2 font-mono text-sm">
+            {tags.map((t) => (
+              <button
+                key={t}
+                onClick={() => {
+                  setFilter(t);
+                  if (t !== 'All') setShowAll(true);
+                }}
+                data-cursor="hover"
+                className={`rounded-full px-4 py-1.5 border transition-colors ${
+                  filter === t
+                    ? 'bg-accent text-white border-accent'
+                    : 'border-line text-muted hover:text-fg hover:border-line-strong'
+                }`}
+              >
+                {t.toLowerCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <motion.div layout className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((project) => (
+              <motion.div
+                key={project.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <ProjectCard project={project} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </motion.div>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-        >
-          {featuredProjects.map((project) => (
-            <motion.div key={project.id} variants={item}>
-              <ProjectCard project={project} />
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-        >
-          <button
-            onClick={() => setShowAllProjects(!showAllProjects)}
-            className="inline-block px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-medium transition-all duration-200"
-          >
-            {showAllProjects ? 'Show Less' : `View All Projects (${projectsData.length})`}
-          </button>
-        </motion.div>
-
-        {/* All Projects Section */}
-        <AnimatePresence>
-          {showAllProjects && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5 }}
-              className="overflow-hidden mt-12"
+        {filter === 'All' && (
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              data-cursor="hover"
+              className="btn-secondary"
             >
-              <div className="border-t border-slate-700 pt-12">
-                <h3 className="text-3xl font-bold text-center mb-8">
-                  More <span className="text-gradient">Projects</span>
-                </h3>
-                <motion.div
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                  variants={container}
-                  initial="hidden"
-                  animate="show"
-                >
-                  {otherProjects.map((project) => (
-                    <motion.div key={project.id} variants={item}>
-                      <ProjectCard project={project} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              {showAll ? 'Show featured only' : `View all ${projectsData.length} projects`}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

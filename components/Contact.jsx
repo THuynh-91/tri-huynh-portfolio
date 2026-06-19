@@ -1,121 +1,74 @@
-import { motion } from 'framer-motion';
-import CopyToClipboard from './CopyToClipboard';
+import SectionHeader from './SectionHeader';
+import Reveal from './Reveal';
+import Magnetic from './Magnetic';
 
 export default function Contact() {
+  const links = [
+    { label: 'email', value: 'triqhuynh91@gmail.com', href: 'mailto:triqhuynh91@gmail.com' },
+    { label: 'linkedin', value: '/in/tri-huynh', href: 'https://www.linkedin.com/in/tri-huynh-81735326a' },
+    { label: 'github', value: '@THuynh-91', href: 'https://github.com/THuynh-91' },
+  ];
+
   return (
-    <section id="contact" className="section-padding bg-slate-900">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Get In <span className="text-gradient">Touch</span>
-          </h2>
-          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            Looking for Spring/Summer 2026 internships and co-op opportunities
-          </p>
-        </motion.div>
+    <section id="contact" className="section-padding">
+      <div className="mx-auto max-w-wide">
+        <SectionHeader
+          index="06"
+          eyebrow="contact"
+          title="Let's build"
+          accent="something."
+          note="Open to AI / ML roles, collaborations, and interesting problems. The fastest way to reach me is email."
+        />
 
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <motion.div
-            className="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-primary transition-colors group"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <div className="w-12 h-12 mb-4 flex items-center justify-center">
-              <img
-                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-                alt="Gmail"
-                className="w-full h-full"
-              />
+        <div className="mt-12 grid gap-4 lg:grid-cols-5">
+          {/* big CTA */}
+          <Reveal className="lg:col-span-3 rounded-2xl border border-line bg-surface p-8 md:p-10 flex flex-col justify-between">
+            <div>
+              <p className="eyebrow">open to what's next</p>
+              <h3 className="mt-4 font-display text-3xl md:text-4xl font-semibold leading-tight">
+                Have a role, a project, or just want to{' '}
+                <span className="text-accent">say hi?</span>
+              </h3>
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Email</h3>
-            <CopyToClipboard text="triqhuynh91@gmail.com">
-              <p className="text-gray-400 group-hover:text-primary transition-colors text-sm cursor-pointer">
-                triqhuynh91@gmail.com
-              </p>
-            </CopyToClipboard>
-          </motion.div>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Magnetic>
+                <a href="mailto:triqhuynh91@gmail.com" className="btn-primary" data-cursor="hover">
+                  Email me ↗
+                </a>
+              </Magnetic>
+              <Magnetic>
+                <a
+                  href="https://www.linkedin.com/in/tri-huynh-81735326a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary"
+                  data-cursor="hover"
+                >
+                  Connect on LinkedIn
+                </a>
+              </Magnetic>
+            </div>
+          </Reveal>
 
-          <motion.a
-            href="https://www.linkedin.com/in/tri-huynh-81735326a"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-primary transition-colors group"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="w-12 h-12 mb-4 flex items-center justify-center">
-              <img
-                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg"
-                alt="LinkedIn"
-                className="w-full h-full"
-              />
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">LinkedIn</h3>
-            <p className="text-gray-400 group-hover:text-primary transition-colors">
-              Connect with me
-            </p>
-          </motion.a>
-
-          <motion.a
-            href="https://github.com/THuynh-91"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-primary transition-colors group"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="w-12 h-12 mb-4 flex items-center justify-center">
-              <img
-                src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
-                alt="GitHub"
-                className="w-full h-full filter brightness-0 invert"
-              />
-            </div>
-            <h3 className="text-xl font-semibold text-white mb-2">GitHub</h3>
-            <p className="text-gray-400 group-hover:text-primary transition-colors">
-              Check out my code
-            </p>
-          </motion.a>
+          {/* contact rows */}
+          <Reveal delay={0.08} className="lg:col-span-2 rounded-2xl border border-line bg-surface p-2 font-mono">
+            {links.map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                target={l.href.startsWith('http') ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between rounded-xl px-5 py-5 transition-colors hover:bg-surface-2"
+                data-cursor="hover"
+              >
+                <span className="text-xs uppercase tracking-widest text-muted">{l.label}</span>
+                <span className="text-sm text-fg transition-colors group-hover:text-accent">
+                  {l.value} <span className="text-accent">↗</span>
+                </span>
+              </a>
+            ))}
+          </Reveal>
         </div>
-
-        <motion.div
-          className="bg-gradient-to-br from-primary to-accent p-1 rounded-2xl"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-        >
-          <div className="bg-slate-800 rounded-2xl p-8 text-center">
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Ready to Connect
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Actively seeking Spring/Summer 2026 internships and co-op opportunities
-            </p>
-            <a
-              href="https://www.linkedin.com/in/tri-huynh-81735326a"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary inline-block"
-            >
-              Connect on LinkedIn
-            </a>
-            <p className="text-gray-400 text-sm mt-4">
-              triqhuynh91@gmail.com • Resume available upon request
-            </p>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

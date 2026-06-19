@@ -1,77 +1,134 @@
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useRouter } from 'next/router';
 
-export default function ProjectCard({ project }) {
-  const [isHovered, setIsHovered] = useState(false);
-  const router = useRouter();
+const initials = (title) =>
+  title
+    .replace(/[^a-zA-Z0-9 ]/g, '')
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
 
-  // Get base path from Next.js router
+export default function ProjectCard({ project }) {
+  const router = useRouter();
   const basePath = router.basePath || '';
   const imageSrc = project.imageUrl ? `${basePath}${project.imageUrl}` : null;
 
+  // 3D tilt
+  const mx = useMotionValue(0.5);
+  const my = useMotionValue(0.5);
+  const rotateX = useSpring(useTransform(my, [0, 1], [6, -6]), { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(useTransform(mx, [0, 1], [-6, 6]), { stiffness: 200, damping: 20 });
+  // cursor-following glow position (%)
+  const glowX = useTransform(mx, (v) => `${v * 100}%`);
+  const glowY = useTransform(my, (v) => `${v * 100}%`);
+
+  const handleMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - rect.left) / rect.width);
+    my.set((e.clientY - rect.top) / rect.height);
+  };
+  const reset = () => {
+    mx.set(0.5);
+    my.set(0.5);
+  };
+
   return (
-    <motion.div
-      className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 relative group"
-      whileHover={{ y: -5 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+    <motion.article
+      className="tilt-card h-full group"
+      style={{ rotateX, rotateY, transformPerspective: 900 }}
+      onMouseMove={handleMove}
+      onMouseLeave={reset}
+      whileHover={{ y: -6 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
     >
-      {/* Image area — uniform height for every card */}
-      <div className="relative h-48 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
+      {/* cursor glow */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{
+          background: useTransform(
+            [glowX, glowY],
+            ([gx, gy]) => `radial-gradient(280px circle at ${gx} ${gy}, var(--accent-soft), transparent 65%)`
+          ),
+        }}
+      />
+
+      {/* media */}
+      <div className="relative h-44 overflow-hidden border-b border-line">
         {imageSrc ? (
           <img
             src={imageSrc}
             alt={project.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="text-4xl opacity-30 text-primary font-bold">PROJECT</div>
+          <div className="relative flex h-full w-full items-center justify-center bg-surface-2">
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{
+                backgroundImage:
+                  'linear-gradient(135deg, var(--accent-soft) 0%, transparent 55%)',
+              }}
+            />
+            <span className="font-display text-6xl font-bold text-fg/15 select-none">
+              {initials(project.title)}
+            </span>
           </div>
         )}
-
-        {/* Hover overlay */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-primary/40 to-accent/40"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        />
+        <div className="absolute left-3 top-3 flex gap-2 font-mono text-[11px]">
+          <span className="rounded-full bg-accent px-2.5 py-1 text-white font-medium">
+            {project.tag}
+          </span>
+          {project.year && (
+            <span className="rounded-full glass px-2.5 py-1 text-muted">{project.year}</span>
+          )}
+        </div>
       </div>
 
+      {/* body */}
       <div className="p-6">
-        <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-primary transition-colors">
+        <h3 className="font-display text-xl font-semibold transition-colors group-hover:text-accent">
           {project.title}
         </h3>
-        <p className="text-gray-400 mb-4">{project.tagline}</p>
+        <p className="mt-2 text-sm text-muted leading-relaxed">{project.tagline}</p>
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.tech.map((tech, index) => (
-            <span key={index} className="px-3 py-1 bg-slate-700 text-primary text-sm rounded-full">
-              {tech}
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {project.tech.slice(0, 5).map((t) => (
+            <span
+              key={t}
+              className="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-muted"
+            >
+              {t}
             </span>
           ))}
+          {project.tech.length > 5 && (
+            <span className="rounded-md px-2 py-0.5 font-mono text-[11px] text-muted">
+              +{project.tech.length - 5}
+            </span>
+          )}
         </div>
 
-        <ul className="space-y-2 mb-6">
-          {project.impact.map((item, index) => (
-            <li key={index} className="text-gray-300 text-sm flex items-start">
-              <span className="text-primary mr-2">•</span>
+        <ul className="mt-4 space-y-1.5">
+          {project.impact.slice(0, 2).map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm text-muted">
+              <span className="mt-0.5 text-accent">▸</span>
               <span>{item}</span>
             </li>
           ))}
         </ul>
 
-        <div className="flex gap-3">
+        <div className="mt-6 flex gap-3 font-mono text-sm">
           {project.demoUrl && (
             <a
               href={project.demoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 bg-primary hover:bg-blue-600 text-white rounded-lg text-sm transition-colors"
+              className="inline-flex items-center gap-1 text-accent hover:underline"
+              data-cursor="hover"
             >
-              Live Demo
+              live demo ↗
             </a>
           )}
           {project.githubUrl && (
@@ -79,13 +136,14 @@ export default function ProjectCard({ project }) {
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 border border-primary text-primary hover:bg-primary hover:text-white rounded-lg text-sm transition-colors"
+              className="inline-flex items-center gap-1 text-muted hover:text-fg transition-colors"
+              data-cursor="hover"
             >
-              GitHub
+              source ↗
             </a>
           )}
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

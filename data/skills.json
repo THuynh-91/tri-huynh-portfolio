@@ -1,9 +1,26 @@
 {
+  "ai": [
+    "Claude SDK",
+    "Claude Code",
+    "Codex",
+    "Copilot Studio",
+    "Ollama",
+    "LangSmith",
+    "RAG",
+    "Agentic Workflows"
+  ],
+  "platforms": [
+    "Azure",
+    "Databricks",
+    "Snowflake",
+    "Azure AI Services",
+    "Power Automate"
+  ],
   "languages": [
     "Python",
-    "Java",
-    "JavaScript",
     "TypeScript",
+    "JavaScript",
+    "Java",
     "SQL",
     "R",
     "HTML/CSS",
@@ -14,43 +31,44 @@
     "FastAPI",
     "Next.js",
     "React",
+    "Streamlit",
+    "PyTorch",
     "Express.js",
     "Flask",
     "Tailwind CSS"
   ],
   "libraries": [
     "TensorFlow",
-    "PyTorch",
-    "Keras",
     "scikit-learn",
+    "Sentence-Transformers",
     "NumPy",
     "Pandas",
     "Matplotlib",
     "librosa",
-    "FAISS"
+    "spotipy"
   ],
   "databases": [
+    "ChromaDB",
     "PostgreSQL",
     "Redis",
     "MongoDB",
     "MySQL"
   ],
   "tools": [
+    "Docker",
     "Git",
     "GitHub",
-    "Docker",
-    "Vite",
-    "VS Code",
+    "Jira",
     "Linux (Ubuntu)",
-    "Bash/Shell",
     "Jupyter Notebook",
+    "VS Code",
     "PyCharm",
-    "Eclipse"
+    "Posit"
   ],
   "cloud": [
-    "AWS (Certified Cloud Practitioner)",
+    "AWS",
     "GitHub Actions (CI/CD)",
-    "Render",
-    "Vercel"
+    "Vercel",
+    "Render"
   ]
 }

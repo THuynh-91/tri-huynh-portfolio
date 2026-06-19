@@ -21,7 +21,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Show available commands',
       action: () => {
         const cmdList = Object.entries(commands)
-          .filter(([cmd]) => !['matrix', 'coffee'].includes(cmd))
+          .filter(([cmd]) => !['matrix', 'sudo'].includes(cmd))
           .map(([cmd, { description }]) => `  ${cmd.padEnd(10)} - ${description}`);
         return [
           { type: 'output', text: 'Available commands:' },
@@ -34,27 +34,41 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Learn about Tri',
       action: () => [
         { type: 'output', text: 'Tri Huynh' },
-        { type: 'output', text: 'CS Student @ Northeastern University' },
-        { type: 'output', text: 'Specializing in Artificial Intelligence' },
-        { type: 'output', text: 'AWS Certified Cloud Practitioner' },
+        { type: 'output', text: 'CS Student @ Northeastern University (AI concentration)' },
+        { type: 'output', text: 'Just wrapped an AI Engineer Co-op @ Biogen' },
+        { type: 'output', text: 'Built production AI agents with the Claude SDK, Azure & Databricks' },
         { type: 'output', text: 'Based in Boston, MA' },
+      ]
+    },
+    ai: {
+      description: 'AI tools & agentic stack',
+      action: () => [
+        { type: 'output', text: 'Agents:   Claude SDK, Claude Code, Codex, agentic workflows' },
+        { type: 'output', text: 'Copilots: GitHub Copilot, Microsoft Copilot Studio' },
+        { type: 'output', text: 'RAG:      ChromaDB, Sentence-Transformers, FAISS, LangSmith' },
+        { type: 'output', text: 'Local:    Ollama (Qwen 7B)' },
+        { type: 'output', text: 'ML:       PyTorch, TensorFlow, scikit-learn' },
       ]
     },
     skills: {
       description: 'View technical skills',
       action: () => [
-        { type: 'output', text: 'Languages:  Python, Java, JavaScript, TypeScript' },
-        { type: 'output', text: 'Frameworks: FastAPI, Next.js, React, Flask' },
-        { type: 'output', text: 'ML/AI:      TensorFlow, Keras, scikit-learn' },
-        { type: 'output', text: 'Cloud:      AWS (Certified), Docker, Vercel' },
+        { type: 'output', text: 'AI/Agents:  Claude SDK, Claude Code, Codex, Copilot Studio' },
+        { type: 'output', text: 'Languages:  Python, TypeScript, Java, SQL' },
+        { type: 'output', text: 'Frameworks: FastAPI, Next.js, React, Streamlit' },
+        { type: 'output', text: 'Data/Cloud: Azure, Databricks, Snowflake, Docker' },
+        { type: 'output', text: '(tip: try "ai" for the full agentic stack)' },
       ]
     },
     projects: {
       description: 'List featured projects',
       action: () => [
-        { type: 'output', text: '1. AI Wordle Duel (multiple game modes, AI opponents)' },
-        { type: 'output', text: '2. Rock Paper Scissor Mind Game (1000+ visitors)' },
-        { type: 'output', text: '3. Spotify Recommendation App' },
+        { type: 'output', text: '1. USCIS AI Assistant (N-400 agent, fills the PDF)' },
+        { type: 'output', text: '2. RAG Study Chatbot (answers from your own notes)' },
+        { type: 'output', text: '3. Code Problem Studio (local AI coding tutor)' },
+        { type: 'output', text: '4. AI Wordle Duel (AI opponents, multiple modes)' },
+        { type: 'output', text: '5. Rock Paper Scissor Mind Game (1000+ visitors)' },
+        { type: 'output', text: '6. Spotify Recommendation Engine (vector search)' },
       ]
     },
     contact: {
@@ -87,8 +101,8 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Who am I?',
       action: () => [
         { type: 'output', text: 'tri-huynh' },
-        { type: 'output', text: 'CS Student @ Northeastern' },
-        { type: 'output', text: 'Seeking Spring/Summer 2026 opportunities' },
+        { type: 'output', text: 'CS Student @ Northeastern · AI concentration' },
+        { type: 'output', text: 'Open to AI / ML roles & collaborations' },
       ]
     },
     matrix: {
@@ -111,14 +125,15 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       }
     },
     easteregg: {
-      description: 'Find the easter egg',
+      description: 'Reveal the hidden stuff',
       action: () => [
-        { type: 'output', text: '🎮 KONAMI CODE DISCOVERED! 🎮' },
+        { type: 'output', text: '🥚 EASTER EGG HUNT 🥚' },
         { type: 'output', text: '' },
-        { type: 'output', text: 'Try this on the main page:' },
-        { type: 'output', text: '⬆️ ⬆️ ⬇️ ⬇️ ⬅️ ➡️ ⬅️ ➡️ B A' },
+        { type: 'output', text: '1. A tiny 🕵️  is peeking from the left edge, click them' },
         { type: 'output', text: '' },
-        { type: 'output', text: 'Press those keys for a surprise! 🎉' },
+        { type: 'output', text: '2. Secret terminal commands: matrix, sudo' },
+        { type: 'output', text: '' },
+        { type: 'output', text: 'Happy hunting! 🎉' },
       ]
     },
     sudo: {
@@ -128,26 +143,9 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         return [
           { type: 'output', text: '[sudo] password for tri-huynh: ****' },
           { type: 'output', text: 'Access granted! Opening privileged content...' },
-          { type: 'output', text: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
-          { type: 'output', text: '🎵 Never gonna give you up... 🎵' },
+          { type: 'output', text: 'You should know better than to trust a sudo prompt 😏' },
         ];
       }
-    },
-    coffee: {
-      description: 'Get virtual coffee',
-      action: () => [
-        { type: 'output', text: '      )  (' },
-        { type: 'output', text: '     (   ) )' },
-        { type: 'output', text: '      ) ( (' },
-        { type: 'output', text: '    _______)_' },
-        { type: 'output', text: ' .-\'---------|' },
-        { type: 'output', text: '( C|/\\/\\/\\/\\/|' },
-        { type: 'output', text: ' \'-./\\/\\/\\/\\/|' },
-        { type: 'output', text: '   \'_________\'' },
-        { type: 'output', text: '    \'-------\'' },
-        { type: 'output', text: '' },
-        { type: 'output', text: 'Here\'s your coffee!' },
-      ]
     },
     github: {
       description: 'Open GitHub profile',
@@ -166,11 +164,13 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     hire: {
       description: 'Why you should hire Tri',
       action: () => [
-        { type: 'output', text: 'Strong AI/ML foundation with production projects' },
-        { type: 'output', text: 'AWS Certified Cloud Practitioner' },
+        { type: 'output', text: 'Shipped production AI agents @ Biogen (Claude SDK, Azure, Databricks)' },
+        { type: 'output', text: 'Builds agentic + RAG systems end to end, model → backend → UI' },
         { type: 'output', text: 'Full-stack: React, Next.js, FastAPI, Docker' },
-        { type: 'output', text: '1000+ users on deployed ML application' },
-        { type: 'output', text: 'Contact: triqhuynh91@gmail.com' },
+        { type: 'output', text: '1000+ users on a deployed ML application' },
+        { type: 'output', text: 'Fast with AI tooling: Claude Code, Codex, Copilot Studio' },
+        { type: 'output', text: '' },
+        { type: 'output', text: 'Let\'s talk → triqhuynh91@gmail.com' },
       ]
     }
   };

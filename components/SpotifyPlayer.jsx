@@ -60,42 +60,48 @@ export default function SpotifyPlayer() {
 
   return (
     <motion.div
-      className="fixed left-6 top-1/2 -translate-y-1/2 z-50"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.5 }}
+      className="fixed left-6 bottom-8 z-40 touch-none"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.8 }}
+      drag
+      dragMomentum={false}
+      dragElastic={0.06}
+      whileDrag={{ scale: 1.02 }}
     >
       {/* Keep iframe in DOM but hide it when minimized - this keeps music playing */}
-      <div className={isMinimized ? 'sr-only' : ''}>
+      <div className={isMinimized ? 'sr-only' : 'origin-bottom-left scale-[0.68]'}>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: isMinimized ? 0 : 1, scale: isMinimized ? 0 : 1 }}
-          className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl border border-primary/20 overflow-hidden shadow-2xl w-80"
+          className="glass rounded-2xl overflow-hidden shadow-2xl w-80"
         >
-        <div className="p-4">
+        <div className="p-3">
           {/* Header */}
           <div className="mb-3">
-            <p className="text-center text-sm text-gray-300 mb-3">
-              <span className="text-primary font-semibold">Listen to my favorite songs while browsing!</span>
+            <p className="flex items-center justify-center gap-2 text-center text-xs text-muted mb-3 font-mono">
+              <span className="select-none tracking-tighter text-muted/70" aria-hidden>⠿</span>
+              <span className="text-accent">now playing · drag me anywhere</span>
             </p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center animate-pulse">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center animate-pulse" style={{ background: 'var(--accent)' }}>
                   <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-bold truncate">{currentTrack.name}</p>
-                  <p className="text-primary text-xs truncate">{currentTrack.artist}</p>
+                  <p className="text-fg text-sm font-bold truncate">{currentTrack.name}</p>
+                  <p className="text-accent text-xs truncate">{currentTrack.artist}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsMinimized(true)}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
+                data-cursor="hover"
+                className="p-2 hover:bg-surface-2 rounded-lg transition-colors flex-shrink-0"
                 title="Minimize"
               >
-                <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -103,7 +109,7 @@ export default function SpotifyPlayer() {
           </div>
 
           {/* Spotify Player */}
-          <div className="rounded-xl overflow-hidden border border-white/10 mb-3" style={{ height: '152px' }}>
+          <div className="rounded-xl overflow-hidden border border-line mb-3" style={{ height: '152px' }}>
             <iframe
               key={currentTrack.id}
               style={{
@@ -122,25 +128,28 @@ export default function SpotifyPlayer() {
             <div className="flex items-center gap-2">
               <button
                 onClick={prevTrack}
-                className="p-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors group"
+                data-cursor="hover"
+                className="p-2 bg-surface-2 hover:bg-line-strong rounded-lg transition-colors group"
                 title="Previous"
               >
-                <svg className="w-4 h-4 text-gray-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-muted group-hover:text-fg" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                 </svg>
               </button>
               <button
                 onClick={nextTrack}
-                className="p-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors group"
+                data-cursor="hover"
+                className="p-2 bg-surface-2 hover:bg-line-strong rounded-lg transition-colors group"
                 title="Next"
               >
-                <svg className="w-4 h-4 text-gray-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-muted group-hover:text-fg" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                 </svg>
               </button>
               <button
                 onClick={() => setAutoPlay(!autoPlay)}
-                className={`p-2 rounded-lg transition-colors ${autoPlay ? 'bg-primary/50 text-white' : 'bg-slate-700/50 text-gray-300 hover:bg-slate-700'}`}
+                data-cursor="hover"
+                className={`p-2 rounded-lg transition-colors ${autoPlay ? 'bg-accent text-white' : 'bg-surface-2 text-muted hover:bg-line-strong'}`}
                 title={autoPlay ? "Auto-play On" : "Auto-play Off"}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -148,7 +157,7 @@ export default function SpotifyPlayer() {
                 </svg>
               </button>
             </div>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-muted font-mono">
               {currentTrackIndex + 1}/{tracks.length}
             </div>
           </div>
@@ -159,12 +168,15 @@ export default function SpotifyPlayer() {
       {isMinimized && (
         <motion.button
           onClick={() => setIsMinimized(false)}
-          className="bg-gradient-to-br from-primary to-accent p-4 rounded-2xl hover:shadow-2xl hover:shadow-primary/50 transition-all shadow-xl"
+          data-cursor="hover"
+          className="p-4 rounded-2xl transition-all shadow-xl"
+          style={{ background: 'var(--accent)' }}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
+          title="Play my soundtrack"
         >
         <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>

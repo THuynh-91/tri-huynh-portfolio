@@ -1,111 +1,96 @@
 import { motion } from 'framer-motion';
+import SectionHeader from './SectionHeader';
+import AnimatedCounter from './AnimatedCounter';
+import Reveal from './Reveal';
+
+const card =
+  'rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-line-strong';
 
 export default function About() {
   return (
-    <section id="about" className="section-padding bg-slate-800">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            About <span className="text-gradient">Me</span>
-          </h2>
-          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            A passionate developer on a mission to build impactful solutions
-          </p>
-        </motion.div>
+    <section id="about" className="px-6 pb-10 pt-2 md:pb-14 md:pt-4">
+      <div className="mx-auto max-w-wide">
+        <SectionHeader
+          index="01"
+          eyebrow="about"
+          title="A builder who likes the"
+          accent="hard parts."
+          note="I care about the seam where models meet real software, and shipping the whole thing, not just the notebook."
+        />
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="space-y-4 text-gray-300">
+        <div className="mt-14 grid gap-4 md:grid-cols-3 auto-rows-[minmax(0,1fr)]">
+          {/* bio - large */}
+          <Reveal className={`${card} md:col-span-2 md:row-span-2 flex flex-col justify-between`}>
+            <div className="space-y-4 text-muted leading-relaxed">
               <p>
-                I'm a Computer Science student at Northeastern University's Khoury College,
-                concentrating in Artificial Intelligence. My passion lies in creating intelligent
-                systems that bridge the gap between complex machine learning algorithms and
-                practical, user-friendly applications.
+                I'm a Computer Science student at{' '}
+                <span className="text-fg">Northeastern University's Khoury College</span>,
+                concentrating in Artificial Intelligence. I care about the seam
+                where messy real-world data meets clean, usable software.
               </p>
               <p>
-                Currently pursuing my B.S. with an expected graduation in April 2027, I've built
-                a strong foundation in algorithms, data structures, and AI while gaining hands-on
-                experience through personal projects. From developing an ML-driven Rock Paper Scissors
-                game with 1,000+ visitors to building scalable backend systems for music recommendations,
-                I love turning theoretical knowledge into real-world solutions.
+                Right now I'm an <span className="text-accent">AI Engineer Co-op at Biogen</span>,
+                building a persistent enterprise AI agent on the Claude SDK, Azure, and
+                Databricks: contextual conversations, data retrieval, and workflow
+                automation across business units.
               </p>
               <p>
-                As an AWS Certified Cloud Practitioner and Machine Learning Specialization graduate,
-                I'm constantly expanding my technical toolkit. When I'm not coding or studying, you'll
-                find me working part-time at Gyu-Kaku Japanese BBQ, where I've learned the value of
-                teamwork, time management, and delivering excellence under pressure.
+                On my own time I've shipped an ML-driven Rock-Paper-Scissors game that drew{' '}
+                <span className="text-accent">1,000+ players</span>, a RAG study assistant
+                grounded in your own notes, and an explainable Spotify recommender built
+                on vector search. I like the full arc: model, backend, and the product on top.
               </p>
             </div>
-
-            <motion.div
-              className="mt-8 grid grid-cols-3 gap-4"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-            >
-              <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                <p className="text-3xl font-bold text-primary">2027</p>
-                <p className="text-gray-400 text-sm">Expected Graduation</p>
-              </div>
-              <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                <p className="text-3xl font-bold text-primary">15+</p>
-                <p className="text-gray-400 text-sm">Technologies</p>
-              </div>
-              <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                <p className="text-3xl font-bold text-primary">2</p>
-                <p className="text-gray-400 text-sm">Certifications</p>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            className="relative"
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="bg-gradient-to-br from-primary to-accent rounded-2xl p-1">
-              <div className="bg-slate-900 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold text-white mb-4">Quick Facts</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
-                    <span className="text-gray-300">CS student at Northeastern University</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
-                    <span className="text-gray-300">Specializing in Artificial Intelligence</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
-                    <span className="text-gray-300">AWS Certified Cloud Practitioner</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
-                    <span className="text-gray-300">Based in Boston, MA</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-primary mr-2">•</span>
-                    <span className="text-gray-300">Always building and learning new tech</span>
-                  </li>
-                </ul>
-              </div>
+            <div className="mt-6 flex flex-wrap gap-2 font-mono text-xs">
+              {['#agentic-ai', '#claude-sdk', '#ml', '#backend', '#azure'].map((t) => (
+                <span key={t} className="rounded-full border border-line px-3 py-1 text-muted">
+                  {t}
+                </span>
+              ))}
             </div>
-          </motion.div>
+          </Reveal>
+
+          {/* stat - projects */}
+          <Reveal delay={0.05} className={`${card} flex flex-col justify-center`}>
+            <div className="font-display text-5xl font-semibold text-accent">
+              <AnimatedCounter value={8} suffix="+" />
+            </div>
+            <p className="mt-2 text-sm text-muted">projects designed & shipped</p>
+          </Reveal>
+
+          {/* stat - graduation */}
+          <Reveal delay={0.1} className={`${card} flex flex-col justify-center`}>
+            <div className="font-display text-5xl font-semibold text-accent">2027</div>
+            <p className="mt-2 text-sm text-muted">expected B.S. graduation</p>
+          </Reveal>
+
+          {/* quick facts */}
+          <Reveal delay={0.05} className={`${card} md:col-span-2`}>
+            <p className="eyebrow mb-4">quick facts</p>
+            <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              {[
+                'AI Engineer Co-op @ Biogen',
+                'Based in Boston, MA',
+                'Concentration in AI',
+                'Always shipping side projects',
+              ].map((f) => (
+                <li key={f} className="flex items-start gap-2 text-muted">
+                  <span className="text-accent mt-0.5">▸</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          {/* currently */}
+          <Reveal delay={0.1} className={`${card} flex flex-col justify-center`}>
+            <p className="eyebrow mb-3">currently</p>
+            <p className="text-fg text-sm leading-relaxed">
+              Shipping <span className="text-accent">enterprise AI agents</span> with the
+              Claude SDK, Azure & Databricks.
+            </p>
+          </Reveal>
         </div>
-
       </div>
     </section>
   );

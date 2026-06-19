@@ -2,56 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
+/* ------------------------------------------------------------------ */
+/*  Design tokens                                                      */
+/* ------------------------------------------------------------------ */
+/* Light is the default theme — neutrals matched to the Wordle app */
 :root {
-  --color-primary: #3B82F6;
-  --color-accent: #8B5CF6;
-  --color-bg: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-text: #e2e8f0;
+  --bg: #e3e3e1;             /* Wordle warm light-gray canvas */
+  --surface: #ffffff;        /* clean white cards/tiles */
+  --surface-2: #d7d7d4;      /* slightly darker warm gray for chips */
+  --border: #c0c0be;         /* Wordle border gray */
+  --border-strong: #a9a9a5;
+  --text: #1a1a1b;           /* Wordle near-black */
+  --text-muted: #787c7e;     /* Wordle secondary gray */
+  --accent: #6366f1;          /* indigo — primary brand accent (fills) */
+  --accent-soft: rgba(99, 102, 241, 0.12);
+  --accent-text: #4f46e5;     /* indigo-600 — readable as text on light */
+  --accent-2: #8b5cf6;        /* violet — secondary */
+  --accent-2-soft: rgba(139, 92, 246, 0.12);
+  --on-accent: #ffffff;       /* text/icons on an accent fill */
+  --particle: 99, 102, 241;   /* rgb for canvas particles */
+  --grain-opacity: 0.02;
+  color-scheme: light;
 }
 
-.light {
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f1f5f9;
-  --color-text: #0f172a;
-}
-
-.light body {
-  background-color: #ffffff;
-  color: #0f172a;
-}
-
-.light .bg-slate-900,
-.light .bg-slate-800 {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  border: 1px solid #e2e8f0 !important;
-}
-
-.light .text-white {
-  color: #0f172a !important;
-}
-
-.light .text-gray-300 {
-  color: #1e293b !important;
-}
-
-.light .text-gray-400 {
-  color: #475569 !important;
-}
-
-.light .border-slate-700,
-.light .border-slate-600 {
-  border-color: #cbd5e1 !important;
-}
-
-.light .bg-gradient-to-br {
-  background: rgba(241, 245, 249, 0.9) !important;
-}
-
-.light .shadow-2xl {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+.dark {
+  --bg: #0e0f15;             /* deep slate, not pure black */
+  --surface: #161823;
+  --surface-2: #1e2130;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text: #e9e9f0;
+  --text-muted: #9b9caf;
+  --accent: #6366f1;
+  --accent-soft: rgba(99, 102, 241, 0.20);
+  --accent-text: #a5b4fc;     /* lighter indigo stays readable on dark */
+  --accent-2: #a78bfa;
+  --accent-2-soft: rgba(167, 139, 250, 0.18);
+  --on-accent: #ffffff;
+  --particle: 129, 140, 248;
+  --grain-opacity: 0.04;
+  color-scheme: dark;
 }
 
 * {
@@ -66,89 +56,194 @@ html {
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--bg);
+  color: var(--text);
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+::selection {
+  background: var(--accent);
+  color: #0a0a0b;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Film grain + ambient glow                                          */
+/* ------------------------------------------------------------------ */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------------------------------------------ */
+/*  Typography helpers                                                 */
+/* ------------------------------------------------------------------ */
 @layer utilities {
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  .font-display {
+    font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  }
+  .font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
   }
 
-  .card-hover {
-    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl;
+  /* small uppercase mono eyebrow label */
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.25em] text-muted;
   }
 
-  .btn-primary {
-    @apply bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg;
+  .text-accent {
+    color: var(--accent-text);
   }
 
-  .btn-secondary {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-lg font-medium transition-all duration-200;
+  .accent-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+
+  /* outlined display text — used for the big lime headline word */
+  .text-stroke {
+    -webkit-text-stroke: 1.5px var(--accent);
+    color: transparent;
+  }
+
+  .glass {
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+  }
+
+  .hairline {
+    border: 1px solid var(--border);
   }
 
   .section-padding {
-    @apply py-20 px-6;
+    @apply py-10 px-6 md:py-14;
+  }
+
+  /* lime → cyan gradient text for accent words */
+  .text-grad {
+    background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* animated gradient hairline used under featured cards / dividers */
+  .grad-line {
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent-2), transparent);
   }
 }
 
-/* Custom scrollbar */
+/* ------------------------------------------------------------------ */
+/*  Buttons                                                            */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium transition-all duration-200;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium transition-all duration-200;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+
+  /* card with a lime corner-glow that lifts on hover */
+  .tilt-card {
+    @apply relative rounded-2xl overflow-hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+  }
+  .tilt-card:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Custom cursor                                                      */
+/* ------------------------------------------------------------------ */
+@media (pointer: fine) {
+  .cursor-enabled,
+  .cursor-enabled a,
+  .cursor-enabled button {
+    cursor: none;
+  }
+}
+
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  border: 1px solid var(--accent);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Scrollbar                                                          */
+/* ------------------------------------------------------------------ */
 ::-webkit-scrollbar {
   width: 10px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: var(--bg);
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #3B82F6;
-  border-radius: 5px;
+  background: var(--surface-2);
+  border-radius: 9999px;
+  border: 2px solid var(--bg);
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563eb;
+  background: var(--accent);
 }
 
-/* Reveal on scroll animations */
-.reveal-section {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.reveal-section.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Theme-aware colors with transparency for particles */
-.bg-slate-900 {
-  background-color: rgba(15, 23, 42, 0.5) !important;
-}
-
-.bg-slate-800 {
-  background-color: rgba(30, 41, 59, 0.5) !important;
-}
-
-.text-primary {
-  color: var(--color-primary) !important;
-}
-
-.border-primary {
-  border-color: var(--color-primary) !important;
-}
-
-.bg-primary {
-  background-color: var(--color-primary) !important;
-}
-
-.from-primary {
-  --tw-gradient-from: var(--color-primary) !important;
-}
-
-.to-accent {
-  --tw-gradient-to: var(--color-accent) !important;
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

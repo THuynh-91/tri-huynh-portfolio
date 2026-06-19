@@ -1,14 +1,17 @@
 [
   {
     "id": 1,
-    "role": "Server (Part Time)",
-    "company": "Gyu-Kaku Japanese BBQ",
-    "location": "Dorchester, Massachusetts",
-    "period": "September 2023 — Present",
+    "role": "AI Engineer Co-op",
+    "company": "Biogen",
+    "location": "Cambridge, MA",
+    "period": "Jan 2026 - Jun 2026",
+    "summary": "Spent six months building production AI agents and internal tools inside a Fortune-500 biotech.",
     "achievements": [
-      "Delivered attentive service in a high-volume restaurant, ensuring a positive dining experience",
-      "Collaborated with team members to handle double shifts while balancing academic workload",
-      "Developed strong communication and time management skills in fast-paced environment"
-    ]
+      "Shipped an always-on AI agent that lives in Microsoft Teams, wiring the Claude SDK to Azure and Databricks so colleagues could chat with company data and trigger real workflows",
+      "Rebuilt how the org evaluates and onboards new AI ideas, turning a scattered process into one governed intake path used across business units",
+      "Prototyped internal tools on Azure AI, Snowflake, and Copilot Studio that quietly automated the busywork behind several day-to-day processes",
+      "Sat between engineering and the business, translating fuzzy \"can AI do this?\" asks into scoped plans, honest risk calls, and things that actually shipped"
+    ],
+    "stack": ["Claude SDK", "Azure", "Databricks", "Snowflake", "Copilot Studio", "Microsoft Teams"]
   }
 ]

@@ -1,53 +1,83 @@
-import { motion } from 'framer-motion';
-import experienceData from '../data/experience.json';
+import { useRouter } from 'next/router';
+import SectionHeader from './SectionHeader';
+import Reveal from './Reveal';
+import experience from '../data/experience.json';
 
 export default function Experience() {
-  return (
-    <section id="experience" className="section-padding bg-slate-900">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            Professional <span className="text-gradient">Experience</span>
-          </h2>
-          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">
-            Impact-driven roles in software development and AI
-          </p>
-        </motion.div>
+  const router = useRouter();
+  const basePath = router.basePath || '';
+  const job = experience[0];
 
-        <div className="space-y-8">
-          {experienceData.map((exp, index) => (
-            <motion.div
-              key={exp.id}
-              className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-primary transition-colors"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+  return (
+    <section id="experience" className="section-padding">
+      <div className="mx-auto max-w-wide">
+        <SectionHeader
+          index="02"
+          eyebrow="experience"
+          title="Where I built"
+          accent="real AI."
+          note="My most recent chapter: production AI agents and internal tools inside a Fortune-500 biotech."
+        />
+
+        <Reveal className="mt-12">
+          <article className="relative overflow-hidden rounded-2xl border border-accent/30 bg-surface p-7 md:p-10">
+            <div
+              className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full blur-3xl"
+              style={{ background: 'var(--accent-soft)' }}
+            />
+            <div
+              className="pointer-events-none absolute -left-28 bottom-0 h-52 w-52 rounded-full blur-3xl"
+              style={{ background: 'var(--accent-2-soft)' }}
+            />
+
+            <div className="relative flex flex-col gap-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-2xl font-bold text-white">{exp.role}</h3>
-                  <p className="text-primary text-lg">{exp.company}</p>
+                  <div className="flex items-center gap-4">
+                    <span className="inline-flex items-center rounded-xl bg-white px-3 py-2.5 ring-1 ring-line">
+                      <img
+                        src={`${basePath}/images/biogen.svg`}
+                        alt="Biogen"
+                        className="h-6 w-auto"
+                      />
+                    </span>
+                    <div>
+                      <h3 className="font-display text-2xl font-semibold leading-tight">
+                        {job.role}
+                      </h3>
+                      <p className="text-accent-text">{job.company}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 max-w-2xl text-muted">{job.summary}</p>
                 </div>
-                <span className="text-gray-400 text-sm mt-2 md:mt-0">{exp.period}</span>
+                <div className="font-mono text-sm md:text-right">
+                  <p className="text-fg">{job.period}</p>
+                  <p className="text-muted">{job.location}</p>
+                </div>
               </div>
 
-              <ul className="space-y-2">
-                {exp.achievements.map((achievement, idx) => (
-                  <li key={idx} className="text-gray-300 flex items-start">
-                    <span className="text-primary mr-2 mt-1">•</span>
-                    <span>{achievement}</span>
+              <ul className="grid gap-3 md:grid-cols-2">
+                {job.achievements.map((a, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 text-sm text-muted">
+                    <span className="mt-1 text-accent-text">▸</span>
+                    <span>{a}</span>
                   </li>
                 ))}
               </ul>
-            </motion.div>
-          ))}
-        </div>
+
+              <div className="flex flex-wrap gap-2 pt-1">
+                {job.stack.map((s) => (
+                  <span
+                    key={s}
+                    className="rounded-md bg-accent-soft px-2.5 py-1 font-mono text-[11px] text-accent-text"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
+        </Reveal>
       </div>
     </section>
   );

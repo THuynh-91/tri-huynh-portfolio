@@ -34,3 +34,7 @@ yarn-error.log*
 next-env.d.ts
 nul
 public/nul
+
+# personal / experimental assets — not for deploy
+public/images/waldo.png
+public/images/waldo1.png

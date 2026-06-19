@@ -1,104 +1,154 @@
 [
   {
     "id": 1,
-    "title": "AI Wordle Duel",
-    "tagline": "Intelligent word puzzle game with AI solvers and multiple game modes",
-    "description": "Full-stack word-guessing game featuring advanced AI opponents powered by algorithmic intelligence. Compete against optimized solvers, challenge them with custom words, or race head-to-head across multiple word lengths",
-    "tech": ["TypeScript", "React", "Vite", "Node.js", "Express", "Python", "Vercel"],
+    "title": "USCIS AI Assistant",
+    "tagline": "Plain-English naturalization form prep that fills the N-400 for you",
+    "description": "A guided service that walks applicants through the USCIS N-400 (Naturalization) form in plain English, generates a filled, print-ready PDF, and produces a personalized document checklist.",
+    "tech": ["Python", "FastAPI", "Next.js", "Docker", "Anthropic API", "PDF"],
     "impact": [
-      "Multiple game modes: Daily Wordle, Challenge AI, Race Mode, and Human Play",
-      "Supports variable word lengths (3-7 letters) with intelligent AI solving",
-      "Real-time competitive gameplay with live scoreboard and turn indicators",
-      "Built with full-stack TypeScript architecture for seamless performance"
+      "Translates dense immigration forms into a guided, plain-English flow",
+      "Generates a filled, print-ready N-400 PDF from user answers",
+      "Builds a personalized document checklist per applicant",
+      "Containerized full-stack app: FastAPI backend + Next.js frontend"
     ],
-    "demoUrl": "https://custom-ai-wordle.vercel.app",
-    "githubUrl": "https://github.com/THuynh-91/custom_wordle",
-    "imageUrl": "/images/ai-wordle.png",
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/uscis-ai-assistant",
+    "imageUrl": "/images/covers/uscis.svg",
+    "tag": "Agentic AI",
+    "year": "2026",
     "featured": true
   },
   {
     "id": 2,
-    "title": "Rock Paper Scissor Mind Game",
-    "tagline": "ML-driven adaptive game with online learning",
-    "description": "An intelligent game that learns and adapts to player patterns in real-time using TensorFlow/Keras",
-    "tech": ["TensorFlow/Keras", "Next.js", "FastAPI", "Docker", "Tailwind CSS"],
+    "title": "RAG Study Chatbot",
+    "tagline": "Answers from your own notes, not from pretraining",
+    "description": "A retrieval-augmented study assistant that answers from user-uploaded content, keeping responses current and grounded in your material rather than the model's pretraining.",
+    "tech": ["Python", "Streamlit", "ChromaDB", "Sentence-Transformers", "Ollama (Qwen 7B)", "RAG"],
     "impact": [
-      "Launched publicly and reached 1,000+ unique visitors",
-      "Combined deep learning with behavioral frequency heuristics and streak detection",
-      "Deployed production-ready FastAPI backend accessible via Vercel",
-      "Implemented Docker Compose for reproducible environments"
-    ],
-    "demoUrl": "https://rock-paper-scissor-mind-game.vercel.app",
-    "githubUrl": "https://github.com/THuynh-91/Rock-Paper-Scissor-Mind-Game",
-    "imageUrl": "/images/rps-ai.png",
-    "featured": true
-  },
-  {
-    "id": 3,
-    "title": "Spotify Music Recommendation App",
-    "tagline": "ML-powered personalized music discovery",
-    "description": "Full-stack web app that generates personalized Spotify recommendations with explanations",
-    "tech": ["Python", "FastAPI", "Next.js", "Spotipy", "Docker", "PostgreSQL", "FAISS", "librosa"],
-    "impact": [
-      "Accepts Spotify track or playlist URLs and generates personalized recommendations",
-      "Architected full-stack solution with FastAPI backend",
-      "Leverages audio feature extraction (librosa) and vector similarity search (FAISS)",
-      "Provides explanation for each recommendation"
+      "Custom RAG pipeline: format-aware extraction → overlap chunking → embeddings → persistent vector index",
+      "Source-grounded responses so answers stay current vs. pretraining",
+      "Streamlit interface with document upload, chat history, and citations",
+      "Runs locally on Ollama (Qwen 7B), fully private"
     ],
     "demoUrl": null,
-    "githubUrl": "https://github.com/THuynh-91/music-recommendation-spotify",
-    "imageUrl": "/images/spotify-rec.png",
+    "githubUrl": "https://github.com/THuynh-91/study-chatbot",
+    "imageUrl": "/images/covers/study-chatbot.svg",
+    "tag": "Agentic AI",
+    "year": "2026",
     "featured": true
   },
   {
     "id": 4,
+    "title": "AI Wordle Duel",
+    "tagline": "Race optimized AI solvers across multiple word lengths",
+    "description": "A full-stack word-guessing game featuring AI opponents powered by algorithmic solvers. Play daily Wordle, challenge the AI with custom words, or race it head-to-head across 3-7 letter words.",
+    "tech": ["TypeScript", "React", "Vite", "Node.js", "Express", "Python", "Vercel"],
+    "impact": [
+      "Four modes: Daily Wordle, Challenge AI, Race Mode, and Human Play",
+      "Variable word lengths (3-7 letters) with intelligent solving",
+      "Real-time competitive play with live scoreboard and turn indicators",
+      "End-to-end TypeScript architecture deployed on Vercel"
+    ],
+    "demoUrl": "https://custom-ai-wordle.vercel.app",
+    "githubUrl": "https://github.com/THuynh-91/custom_wordle",
+    "imageUrl": "/images/ai-wordle.png",
+    "tag": "Full-Stack",
+    "year": "2025",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "title": "Spotify Recommendation Engine",
+    "tagline": "Explainable music discovery powered by audio DSP + vector search",
+    "description": "A full-stack Spotify intelligence platform that authenticates via OAuth, ingests tracks and playlists, and surfaces explainable recommendations using FAISS vector search blended with librosa DSP features.",
+    "tech": ["Python", "FastAPI", "Next.js", "FAISS", "librosa", "PostgreSQL", "Redis", "Docker"],
+    "impact": [
+      "PKCE OAuth with Spotify and secure HTTP-only token storage",
+      "Blends librosa DSP descriptors with Spotify audio features for richer vectors",
+      "Genre-aware re-ranking and diversity guardrails avoid repetitive picks",
+      "Explains why each track was recommended"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/music-recommendation-spotify",
+    "imageUrl": "/images/spotify-rec.png",
+    "tag": "ML",
+    "year": "2025",
+    "featured": true
+  },
+  {
+    "id": 5,
+    "title": "Rock Paper Scissors Mind Game",
+    "tagline": "An online-learning AI that adapts to how you play",
+    "description": "An intelligent game that learns and adapts to player patterns in real time, combining a TensorFlow/Keras model with behavioral frequency heuristics and streak detection.",
+    "tech": ["TensorFlow", "Keras", "Next.js", "FastAPI", "Docker", "Tailwind CSS"],
+    "impact": [
+      "Launched publicly and reached 1,000+ unique visitors",
+      "Deep learning blended with behavioral heuristics and streak detection",
+      "Production FastAPI backend served behind a Vercel frontend",
+      "Docker Compose for reproducible environments"
+    ],
+    "demoUrl": "https://rock-paper-scissor-mind-game.vercel.app",
+    "githubUrl": "https://github.com/THuynh-91/Rock-Paper-Scissor-Mind-Game",
+    "imageUrl": "/images/rps-ai.png",
+    "tag": "ML",
+    "year": "2025",
+    "featured": true
+  },
+  {
+    "id": 6,
+    "title": "Code Problem Studio",
+    "tagline": "A local-first AI coding tutor with teaching scaffolds + UML",
+    "description": "A chat-style coding tutor that takes a prompt (or image + caption), then returns a runnable solution, a TODO-based teaching scaffold, complexity notes, and interactive UML, all running locally via Ollama with no API keys.",
+    "tech": ["React", "Vite", "FastAPI", "Ollama", "Mermaid", "Tailwind CSS"],
+    "impact": [
+      "Local-only inference via Ollama - fully private, no external keys",
+      "Structured output: teaching, examples, reasoning, complexity, solution",
+      "Interactive UML diagrams with zoom and copy controls",
+      "Vision support: solve from a screenshot of a problem"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/code-reviewer",
+    "imageUrl": "/images/covers/code-studio.svg",
+    "tag": "Agentic AI",
+    "year": "2026",
+    "featured": true
+  },
+  {
+    "id": 7,
+    "title": "Tennis Match Modeling",
+    "tagline": "Predicting ATP match winners from historical data",
+    "description": "An ML study that engineers features from decades of ATP match data and trains gradient-boosted and random-forest models to predict the winner between two players.",
+    "tech": ["Python", "scikit-learn", "XGBoost", "Pandas", "NumPy", "Jupyter"],
+    "impact": [
+      "Feature engineering over historical ATP match records",
+      "Compared random forest and XGBoost classifiers",
+      "Explored how player and match context drive win probability",
+      "Documented methodology in reproducible notebooks"
+    ],
+    "demoUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/Tennis-Match-Modeling",
+    "imageUrl": "/images/covers/tennis.svg",
+    "tag": "ML",
+    "year": "2025",
+    "featured": false
+  },
+  {
+    "id": 8,
     "title": "AAOC Planner",
-    "tagline": "Average Age of Credit Calculator & Financial Planning Tool",
-    "description": "Comprehensive financial planning tool that automates credit management workflows",
+    "tagline": "Average Age of Credit calculator with what-if planning",
+    "description": "A financial planning tool that calculates your current Average Age of Credit and runs what-if scenarios for future credit decisions, built on a modular object-oriented architecture.",
     "tech": ["Python", "OOP", "CLI", "GitHub Actions"],
     "impact": [
       "Automates Average Age of Credit calculations",
-      "Engineered object-oriented architecture with modular classes",
-      "Enables extensible functionality and maintainable codebase",
-      "Streamlines credit management workflows"
+      "Runs what-if scenarios for future credit planning",
+      "Modular OOP design for extensibility and maintainability",
+      "CI via GitHub Actions"
     ],
     "demoUrl": null,
     "githubUrl": "https://github.com/THuynh-91/aaoc-planner",
     "imageUrl": "/images/aaoc-img1.png",
-    "featured": false
-  },
-  {
-    "id": 5,
-    "title": "FreeCodeCamp Daily Challenge Solutions",
-    "tagline": "Daily coding challenge solutions with detailed explanations",
-    "description": "Repository of daily FreeCodeCamp challenge solutions with approach explanations",
-    "tech": ["JavaScript", "Python", "Algorithms", "Problem Solving"],
-    "impact": [
-      "Consistent daily problem-solving practice",
-      "Documented thought process and approach for each challenge",
-      "Demonstrates algorithmic thinking and code clarity",
-      "Growing collection of solutions across multiple months"
-    ],
-    "demoUrl": null,
-    "githubUrl": "https://github.com/THuynh-91/FCC_DailyChallenge",
-    "imageUrl": null,
-    "featured": false
-  },
-  {
-    "id": 6,
-    "title": "Portfolio Website",
-    "tagline": "Modern, interactive personal portfolio",
-    "description": "Fully responsive portfolio website built with Next.js, featuring interactive elements and smooth animations",
-    "tech": ["Next.js", "React", "Tailwind CSS", "Framer Motion"],
-    "impact": [
-      "Custom interactive terminal emulator",
-      "Konami Code easter egg with animations",
-      "Optimized for performance and SEO",
-      "Fully responsive across all devices"
-    ],
-    "demoUrl": null,
-    "githubUrl": "https://github.com/THuynh-91/Portfolio_Website",
-    "imageUrl": null,
+    "tag": "Tools",
+    "year": "2025",
     "featured": false
   }
 ]

@@ -66,9 +66,27 @@ const techIcons = {
 
   // Platforms
   'Render': 'https://avatars.githubusercontent.com/u/36424661?s=200&v=4',
+
+  // AI / agents - served locally (the simpleicons CDN was flaky / bot-blocked)
+  'Claude': '/images/icons/claude.svg',
+  'Claude SDK': '/images/icons/claude.svg',
+  'Claude Code': '/images/icons/claude.svg',
+  'Codex': '/images/icons/codex.svg',
+  'Copilot Studio': '/images/icons/copilot.svg',
+  'Ollama': '/images/icons/ollama.svg',
+  'LangSmith': '/images/icons/langsmith.svg',
+
+  // data / cloud - Databricks/Snowflake served locally; Azure via devicon
+  'Databricks': '/images/icons/databricks.svg',
+  'Snowflake': '/images/icons/snowflake.svg',
+  'Azure': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',
+  'Azure AI Services': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',
+  'Streamlit': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/streamlit/streamlit-original.svg',
+  'Sentence-Transformers': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+  'Jira': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg',
 };
 
-export default function TechIcon({ name, size = 'md' }) {
+export default function TechIcon({ name, size = 'md', label = false }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const router = useRouter();
   const basePath = router.basePath || '';
@@ -86,12 +104,29 @@ export default function TechIcon({ name, size = 'md' }) {
     iconUrl = `${basePath}${iconUrl}`;
   }
 
+  // Labelled pill: icon + name, so each tool is unmistakable (used in
+  // the highlighted AI & Agents / Data & Cloud cards).
+  if (label) {
+    return (
+      <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5">
+        {iconUrl ? (
+          <img src={iconUrl} alt={name} className="h-4 w-4 object-contain" />
+        ) : (
+          <span className="grid h-4 w-4 place-items-center rounded bg-accent-soft text-[9px] font-bold text-accent-text">
+            {name.charAt(0)}
+          </span>
+        )}
+        <span className="font-mono text-xs text-fg">{name}</span>
+      </span>
+    );
+  }
+
   // Fallback to first letter if no icon found
   if (!iconUrl) {
     return (
       <div className="relative inline-block">
         <div
-          className={`${sizeClasses[size]} bg-slate-700/95 rounded-lg flex items-center justify-center text-primary font-bold cursor-help`}
+          className={`${sizeClasses[size]} bg-surface-2 border border-line rounded-lg flex items-center justify-center text-accent font-bold cursor-help`}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
         >
@@ -117,7 +152,7 @@ export default function TechIcon({ name, size = 'md' }) {
   return (
     <div className="relative inline-block group">
       <motion.div
-        className={`${sizeClasses[size]} p-2 bg-slate-700/95 hover:bg-slate-600/95 rounded-lg transition-all cursor-help shadow-sm`}
+        className={`${sizeClasses[size]} p-2 bg-surface-2 border border-line hover:border-line-strong rounded-lg transition-all cursor-help shadow-sm`}
         whileHover={{ scale: 1.1, rotate: 5 }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
@@ -132,13 +167,12 @@ export default function TechIcon({ name, size = 'md' }) {
       <AnimatePresence>
         {showTooltip && (
           <motion.div
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-900 text-white text-sm rounded-lg whitespace-nowrap z-50 shadow-xl border border-primary/30"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 glass text-fg font-mono text-xs rounded-lg whitespace-nowrap z-50 shadow-xl"
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
           >
             {name}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-900"></div>
           </motion.div>
         )}
       </AnimatePresence>

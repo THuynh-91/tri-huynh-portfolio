@@ -10,186 +10,143 @@ export default function Navbar() {
   const basePath = router.basePath || '';
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
-    // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      setIsDark(false);
-      document.documentElement.classList.add('light');
-    } else {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    }
+    // Dark is the default; only go light if explicitly saved.
+    const dark = localStorage.getItem('theme') !== 'light';
+    setIsDark(dark);
+    document.documentElement.classList.toggle('dark', dark);
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
-    }
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('theme', next ? 'dark' : 'light');
   };
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Education', href: '#education' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'about', href: '#about' },
+    { name: 'experience', href: '#experience' },
+    { name: 'work', href: '#projects' },
+    { name: 'skills', href: '#skills' },
+    { name: 'contact', href: '#contact' },
   ];
 
   const scrollToSection = (href) => {
     const element = document.querySelector(href);
     if (element) {
-      const navbarHeight = 60;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      const offset = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
       setIsMobileMenuOpen(false);
     }
   };
 
   return (
     <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-slate-900/95 backdrop-blur-sm shadow-lg' : 'bg-transparent'
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
+      className="fixed top-4 inset-x-0 z-50 flex justify-end px-4"
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <motion.a
-            href="#home"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection('#home');
-            }}
-            className="text-2xl font-bold text-gradient cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-          >
-            TH
-          </motion.a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(link.href);
-                }}
-                className="text-gray-300 hover:text-primary transition-colors cursor-pointer"
-              >
-                {link.name}
-              </a>
-            ))}
+      <div
+        className={`flex max-w-full items-center gap-1.5 rounded-full px-2.5 py-2 transition-all duration-300 ${
+          isScrolled ? 'glass shadow-lg' : 'glass'
+        }`}
+      >
+        {/* desktop links */}
+        <div className="hidden md:flex items-center gap-0.5 font-mono text-sm">
+          {navLinks.map((link) => (
             <a
-              href={`${basePath}/Resume_Tri_Huynh.pdf`}
-              download
-              className="btn-primary text-sm"
+              key={link.name}
+              href={link.href}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection(link.href);
+              }}
+              className="rounded-full px-3 py-1.5 text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+              data-cursor="hover"
             >
-              Resume
+              {link.name}
             </a>
-
-            {/* Theme Toggle */}
-            <motion.button
-              onClick={toggleTheme}
-              className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-600 transition-colors"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {isDark ? (
-                <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </motion.button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-gray-300 hover:text-primary"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMobileMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+          ))}
+          <span className="mx-1 h-5 w-px bg-line" />
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <motion.div
-            className="md:hidden pt-4 pb-3 space-y-3"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-          >
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(link.href);
-                }}
-                className="block text-gray-300 hover:text-primary transition-colors cursor-pointer"
-              >
-                {link.name}
-              </a>
-            ))}
-            <a
-              href={`${basePath}/Resume_Tri_Huynh.pdf`}
-              download
-              className="block btn-primary text-sm text-center"
-            >
-              Download Resume
-            </a>
-          </motion.div>
-        )}
+        {/* theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="rounded-full p-2 transition-colors hover:bg-surface-2"
+          data-cursor="hover"
+          aria-label="Toggle theme"
+          title={isDark ? 'Switch to light' : 'Switch to dark'}
+        >
+          {isDark ? (
+            <svg className="h-5 w-5 text-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          ) : (
+            <svg className="h-5 w-5 text-fg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          )}
+        </button>
+
+        {/* résumé */}
+        <a
+          href={`${basePath}/Resume_Tri_Huynh.pdf`}
+          download
+          className="hidden sm:inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white transition hover:brightness-110"
+          data-cursor="hover"
+        >
+          résumé ↗
+        </a>
+
+        {/* mobile toggle */}
+        <button
+          className="rounded-full p-2 hover:bg-surface-2 md:hidden"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <svg className="h-5 w-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+            {isMobileMenuOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+          </svg>
+        </button>
       </div>
+
+      {/* mobile menu */}
+      {isMobileMenuOpen && (
+        <motion.div
+          className="absolute right-4 top-full mt-2 w-[min(20rem,calc(100%-2rem))] rounded-2xl glass p-4 font-mono md:hidden"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection(link.href);
+              }}
+              className="block rounded-lg px-3 py-2 text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+            >
+              {link.name}
+            </a>
+          ))}
+          <a
+            href={`${basePath}/Resume_Tri_Huynh.pdf`}
+            download
+            className="mt-2 block rounded-lg bg-accent px-4 py-2 text-center font-medium text-white"
+          >
+            download résumé
+          </a>
+        </motion.div>
+      )}
     </motion.nav>
   );
 }

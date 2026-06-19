@@ -9,7 +9,9 @@ export default function FloatingTerminalButton() {
   return (
     <>
       <motion.button
-        className="fixed bottom-8 right-8 bg-gradient-to-r from-primary to-accent text-white p-3 rounded-full shadow-2xl z-50 group"
+        className="fixed bottom-8 right-8 bg-accent text-white p-3.5 rounded-full shadow-2xl z-50 group"
+        data-cursor="hover"
+        style={{ backgroundColor: 'var(--accent)' }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(true)}
@@ -35,12 +37,11 @@ export default function FloatingTerminalButton() {
 
         {showTooltip && (
           <motion.div
-            className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-slate-800 text-white text-sm rounded-lg whitespace-nowrap"
+            className="absolute bottom-full right-0 mb-2 px-3 py-2 glass text-fg font-mono text-xs rounded-lg whitespace-nowrap"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Open Terminal
-            <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-800"></div>
+            open terminal
           </motion.div>
         )}
       </motion.button>

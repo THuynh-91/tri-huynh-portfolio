@@ -1,19 +1,18 @@
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import ScrollProgress from '../components/ScrollProgress';
-import AnimatedBackground from '../components/AnimatedBackground';
+import Backdrop from '../components/Backdrop';
 import ParticleBackground from '../components/ParticleBackground';
-import KonamiCode from '../components/KonamiCode';
-import KonamiHint from '../components/KonamiHint';
 import FloatingTerminalButton from '../components/FloatingTerminalButton';
+import EggHunt from '../components/EggHunt';
 import BackToTop from '../components/BackToTop';
 import SmoothScroll from '../components/SmoothScroll';
 import SpotifyPlayer from '../components/SpotifyPlayer';
 import Hero from '../components/Hero';
+import Experience from '../components/Experience';
 import Projects from '../components/Projects';
 import Skills from '../components/Skills';
 import Education from '../components/Education';
-import Certifications from '../components/Certifications';
 import About from '../components/About';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
@@ -22,38 +21,40 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Portfolio</title>
-        <meta name="description" content="Computer Science student at Northeastern University specializing in AI and Backend Development. Building intelligent systems with machine learning and scalable architectures." />
+        <title>Tri Huynh | AI & Backend Engineer</title>
+        <meta
+          name="description"
+          content="Tri Huynh, CS student at Northeastern specializing in AI and backend development. I build ML-powered applications and the scalable systems behind them."
+        />
         <meta name="keywords" content="Tri Huynh, Computer Science, AI, Machine Learning, Backend Developer, Software Engineer, Northeastern University, AWS Certified" />
-        <meta property="og:title" content="Tri Huynh | Backend & ML Engineer" />
-        <meta property="og:description" content="Backend & ML Engineer specializing in scalable systems and artificial intelligence" />
+        <meta property="og:title" content="Tri Huynh | AI & Backend Engineer" />
+        <meta property="og:description" content="I build ML-powered applications and the scalable systems behind them." />
         <meta property="og:type" content="website" />
       </Head>
 
-      {/* Background & Progress */}
-      <ScrollProgress />
-      <AnimatedBackground />
+      {/* Ambient backdrop & scroll progress */}
+      <Backdrop />
       <ParticleBackground />
+      <ScrollProgress />
 
-      {/* Easter Eggs & Interactive Features */}
-      <KonamiCode />
-      <KonamiHint />
+      {/* Easter eggs & interactive features */}
       <FloatingTerminalButton />
+      <EggHunt />
       <BackToTop />
       <SpotifyPlayer />
       <SmoothScroll />
 
-      {/* Main Navigation */}
+      {/* Navigation */}
       <Navbar />
 
-      {/* Main Content */}
-      <main className="relative">
+      {/* Content */}
+      <main className="relative z-10">
         <Hero />
         <About />
+        <Experience />
         <Projects />
         <Skills />
         <Education />
-        <Certifications />
         <Contact />
         <Footer />
       </main>
