@@ -150,5 +150,100 @@
     "tag": "Tools",
     "year": "2025",
     "featured": false
+  },
+  {
+    "id": 9,
+    "title": "AI Solution Architect",
+    "tagline": "Turns a rough business idea into a structured implementation plan",
+    "description": "A multi-agent system that takes a vague business idea and runs a pipeline of specialized agents (analyst, architecture, roadmap, risk, impact) to produce a structured, fully-editable implementation plan, streamed live over SSE.",
+    "tech": ["Python", "FastAPI", "Next.js", "Anthropic API", "SSE", "SQLAlchemy"],
+    "impact": [
+      "Pipeline of specialized agents via forced tool-use",
+      "Live SSE streaming of each agent's output",
+      "Per-agent error isolation so one failure doesn't abort the run",
+      "Deterministic offline mock mode for development"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": "/images/covers/ai-architect.svg",
+    "tag": "Agentic AI",
+    "year": "2026",
+    "featured": true
+  },
+  {
+    "id": 10,
+    "title": "TaxAssistant",
+    "tagline": "Guided tax-year prep with AI document extraction",
+    "description": "A guided tax-preparation app that organizes filing info, people, and documents, builds tax worksheets and a 1040 view, and uses AI to extract data from uploaded tax documents (with a manual fallback).",
+    "tech": ["Next.js", "React", "better-sqlite3", "Anthropic API", "Gemini"],
+    "impact": [
+      "Structured worksheets (brackets, deductions, Schedule E) with CSV export",
+      "AI document extraction with retry/timeout + graceful no-key fallback",
+      "Local SQLite persistence, no cloud dependency",
+      "Accessible UI with error boundaries and recovery flows"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": "/images/covers/taxassistant.svg",
+    "tag": "Full-Stack",
+    "year": "2026",
+    "featured": false
+  },
+  {
+    "id": 11,
+    "title": "Maison - Multiplayer Casino",
+    "tagline": "Play roulette, blackjack, poker, slots & plinko with friends in real time",
+    "description": "A real-time multiplayer casino where friends join a shared room by code and play five games together, with server-authoritative chip balances, drag-and-drop betting, and an admin panel.",
+    "tech": ["Node.js", "Express", "Socket.io", "HTML5 Canvas", "JavaScript"],
+    "impact": [
+      "Five games: Roulette, Blackjack, Slots, Plinko, and No-Limit Texas Hold'em",
+      "Real-time shared rooms with synced, server-authoritative balances",
+      "Drag-and-drop chip betting with correct payouts and crypto RNG",
+      "Admin panel for managing players and balances"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": "/images/covers/casino.svg",
+    "tag": "Full-Stack",
+    "year": "2026",
+    "featured": true
+  },
+  {
+    "id": 12,
+    "title": "Damped Pendulum Lab",
+    "tagline": "Interactive cart-pendulum physics, verified against analytical solutions",
+    "description": "An interactive physics sandbox simulating a damped cart-pendulum, with live controls for mass, length, gravity, and damping, plus energy and phase-space plots. The dynamics are verified against closed-form damped-oscillator solutions.",
+    "tech": ["JavaScript", "HTML5 Canvas", "RK4 Integration", "Physics"],
+    "impact": [
+      "Full coupled cart-pendulum equations of motion via RK4",
+      "Verified vs analytical solutions across under/critical/over-damped regimes",
+      "Live energy + phase-space visualization",
+      "Real-time controls with damping-regime detection"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": "/images/covers/pendulum.svg",
+    "tag": "Tools",
+    "year": "2026",
+    "featured": false
+  },
+  {
+    "id": 13,
+    "title": "Receipt Splitter",
+    "tagline": "Split a receipt fairly, with AI extraction or manual entry",
+    "description": "A bill-splitting tool that turns a receipt into itemized costs (via AI vision extraction or manual paste) and divides totals across people, including shared items, tax, and tip.",
+    "tech": ["Python", "Streamlit"],
+    "impact": [
+      "Itemize a receipt via AI vision or a free manual-paste mode",
+      "Assign items to people, handle shared items, tax, and tip",
+      "Per-person totals with validation guards",
+      "Runs fully free without any API key"
+    ],
+    "demoUrl": null,
+    "githubUrl": null,
+    "imageUrl": "/images/covers/receipt.svg",
+    "tag": "Tools",
+    "year": "2026",
+    "featured": false
   }
 ]

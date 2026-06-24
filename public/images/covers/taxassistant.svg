@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="TaxAssistant cover">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f1f1f5"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="rgba(99,102,241,0.16)"/>
+      <stop offset="1" stop-color="rgba(99,102,241,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="675" rx="28" fill="url(#bg)"/>
+  <circle cx="1140" cy="40" r="380" fill="url(#glow)"/>
+  <rect x="0.5" y="0.5" width="1199" height="674" rx="27.5" fill="none" stroke="rgba(0,0,0,0.07)" stroke-width="1"/>
+
+  <!-- ===== motif: 1040 form sheet + checkmark ===== -->
+  <!-- form sheet -->
+  <g fill="#ffffff" stroke="#a8a8b2" stroke-width="3">
+    <rect x="700" y="120" width="360" height="440" rx="12"/>
+  </g>
+  <!-- form header band (indigo) -->
+  <rect x="730" y="152" width="120" height="40" rx="8" fill="#6366F1"/>
+  <text x="790" y="180" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="22" font-weight="600" fill="#ffffff">1040</text>
+  <!-- form line rows -->
+  <g stroke="#c7c7cf" stroke-width="3" stroke-linecap="round">
+    <line x1="730" y1="240" x2="1030" y2="240"/>
+    <line x1="730" y1="280" x2="1030" y2="280"/>
+    <line x1="730" y1="320" x2="980" y2="320"/>
+    <line x1="730" y1="360" x2="1030" y2="360"/>
+    <line x1="730" y1="400" x2="940" y2="400"/>
+  </g>
+  <!-- amount boxes on the right -->
+  <g fill="none" stroke="#a8a8b2" stroke-width="2.5">
+    <rect x="960" y="228" width="70" height="24" rx="4"/>
+    <rect x="960" y="268" width="70" height="24" rx="4"/>
+    <rect x="960" y="348" width="70" height="24" rx="4"/>
+  </g>
+  <!-- extracted/verified checkmark badge (violet ring + indigo check) -->
+  <circle cx="980" cy="470" r="46" fill="#ffffff" stroke="#8B5CF6" stroke-width="4"/>
+  <path d="M958 470 l16 16 l30 -34" fill="none" stroke="#6366F1" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- ===== tag chip ===== -->
+  <g transform="translate(64,56)">
+    <rect x="0" y="0" width="148" height="40" rx="12" fill="none" stroke="#6366F1" stroke-width="1.5"/>
+    <text x="74" y="27" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="16" letter-spacing="2" fill="#6366F1">FULL-STACK</text>
+  </g>
+
+  <!-- ===== title ===== -->
+  <text x="64" y="560" font-family="'Space Grotesk','Inter',sans-serif" font-size="52" font-weight="600" fill="#18181b">TaxAssistant</text>
+  <text x="64" y="600" font-family="'JetBrains Mono',monospace" font-size="20" fill="#6b6b72">guided prep with AI document extraction</text>
+</svg>
