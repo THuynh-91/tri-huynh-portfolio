@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function SpotifyPlayer() {
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [tracks, setTracks] = useState([]);
   const [autoPlay, setAutoPlay] = useState(true);
@@ -60,7 +60,11 @@ export default function SpotifyPlayer() {
 
   return (
     <motion.div
-      className="fixed left-6 bottom-8 z-40 touch-none"
+      className="fixed right-4 z-40 flex flex-col items-end touch-none"
+      style={{
+        right: 'max(1rem, env(safe-area-inset-right))',
+        bottom: 'calc(10rem + env(safe-area-inset-bottom))',
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.8 }}
@@ -70,7 +74,7 @@ export default function SpotifyPlayer() {
       whileDrag={{ scale: 1.02 }}
     >
       {/* Keep iframe in DOM but hide it when minimized - this keeps music playing */}
-      <div className={isMinimized ? 'sr-only' : 'origin-bottom-left scale-[0.68]'}>
+      <div className={isMinimized ? 'sr-only' : 'origin-bottom-right scale-[0.68]'}>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: isMinimized ? 0 : 1, scale: isMinimized ? 0 : 1 }}
