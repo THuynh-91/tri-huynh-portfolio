@@ -14,6 +14,7 @@
     "demoUrl": null,
     "githubUrl": null,
     "imageUrl": "/images/covers/uscis.svg",
+    "runLocally": "Full-stack FastAPI + Next.js app; run locally with Docker.",
     "tag": "Agentic AI",
     "year": "2026",
     "featured": true
@@ -71,6 +72,8 @@
     "demoUrl": null,
     "githubUrl": "https://github.com/THuynh-91/music-recommendation-spotify",
     "imageUrl": "/images/spotify-rec.png",
+    "previewImage": "/images/previews/spotify.png",
+    "runLocally": "FastAPI + Next.js; run with Docker Compose and a Spotify client ID.",
     "tag": "ML",
     "year": "2025",
     "featured": true
@@ -109,6 +112,8 @@
     "demoUrl": null,
     "githubUrl": null,
     "imageUrl": "/images/covers/code-studio.svg",
+    "previewImage": "/images/previews/code-studio.png",
+    "runLocally": "React + Vite frontend with a FastAPI backend; needs a local Ollama model.",
     "tag": "Agentic AI",
     "year": "2026",
     "featured": true
@@ -128,6 +133,8 @@
     "demoUrl": null,
     "githubUrl": "https://github.com/THuynh-91/Tennis-Match-Modeling",
     "imageUrl": "/images/covers/tennis.svg",
+    "previewImage": "/images/previews/tennis.png",
+    "runLocally": "Interactive training dashboard; run the local notebook/app to reproduce.",
     "tag": "ML",
     "year": "2025",
     "featured": false
@@ -147,6 +154,8 @@
     "demoUrl": null,
     "githubUrl": "https://github.com/THuynh-91/aaoc-planner",
     "imageUrl": "/images/aaoc-img1.png",
+    "previewImage": "/images/previews/aaoc.png",
+    "runLocally": "Python tool with a local web UI; clone and run to use the planner.",
     "tag": "Tools",
     "year": "2025",
     "featured": false
@@ -166,6 +175,8 @@
     "demoUrl": null,
     "githubUrl": null,
     "imageUrl": "/images/covers/ai-architect.svg",
+    "previewImage": "/images/previews/business-case.png",
+    "runLocally": "FastAPI + Next.js with SSE streaming; run locally (offline mock mode available).",
     "tag": "Agentic AI",
     "year": "2026",
     "featured": true
@@ -185,6 +196,8 @@
     "demoUrl": null,
     "githubUrl": null,
     "imageUrl": "/images/covers/taxassistant.svg",
+    "previewImage": "/images/previews/taxassistant.png",
+    "runLocally": "Next.js app with local SQLite; run with npm to organize a tax year.",
     "tag": "Full-Stack",
     "year": "2026",
     "featured": false
@@ -204,6 +217,8 @@
     "demoUrl": null,
     "githubUrl": null,
     "imageUrl": "/images/covers/casino.svg",
+    "previewImage": "/images/previews/casino.png",
+    "runLocally": "Node + Socket.io server; run locally to host a real-time multiplayer room.",
     "tag": "Full-Stack",
     "year": "2026",
     "featured": true
@@ -221,8 +236,29 @@
       "Real-time controls with damping-regime detection"
     ],
     "demoUrl": null,
+    "embedUrl": "/demos/pendulum/index.html",
     "githubUrl": null,
     "imageUrl": "/images/covers/pendulum.svg",
+    "tag": "Tools",
+    "year": "2026",
+    "featured": false
+  },
+  {
+    "id": 14,
+    "title": "European Roulette Table",
+    "tagline": "A polished single-player roulette table you can play right here",
+    "description": "A self-contained European (single-zero) roulette table rendered on HTML5 Canvas, with drag-and-drop-style chip betting, inside/outside bets, a spinning wheel, payouts, and bet history — no server required.",
+    "tech": ["JavaScript", "HTML5 Canvas", "CSS"],
+    "impact": [
+      "Single-zero European wheel with correct payouts and crypto-grade RNG",
+      "Full betting board: straight, splits, columns, dozens, and even-money bets",
+      "Animated canvas wheel with result banner and spin history",
+      "Fully client-side — plays instantly in the browser with no backend"
+    ],
+    "demoUrl": null,
+    "embedUrl": "/demos/roulette/index.html",
+    "githubUrl": null,
+    "imageUrl": "/images/covers/casino.svg",
     "tag": "Tools",
     "year": "2026",
     "featured": false
@@ -242,6 +278,7 @@
     "demoUrl": null,
     "githubUrl": null,
     "imageUrl": "/images/covers/receipt.svg",
+    "runLocally": "Streamlit app; run locally to split a receipt (manual mode needs no API key).",
     "tag": "Tools",
     "year": "2026",
     "featured": false

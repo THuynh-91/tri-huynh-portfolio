@@ -11,10 +11,13 @@ const initials = (title) =>
     .join('')
     .toUpperCase();
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onView }) {
   const router = useRouter();
   const basePath = router.basePath || '';
   const imageSrc = project.imageUrl ? `${basePath}${project.imageUrl}` : null;
+  // A card is "viewable" if it has an embedded interactive demo or a screenshot preview.
+  const canView = !!(project.embedUrl || project.previewImage);
+  const viewLabel = project.embedUrl ? 'play demo' : 'view';
 
   // 3D tilt
   const mx = useMotionValue(0.5);
@@ -119,7 +122,17 @@ export default function ProjectCard({ project }) {
           ))}
         </ul>
 
-        <div className="mt-6 flex gap-3 font-mono text-sm">
+        <div className="mt-6 flex flex-wrap gap-3 font-mono text-sm">
+          {canView && (
+            <button
+              type="button"
+              onClick={() => onView?.(project)}
+              className="inline-flex items-center gap-1 text-accent hover:underline"
+              data-cursor="hover"
+            >
+              {viewLabel} →
+            </button>
+          )}
           {project.demoUrl && (
             <a
               href={project.demoUrl}

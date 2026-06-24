@@ -1,12 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import ProjectCard from './ProjectCard';
+import ProjectModal from './ProjectModal';
 import SectionHeader from './SectionHeader';
 import projectsData from '../data/projects.json';
 
 export default function Projects() {
   const [filter, setFilter] = useState('All');
   const [showAll, setShowAll] = useState(false);
+  const [activeProject, setActiveProject] = useState(null);
 
   const tags = useMemo(
     () => ['All', ...Array.from(new Set(projectsData.map((p) => p.tag)))],
@@ -64,7 +66,7 @@ export default function Projects() {
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               >
-                <ProjectCard project={project} />
+                <ProjectCard project={project} onView={setActiveProject} />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -82,6 +84,8 @@ export default function Projects() {
           </div>
         )}
       </div>
+
+      <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
     </section>
   );
 }
