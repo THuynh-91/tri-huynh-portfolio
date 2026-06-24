@@ -167,8 +167,16 @@
       <h2>System</h2>
       <div class="grid2">
         <div class="ctrl">
-          <div class="ctrl-head"><label for="L">Rod length L (m)</label><input class="num" id="nL" aria-label="Rod length in meters" type="number" min="0.4" max="2.5" step="0.01" value="1.20" /></div>
-          <input id="L" type="range" min="0.4" max="2.5" step="0.01" value="1.2" aria-label="Rod length L in meters" />
+          <div class="ctrl-head">
+            <label for="L">Rod length L (m)</label>
+            <span style="display:flex; align-items:center; gap:6px">
+              <label id="lockLenWrap" title="Lock the rod length: drag-to-resize and the slider are disabled" style="display:flex; align-items:center; gap:3px; cursor:pointer; font-size:11px; color:var(--muted)">
+                <input type="checkbox" id="lockLen" aria-label="Lock rod length" style="accent-color:var(--accent); margin:0" /><span id="lockLenIcon">🔓</span>
+              </label>
+              <input class="num" id="nL" aria-label="Rod length in meters" type="number" min="0.4" max="2.5" step="0.01" value="0.60" />
+            </span>
+          </div>
+          <input id="L" type="range" min="0.4" max="2.5" step="0.01" value="0.6" aria-label="Rod length L in meters" />
         </div>
         <div class="ctrl">
           <div class="ctrl-head"><label for="m">Bob mass m (kg)</label><input class="num" id="nm" aria-label="Bob mass in kilograms" type="number" min="0.1" max="5" step="0.05" value="1.00" /></div>
@@ -204,8 +212,8 @@
       <h2>Damping</h2>
       <div class="grid2">
         <div class="ctrl">
-          <div class="ctrl-head"><label for="cP">Pivot friction cP</label><input class="num" id="ncP" aria-label="Pivot friction coefficient" type="number" min="0" max="12" step="0.01" value="5.00" /></div>
-          <input id="cP" type="range" min="0" max="12" step="0.01" value="5.0" aria-label="Pivot friction coefficient cP" />
+          <div class="ctrl-head"><label for="cP">Pivot friction cP</label><input class="num" id="ncP" aria-label="Pivot friction coefficient" type="number" min="0" max="12" step="0.01" value="3.60" /></div>
+          <input id="cP" type="range" min="0" max="12" step="0.01" value="3.6" aria-label="Pivot friction coefficient cP" />
         </div>
         <div class="ctrl">
           <div class="ctrl-head"><label for="cR">Rail friction cR</label><input class="num" id="ncR" aria-label="Rail friction coefficient" type="number" min="0" max="5" step="0.01" value="0.20" /></div>
@@ -260,6 +268,9 @@
         <div class="row"><label>cart v</label><span class="val" id="sV">0.00 m/s</span></div>
         <div class="row"><label>motor F</label><span class="val" id="sF">0.0 N</span></div>
         <div class="row"><label>energy E</label><span class="val" id="sE">0.00 J</span></div>
+        <div class="row" style="grid-column:1 / -1" title="Pendulum period T = 2π√(L/g) for the current rod length & gravity. Depends on L and g — NOT on the bob mass. (The free cart's recoil shortens it slightly; that value is shown in parentheses.)">
+          <label>period T</label><span class="val" id="sPeriod">— s</span>
+        </div>
       </div>
 
       <div class="plots-2col" style="margin-top:8px">
@@ -302,18 +313,23 @@
   let simT = 0; // elapsed simulation time (s)
 
   // Parameters
-  let L = 1.2, m = 1.0, M = 2.0, g = 9.81;
+  // Default rod length is short (0.60 m) so the initial drop reads as real,
+  // brisk gravity: its true period is T = 2π√(L/g) ≈ 1.55 s (≈1.34 s once the
+  // free cart's recoil is included), instead of the sluggish ≈2.2 s of a 1.2 m
+  // rod. The full 0.4–2.5 m range is still available on the slider.
+  let L = 0.6, m = 1.0, M = 2.0, g = 9.81;
   let L2 = 0.9, m2 = 0.8;       // second link (double mode only)
-  // Default pivot damping is near-critical (zeta ~ 0.73 at the default L, g) so a
+  // Default pivot damping is near-critical (zeta ~ 0.74 at the default L, g) so a
   // normal drop kills its momentum in one or two swoops — the whole point of a
-  // damping demo. cP_crit = 2*sqrt(g*L) ~ 6.86 here; 5.0 sits just under it.
-  let cP = 5.0, cR = 0.20;
+  // damping demo. cP_crit = 2*sqrt(g*L) ≈ 4.85 here; 3.6 sits just under it.
+  let cP = 3.6, cR = 0.20;
   let Fmax = 120;
   let timeScale = 1.0;          // 1.0 = real time (1 sim s == 1 wall s)
   let ctrlOn = false;
   let trainOn = true;
   let playing = true;
   let dragging = false;
+  let lockLen = false;          // when true, the rod length L is fixed (no drag-resize, slider/number disabled)
 
   // Rail half-length (meters). Wide enough that natural damped motion — and
   // even an only-partly-trained motor — never reaches the walls during normal
@@ -822,6 +838,28 @@
   bindRange('Fmax',v => v.toFixed(0), v => { Fmax = v; bestScore = -Infinity; }); // re-eval after change
   bindRange('tscale', v => v.toFixed(2).replace(/0$/,''), v => { timeScale = v; });
 
+  // ---------- Rod-length lock ----------
+  // When locked, the rod length L is fixed: the L slider + number input are
+  // disabled and drag-to-resize is ignored (dragging the bob still sets the
+  // ANGLE). In double mode the lock applies to L (the first rod / L₁ control)
+  // the same way — L₂ keeps its own slider.
+  const lockChk = $('lockLen'), lockIcon = $('lockLenIcon'), lockWrap = $('lockLenWrap');
+  function applyLock() {
+    const sl = $('L'), num = $('nL');
+    sl.disabled = lockLen;
+    num.disabled = lockLen;
+    sl.style.opacity = lockLen ? '0.45' : '';
+    num.style.opacity = lockLen ? '0.45' : '';
+    sl.style.cursor = lockLen ? 'not-allowed' : '';
+    lockIcon.textContent = lockLen ? '🔒' : '🔓';
+    lockWrap.style.color = lockLen ? 'var(--accent)' : 'var(--muted)';
+    lockWrap.title = lockLen
+      ? 'Rod length LOCKED — click to unlock (drag-resize and slider disabled)'
+      : 'Lock the rod length: drag-to-resize and the slider are disabled';
+  }
+  lockChk.addEventListener('change', () => { lockLen = lockChk.checked; applyLock(); });
+  applyLock();
+
   // ---------- Regime presets ----------
   // Set cP relative to the critical value 2*sqrt(g*L) for the current g, L,
   // routing through the bound apply() so slider, number and state stay synced.
@@ -831,9 +869,9 @@
   $('preCrit').addEventListener('click',  () => setCP(critCP()));
   $('preOver').addEventListener('click',  () => setCP(2.5 * critCP()));
   $('preReset').addEventListener('click', () => {
-    applies['L'](1.2, false);  applies['m'](1.0, false);
+    applies['L'](0.6, false);  applies['m'](1.0, false);
     applies['M'](2.0, false);  applies['g'](9.81, false);
-    applies['cP'](5.0, false); applies['cR'](0.20, false);
+    applies['cP'](3.6, false); applies['cR'](0.20, false);
     applies['Fmax'](120, false);
   });
 
@@ -894,7 +932,7 @@
   // damped. So we remember the single-mode pivot friction and drop to a light
   // value in double mode (and restore it on the way back), keeping each mode's
   // default visually correct. The user can still override cP with the slider.
-  const SINGLE_DEFAULT_CP = 5.0, DOUBLE_DEFAULT_CP = 0.05;
+  const SINGLE_DEFAULT_CP = 3.6, DOUBLE_DEFAULT_CP = 0.05;
   let savedSingleCP = SINGLE_DEFAULT_CP;
   function setMode(next) {
     if (next === mode) return;
@@ -955,10 +993,12 @@
       // Hover feedback: show a grab cursor when over a draggable bob.
       const p = bobPos();
       const near = (bx, by) => (px-bx)*(px-bx) + (py-by)*(py-by) < 42*42;
-      const over = mode === 'double'
-        ? (near(p.bob1X, p.bob1Y) || near(p.bob2X, p.bob2Y))
-        : near(p.bobX, p.bobY);
-      cv.style.cursor = over ? 'grab' : 'default';
+      const overOuter = mode === 'double' && near(p.bob2X, p.bob2Y);
+      const overFirst = mode === 'double' ? near(p.bob1X, p.bob1Y) : near(p.bobX, p.bobY);
+      // When the length is locked, hovering the first bob shows a "locked" cursor
+      // (you can still grab to swing it — only resizing is blocked).
+      cv.style.cursor = (overFirst && lockLen && !overOuter) ? 'not-allowed'
+                       : (overFirst || overOuter) ? 'grab' : 'default';
       return;
     }
     if (dragTarget === 'outer') {
@@ -967,13 +1007,16 @@
       th2 = Math.atan2(px - p.bob1X, py - p.bob1Y); om2 = 0;
       return;
     }
-    // First bob: set angle from the cart pivot, and length L from the distance
-    // (in meters) of the pointer from the pivot, clamped to the slider range.
+    // First bob: set the angle from the cart pivot. The rod length L tracks the
+    // pointer's distance from the pivot UNLESS it's locked, in which case L is
+    // left untouched (the bob still rotates at its fixed length).
     const piv = pivotPx();
     const ang = Math.atan2(px - piv.x, py - piv.y);
-    const distM = Math.hypot(px - piv.x, py - piv.y) / ppm;
-    const newL = Math.max(Lrange.min, Math.min(Lrange.max, distM));
-    applies['L'](newL, false);   // two-way sync: slider + number readout + state
+    if (!lockLen) {
+      const distM = Math.hypot(px - piv.x, py - piv.y) / ppm;
+      const newL = Math.max(Lrange.min, Math.min(Lrange.max, distM));
+      applies['L'](newL, false);   // two-way sync: slider + number readout + state
+    }
     if (mode === 'double') { th1 = ang; om1 = 0; }
     else                   { theta = ang; omega = 0; }
   });
@@ -985,7 +1028,7 @@
   cv.addEventListener('pointercancel', endDrag);
 
   // Stats
-  const sT=$('sT'), sTh=$('sTh'), sOm=$('sOm'), sX=$('sX'), sV=$('sV'), sF=$('sF'), sE=$('sE');
+  const sT=$('sT'), sTh=$('sTh'), sOm=$('sOm'), sX=$('sX'), sV=$('sV'), sF=$('sF'), sE=$('sE'), sPeriod=$('sPeriod');
   const sGen=$('sGen'), sScore=$('sScore'), sSigma=$('sSigma'), sRate=$('sRate');
   const regimeBadge=$('regimeBadge'), regimeInfo=$('regimeInfo');
   function updateStats() {
@@ -1000,6 +1043,17 @@
     sV.textContent  = v.toFixed(2) + ' m/s';
     sF.textContent  = lastF.toFixed(1) + ' N';
     sE.textContent  = curEnergy().toFixed(2) + ' J';
+    // Pendulum period. Ideal small-amplitude: T0 = 2π√(L/g) — depends only on L
+    // and g, NEVER on the bob mass (Galileo). The free cart recoils as the bob
+    // swings, which shortens the real period to T_cart = 2π√(L/g · M/(M+m));
+    // we show that in parentheses so the readout matches what's on screen.
+    if (g > 0) {
+      const T0 = 2 * Math.PI * Math.sqrt(L / g);
+      const Tcart = 2 * Math.PI * Math.sqrt((L / g) * (M / (M + m)));
+      sPeriod.textContent = T0.toFixed(2) + ' s (' + Tcart.toFixed(2) + ' s w/ cart)';
+    } else {
+      sPeriod.textContent = '∞ (g = 0)';
+    }
     sGen.textContent = gen;
     sScore.textContent = bestScore === -Infinity ? '−∞' : bestScore.toFixed(1);
     sSigma.textContent = sigma.toFixed(3);
@@ -1016,29 +1070,38 @@
   // takes 1 wall-clock second at timeScale = 1 — i.e. the swing runs at its true
   // physical period T = 2π·√(L/g). The fixed dt only sets integration accuracy.
   const DT = 1/240;
-  // Cap on simulated time advanced per frame. If a frame is very late (tab was
-  // hidden, a GC pause, a slow machine), we advance at most MAX_STEPS·DT so the
-  // loop can never enter a spiral of death — but it is large enough (≈0.1 s of
-  // sim per frame) that ordinary 60 fps frames are never throttled, so the sim
-  // stays locked to real time instead of silently sliding into slow motion.
-  const MAX_STEPS = 24;            // ≤ 24 steps × (1/240) s = 0.1 s of sim/frame
+  // Maximum *real* time (s) we let a single frame advance the sim. This only
+  // exists to stop a spiral of death after a genuine stall (tab hidden, a long
+  // GC, the machine sleeping). It is deliberately large — far longer than any
+  // normal frame — so ordinary slow frames are FULLY caught up rather than
+  // silently dropped. Dropping real time on every slightly-slow frame is exactly
+  // what made the swing look like slow motion before, so we no longer do that:
+  // the accumulator carries unprocessed real time forward to the next frame.
+  const MAX_CATCHUP = 0.25;        // shed time only on stalls longer than 250 ms
+  const MAX_STEPS = Math.ceil(MAX_CATCHUP / DT);  // 60 steps == 0.25 s of sim
   let acc = 0, last = performance.now();
   let trialsThisSec = 0, secMark = last;
+  // Smoothed estimate of the time the sim + render consume each frame (ms). The
+  // training loop spends only the time LEFT OVER inside the ~16.7 ms frame
+  // budget, so it can never push a frame past real time and slow the swing.
+  let frameCostMs = 6;
 
   function frame(now) {
+    const frameStart = now;
     // Wall-clock seconds since the previous frame, scaled by the user's time
     // scale (default 1.0 = real time).
-    const real = ((now - last) / 1000) * timeScale;
+    let real = (now - last) / 1000;
     last = now;
+    // On a genuine stall, advance at most MAX_CATCHUP of sim and discard the
+    // rest — but normal slow frames keep ALL their real time (carried in acc).
+    if (real > MAX_CATCHUP) real = MAX_CATCHUP;
+    real *= timeScale;
 
     // Live sim
     if (playing && !dragging) {
       acc += real;
-      // Drain the accumulator in fixed steps; clamp the burst so a single very
-      // late frame can't lock up the loop, without scaling the motion down.
       let steps = 0;
       while (acc >= DT && steps < MAX_STEPS) { stepRK4(DT); acc -= DT; steps++; }
-      if (acc > DT) acc = DT;      // shed any unprocessed backlog beyond the cap
       const p = bobPos();
       trail.push({ x: p.bobX, y: p.bobY });
       if (trail.length > TRAIL_MAX) trail.shift();
@@ -1050,30 +1113,41 @@
       lastF = 0;
     }
 
-    // Background training: run a small budget of trials per frame so the policy
-    // improves without stealing enough wall-clock time to push the frame past
-    // its real-time budget (which would make the live sim look slow-motion).
-    if (trainOn) {
-      const budgetMs = 4; // keep frames light so animation stays real-time
-      const t0 = performance.now();
-      while (performance.now() - t0 < budgetMs) {
-        trainStep();
-        trialsThisSec++;
-        history.push(bestScore);
-        if (history.length > HIST_MAX) history.shift();
-      }
-    }
-    if (now - secMark > 1000) {
-      sRate.textContent = trialsThisSec;
-      trialsThisSec = 0;
-      secMark = now;
-    }
-
     draw();
     drawSparkline();
     drawPlot();
     drawPhase();
     updateStats();
+
+    // Track how long the sim + render took this frame so training can fill only
+    // the remaining slack in the frame budget (keeps the animation real-time).
+    const costMs = performance.now() - frameStart;
+    frameCostMs = frameCostMs * 0.9 + costMs * 0.1;
+
+    // Background training: hill-climb on the policy using ONLY the leftover time
+    // in this frame. We never train while the user is dragging (their input
+    // should feel instant), and we cap the budget so a frame can't overrun its
+    // ~16.7 ms real-time slot — the cause of the earlier slow-motion swing.
+    if (trainOn && !dragging) {
+      const FRAME_BUDGET = 16.7;                       // one 60 Hz frame
+      const slack = FRAME_BUDGET - frameCostMs - 1;    // leave 1 ms headroom
+      const budgetMs = Math.max(0, Math.min(6, slack));
+      if (budgetMs > 0) {
+        const t0 = performance.now();
+        while (performance.now() - t0 < budgetMs) {
+          trainStep();
+          trialsThisSec++;
+          history.push(bestScore);
+          if (history.length > HIST_MAX) history.shift();
+        }
+      }
+    }
+
+    if (now - secMark > 1000) {
+      sRate.textContent = trialsThisSec;
+      trialsThisSec = 0;
+      secMark = now;
+    }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
