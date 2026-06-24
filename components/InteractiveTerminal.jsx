@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
+import projectsData from '../data/projects.json';
 
 export default function InteractiveTerminal({ isOpen, onClose }) {
   const [input, setInput] = useState('');
@@ -61,14 +62,14 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       ]
     },
     projects: {
-      description: 'List featured projects',
+      description: 'List projects',
       action: () => [
-        { type: 'output', text: '1. USCIS AI Assistant (N-400 agent, fills the PDF)' },
-        { type: 'output', text: '2. RAG Study Chatbot (answers from your own notes)' },
-        { type: 'output', text: '3. Code Problem Studio (local AI coding tutor)' },
-        { type: 'output', text: '4. AI Wordle Duel (AI opponents, multiple modes)' },
-        { type: 'output', text: '5. Rock Paper Scissor Mind Game (1000+ visitors)' },
-        { type: 'output', text: '6. Spotify Recommendation Engine (vector search)' },
+        { type: 'output', text: `${projectsData.length} projects designed & shipped:` },
+        { type: 'output', text: '' },
+        ...projectsData.map((p, i) => ({
+          type: 'output',
+          text: `${String(i + 1).padStart(2)}. ${p.title} (${p.tagline})`,
+        })),
       ]
     },
     contact: {
