@@ -28,7 +28,7 @@ export default function Projects() {
             eyebrow="selected work"
             title="Things I've"
             accent="built."
-            note="A mix of AI products, ML experiments, and full-stack apps. Most have live code you can dig into."
+            note="A mix of AI products, ML experiments, and full-stack apps — with live demos and source where available."
           />
 
           {/* filter pills */}
