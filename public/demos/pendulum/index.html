@@ -187,8 +187,8 @@
           <input id="M" type="range" min="0.2" max="10" step="0.05" value="2.0" aria-label="Cart mass M in kilograms" />
         </div>
         <div class="ctrl">
-          <div class="ctrl-head"><label for="g">Gravity g (m/s²)</label><input class="num" id="ng" aria-label="Gravity in meters per second squared" type="number" min="0" max="20" step="0.05" value="9.81" /></div>
-          <input id="g" type="range" min="0" max="20" step="0.05" value="9.81" aria-label="Gravity g in meters per second squared" />
+          <div class="ctrl-head"><label for="g">Gravity g (m/s²)</label><input class="num" id="ng" aria-label="Gravity in meters per second squared" type="number" min="0" max="20" step="0.05" value="19.62" /></div>
+          <input id="g" type="range" min="0" max="20" step="0.05" value="19.62" aria-label="Gravity g in meters per second squared" />
         </div>
       </div>
       <!-- Second link: only meaningful (and shown) in Double mode. -->
@@ -317,7 +317,7 @@
   // brisk gravity: its true period is T = 2π√(L/g) ≈ 1.55 s (≈1.34 s once the
   // free cart's recoil is included), instead of the sluggish ≈2.2 s of a 1.2 m
   // rod. The full 0.4–2.5 m range is still available on the slider.
-  let L = 0.6, m = 1.0, M = 2.0, g = 9.81;
+  let L = 0.6, m = 1.0, M = 2.0, g = 19.62;  // 2x real gravity (user request) for a punchier swing
   let L2 = 0.9, m2 = 0.8;       // second link (double mode only)
   // Default pivot damping is near-critical (zeta ~ 0.74 at the default L, g) so a
   // normal drop kills its momentum in one or two swoops — the whole point of a
@@ -870,7 +870,7 @@
   $('preOver').addEventListener('click',  () => setCP(2.5 * critCP()));
   $('preReset').addEventListener('click', () => {
     applies['L'](0.6, false);  applies['m'](1.0, false);
-    applies['M'](2.0, false);  applies['g'](9.81, false);
+    applies['M'](2.0, false);  applies['g'](19.62, false);
     applies['cP'](3.6, false); applies['cR'](0.20, false);
     applies['Fmax'](120, false);
   });
