@@ -2,7 +2,7 @@
   {
     "id": 1,
     "title": "USCIS AI Assistant",
-    "tagline": "Plain-English naturalization form prep that fills the N-400 for you",
+    "tagline": "Plain-English N-400 naturalization prep that fills the form for you (work in progress)",
     "description": "A guided service that walks applicants through the USCIS N-400 (Naturalization) form in plain English, generates a filled, print-ready PDF, and produces a personalized document checklist.",
     "tech": ["Python", "FastAPI", "Next.js", "Docker", "Anthropic API", "PDF"],
     "impact": [
@@ -12,7 +12,7 @@
       "Containerized full-stack app: FastAPI backend + Next.js frontend"
     ],
     "demoUrl": null,
-    "githubUrl": "https://github.com/THuynh-91/uscis-ai-assistant",
+    "githubUrl": null,
     "imageUrl": "/images/covers/uscis.svg",
     "tag": "Agentic AI",
     "year": "2026",
@@ -107,7 +107,7 @@
       "Vision support: solve from a screenshot of a problem"
     ],
     "demoUrl": null,
-    "githubUrl": "https://github.com/THuynh-91/code-reviewer",
+    "githubUrl": null,
     "imageUrl": "/images/covers/code-studio.svg",
     "tag": "Agentic AI",
     "year": "2026",
