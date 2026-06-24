@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import SectionHeader from './SectionHeader';
 import AnimatedCounter from './AnimatedCounter';
 import Reveal from './Reveal';
+import projectsData from '../data/projects.json';
 
 const card =
   'rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-line-strong';
@@ -53,7 +54,7 @@ export default function About() {
           {/* stat - projects */}
           <Reveal delay={0.05} className={`${card} flex flex-col justify-center`}>
             <div className="font-display text-5xl font-semibold text-accent">
-              <AnimatedCounter value={8} suffix="+" />
+              <AnimatedCounter value={projectsData.length} suffix="+" />
             </div>
             <p className="mt-2 text-sm text-muted">projects designed & shipped</p>
           </Reveal>
