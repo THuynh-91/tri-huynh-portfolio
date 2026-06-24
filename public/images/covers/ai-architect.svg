@@ -59,7 +59,4 @@
     <text x="37" y="27" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="18" letter-spacing="2" fill="#6366F1">AI</text>
   </g>
 
-  <!-- ===== title ===== -->
-  <text x="64" y="560" font-family="'Space Grotesk','Inter',sans-serif" font-size="52" font-weight="600" fill="#18181b">AI Solution Architect</text>
-  <text x="64" y="600" font-family="'JetBrains Mono',monospace" font-size="20" fill="#6b6b72">idea to implementation plan, streamed</text>
 </svg>
