@@ -15,9 +15,10 @@ export default function ProjectCard({ project, onView }) {
   const router = useRouter();
   const basePath = router.basePath || '';
   const imageSrc = project.imageUrl ? `${basePath}${project.imageUrl}` : null;
-  // A card is "viewable" if it has an embedded interactive demo or a screenshot preview.
-  const canView = !!(project.embedUrl || project.previewImage);
-  const viewLabel = project.embedUrl ? 'play demo' : 'view';
+  // Interactive embedded demos open in a new tab (basePath-aware URL).
+  const embedHref = project.embedUrl ? `${basePath}${project.embedUrl}` : null;
+  // Screenshot previews still open in the in-page modal (a screenshot is useless in a new tab).
+  const canPreview = !embedHref && !!project.previewImage;
 
   // 3D tilt
   const mx = useMotionValue(0.5);
@@ -123,14 +124,25 @@ export default function ProjectCard({ project, onView }) {
         </ul>
 
         <div className="mt-6 flex flex-wrap gap-3 font-mono text-sm">
-          {canView && (
+          {embedHref && (
+            <a
+              href={embedHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-accent hover:underline"
+              data-cursor="hover"
+            >
+              open demo ↗
+            </a>
+          )}
+          {canPreview && (
             <button
               type="button"
               onClick={() => onView?.(project)}
               className="inline-flex items-center gap-1 text-accent hover:underline"
               data-cursor="hover"
             >
-              {viewLabel} →
+              view →
             </button>
           )}
           {project.demoUrl && (

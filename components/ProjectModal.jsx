@@ -3,12 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 
 /**
- * Project "View" modal / lightbox.
+ * Project preview modal / lightbox.
  *
- * Three flavours, driven by the project data:
- *   - embedUrl     → renders the self-contained interactive demo in an <iframe>
+ * Used only for SCREENSHOT-PREVIEW projects (no real hosted/embedded demo):
  *   - previewImage → renders a real screenshot + a "run locally" note
- *   - (neither)    → falls back to the cover image + description
+ *   - (none)       → falls back to the cover image + description
+ *
+ * Real interactive/live demos open in a new tab from the card instead.
  *
  * Accessible: focus trap, Escape to close, restores focus on close,
  * locks body scroll while open. Uses the existing design tokens only.
@@ -21,7 +22,6 @@ export default function ProjectModal({ project, onClose }) {
   const lastFocused = useRef(null);
 
   const isOpen = !!project;
-  const embedSrc = project?.embedUrl ? `${basePath}${project.embedUrl}` : null;
   const previewSrc = project?.previewImage ? `${basePath}${project.previewImage}` : null;
   const coverSrc = project?.imageUrl ? `${basePath}${project.imageUrl}` : null;
 
@@ -93,12 +93,7 @@ export default function ProjectModal({ project, onClose }) {
                   <span className="rounded-full bg-accent px-2.5 py-1 font-medium text-white">
                     {project.tag}
                   </span>
-                  {embedSrc && (
-                    <span className="rounded-full glass px-2.5 py-1 text-muted">
-                      interactive demo
-                    </span>
-                  )}
-                  {!embedSrc && previewSrc && (
+                  {previewSrc && (
                     <span className="rounded-full glass px-2.5 py-1 text-muted">preview</span>
                   )}
                 </div>
@@ -117,16 +112,7 @@ export default function ProjectModal({ project, onClose }) {
 
             {/* body */}
             <div className="flex-1 overflow-y-auto">
-              {embedSrc ? (
-                <div className="bg-surface-2">
-                  <iframe
-                    src={embedSrc}
-                    title={`${project.title} interactive demo`}
-                    className="h-[72vh] w-full border-0 bg-white"
-                    loading="lazy"
-                  />
-                </div>
-              ) : previewSrc ? (
+              {previewSrc ? (
                 <div className="bg-surface-2 p-3 sm:p-4">
                   <img
                     src={previewSrc}
@@ -144,18 +130,16 @@ export default function ProjectModal({ project, onClose }) {
                 </div>
               ) : null}
 
-              {/* description + run-locally note (hidden for embedded demos to maximize play area) */}
-              {!embedSrc && (
-                <div className="px-5 py-4">
-                  <p className="text-sm leading-relaxed text-muted">{project.description}</p>
-                  {project.runLocally && (
-                    <p className="mt-3 flex items-start gap-2 font-mono text-[13px] text-muted">
-                      <span className="mt-0.5 text-accent">▸</span>
-                      <span>{project.runLocally}</span>
-                    </p>
-                  )}
-                </div>
-              )}
+              {/* description + run-locally note */}
+              <div className="px-5 py-4">
+                <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+                {project.runLocally && (
+                  <p className="mt-3 flex items-start gap-2 font-mono text-[13px] text-muted">
+                    <span className="mt-0.5 text-accent">▸</span>
+                    <span>{project.runLocally}</span>
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* footer links */}
@@ -169,17 +153,6 @@ export default function ProjectModal({ project, onClose }) {
                   className="inline-flex items-center gap-1 text-accent hover:underline"
                 >
                   open live demo ↗
-                </a>
-              )}
-              {embedSrc && (
-                <a
-                  href={embedSrc}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-cursor="hover"
-                  className="inline-flex items-center gap-1 text-accent hover:underline"
-                >
-                  open in new tab ↗
                 </a>
               )}
               {project.githubUrl && (
