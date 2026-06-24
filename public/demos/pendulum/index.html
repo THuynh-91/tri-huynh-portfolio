@@ -195,6 +195,12 @@
         </div>
       </div>
 
+      <h2>Time</h2>
+      <div class="ctrl">
+        <div class="ctrl-head"><label for="tscale">Time scale ×<span id="vtscale">1.0</span></label></div>
+        <input id="tscale" type="range" min="0.1" max="2" step="0.05" value="1" aria-label="Simulation time scale (1.0 = real time)" />
+      </div>
+
       <h2>Damping</h2>
       <div class="grid2">
         <div class="ctrl">
@@ -303,6 +309,7 @@
   // damping demo. cP_crit = 2*sqrt(g*L) ~ 6.86 here; 5.0 sits just under it.
   let cP = 5.0, cR = 0.20;
   let Fmax = 120;
+  let timeScale = 1.0;          // 1.0 = real time (1 sim s == 1 wall s)
   let ctrlOn = false;
   let trainOn = true;
   let playing = true;
@@ -813,6 +820,7 @@
   bindRange('cP',  v => v.toFixed(2), v => { cP = v; });
   bindRange('cR',  v => v.toFixed(2), v => { cR = v; });
   bindRange('Fmax',v => v.toFixed(0), v => { Fmax = v; bestScore = -Infinity; }); // re-eval after change
+  bindRange('tscale', v => v.toFixed(2).replace(/0$/,''), v => { timeScale = v; });
 
   // ---------- Regime presets ----------
   // Set cP relative to the critical value 2*sqrt(g*L) for the current g, L,
@@ -863,11 +871,13 @@
   function dropAgain() {
     const a = (Math.random() * 0.8 + 0.3) * (Math.random() < 0.5 ? -1 : 1);
     if (mode === 'double') {
-      // Offset the two links a little so a double drop looks lively (and, in the
-      // near-undamped regime, chaotic) rather than perfectly aligned.
-      th1 = a; om1 = 0;
-      th2 = a + (Math.random() * 0.7 + 0.2) * (Math.random() < 0.5 ? -1 : 1);
-      om2 = 0;
+      // Start both links high and well offset from each other so the chaotic
+      // whip is immediately obvious. th1 is lifted to ~1.4–2.1 rad (well above
+      // horizontal); th2 is thrown far to the opposite side. At the light
+      // double-mode damping this produces several seconds of visible chaos.
+      const sgn = Math.random() < 0.5 ? -1 : 1;
+      th1 = sgn * (1.4 + Math.random() * 0.7); om1 = 0;
+      th2 = -sgn * (1.0 + Math.random() * 1.2); om2 = 0;
     } else {
       theta = a; omega = 0;
     }
@@ -878,15 +888,29 @@
 
   // ---------- Mode tabs (Single / Double) ----------
   const tabSingle = $('tabSingle'), tabDouble = $('tabDouble'), link2Ctrls = $('link2Ctrls');
+  // The single pendulum's whole point is the damping regimes, so it keeps the
+  // near-critical default cP. A double pendulum at that damping just flops dead
+  // in under a second — its signature is *chaos*, which only shows when lightly
+  // damped. So we remember the single-mode pivot friction and drop to a light
+  // value in double mode (and restore it on the way back), keeping each mode's
+  // default visually correct. The user can still override cP with the slider.
+  const SINGLE_DEFAULT_CP = 5.0, DOUBLE_DEFAULT_CP = 0.05;
+  let savedSingleCP = SINGLE_DEFAULT_CP;
   function setMode(next) {
     if (next === mode) return;
+    const dbl = next === 'double';
+    if (dbl) { savedSingleCP = cP; applies['cP'](DOUBLE_DEFAULT_CP, false); }
+    else     { applies['cP'](savedSingleCP, false); }
     mode = next;
-    const dbl = mode === 'double';
     tabDouble.classList.toggle('active', dbl);
     tabSingle.classList.toggle('active', !dbl);
     tabDouble.setAttribute('aria-selected', dbl ? 'true' : 'false');
     tabSingle.setAttribute('aria-selected', dbl ? 'false' : 'true');
     link2Ctrls.style.display = dbl ? 'grid' : 'none';
+    // The motor policy was trained on the single-pendulum dynamics; in double
+    // mode it can only nudge, so turn it off when entering double to avoid it
+    // fighting the chaotic chain. (User can re-enable it.)
+    if (dbl && ctrlOn) ctrlBtn.click();
     bestScore = -Infinity; // re-evaluate the policy against the new dynamics
     dropAgain();
     resize();
@@ -894,34 +918,71 @@
   tabSingle.addEventListener('click', () => setMode('single'));
   tabDouble.addEventListener('click', () => setMode('double'));
 
-  // Drag bob
+  // ---------- Drag the bobs ----------
+  // Grabbing the FIRST bob (the only bob in single mode; the inner bob in double
+  // mode) lets you set BOTH the swing angle AND the first rod length L: drag
+  // farther from the pivot = longer rod. L stays clamped to the slider's range
+  // and the slider/number readout sync live (two-way). Grabbing the OUTER bob in
+  // double mode only sets its angle (its length L₂ has its own slider).
+  const Lrange = { min: +$('L').min, max: +$('L').max };
+  let dragTarget = null;       // 'first' | 'outer'
+  function pivotPx() {
+    const cartH = 28;
+    return { x: centerX + x * ppm, y: railY - cartH / 2 };
+  }
   cv.addEventListener('pointerdown', (e) => {
     const r = cv.getBoundingClientRect();
     const px = e.clientX - r.left, py = e.clientY - r.top;
     const p = bobPos();
-    const dx = px - p.bobX, dy = py - p.bobY;
-    if (dx*dx + dy*dy < 40*40) {
+    const near = (bx, by) => (px-bx)*(px-bx) + (py-by)*(py-by) < 42*42;
+    if (mode === 'double') {
+      if (near(p.bob2X, p.bob2Y))      dragTarget = 'outer';
+      else if (near(p.bob1X, p.bob1Y)) dragTarget = 'first';
+      else dragTarget = null;
+    } else {
+      dragTarget = near(p.bobX, p.bobY) ? 'first' : null;
+    }
+    if (dragTarget) {
       dragging = true;
+      cv.style.cursor = 'grabbing';
       cv.setPointerCapture(e.pointerId);
     }
   });
   cv.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
     const r = cv.getBoundingClientRect();
     const px = e.clientX - r.left, py = e.clientY - r.top;
-    const cartPx = centerX + x * ppm;
-    const cartH = 28, pivotY = railY - cartH / 2;
-    const ang = Math.atan2(px - cartPx, py - pivotY);
-    if (mode === 'double') {
-      // Drag swings the whole chain rigidly to the pointer angle (both links
-      // straight); release then lets it fall and (lightly damped) go chaotic.
-      th1 = ang; om1 = 0; th2 = ang; om2 = 0;
-    } else {
-      theta = ang; omega = 0;
+    if (!dragging) {
+      // Hover feedback: show a grab cursor when over a draggable bob.
+      const p = bobPos();
+      const near = (bx, by) => (px-bx)*(px-bx) + (py-by)*(py-by) < 42*42;
+      const over = mode === 'double'
+        ? (near(p.bob1X, p.bob1Y) || near(p.bob2X, p.bob2Y))
+        : near(p.bobX, p.bobY);
+      cv.style.cursor = over ? 'grab' : 'default';
+      return;
     }
+    if (dragTarget === 'outer') {
+      // Outer bob (double mode): angle of link 2 only.
+      const p = bobPos();
+      th2 = Math.atan2(px - p.bob1X, py - p.bob1Y); om2 = 0;
+      return;
+    }
+    // First bob: set angle from the cart pivot, and length L from the distance
+    // (in meters) of the pointer from the pivot, clamped to the slider range.
+    const piv = pivotPx();
+    const ang = Math.atan2(px - piv.x, py - piv.y);
+    const distM = Math.hypot(px - piv.x, py - piv.y) / ppm;
+    const newL = Math.max(Lrange.min, Math.min(Lrange.max, distM));
+    applies['L'](newL, false);   // two-way sync: slider + number readout + state
+    if (mode === 'double') { th1 = ang; om1 = 0; }
+    else                   { theta = ang; omega = 0; }
   });
-  cv.addEventListener('pointerup',    () => { if (dragging) { simT = 0; series.length = 0; phaseBuf.length = 0; } dragging = false; });
-  cv.addEventListener('pointercancel',() => { dragging = false; });
+  function endDrag() {
+    if (dragging) { simT = 0; series.length = 0; phaseBuf.length = 0; }
+    dragging = false; dragTarget = null; cv.style.cursor = 'default';
+  }
+  cv.addEventListener('pointerup',     endDrag);
+  cv.addEventListener('pointercancel', endDrag);
 
   // Stats
   const sT=$('sT'), sTh=$('sTh'), sOm=$('sOm'), sX=$('sX'), sV=$('sV'), sF=$('sF'), sE=$('sE');
@@ -950,18 +1011,34 @@
   }
 
   // ---------- Animation + training loop ----------
-  const DT = 1/480;
+  // Fixed physics step. The accumulator below advances the simulation by exactly
+  // the wall-clock time elapsed each frame (× timeScale), so 1 simulated second
+  // takes 1 wall-clock second at timeScale = 1 — i.e. the swing runs at its true
+  // physical period T = 2π·√(L/g). The fixed dt only sets integration accuracy.
+  const DT = 1/240;
+  // Cap on simulated time advanced per frame. If a frame is very late (tab was
+  // hidden, a GC pause, a slow machine), we advance at most MAX_STEPS·DT so the
+  // loop can never enter a spiral of death — but it is large enough (≈0.1 s of
+  // sim per frame) that ordinary 60 fps frames are never throttled, so the sim
+  // stays locked to real time instead of silently sliding into slow motion.
+  const MAX_STEPS = 24;            // ≤ 24 steps × (1/240) s = 0.1 s of sim/frame
   let acc = 0, last = performance.now();
   let trialsThisSec = 0, secMark = last;
 
   function frame(now) {
-    const real = Math.min(0.05, (now - last) / 1000);
+    // Wall-clock seconds since the previous frame, scaled by the user's time
+    // scale (default 1.0 = real time).
+    const real = ((now - last) / 1000) * timeScale;
     last = now;
 
     // Live sim
     if (playing && !dragging) {
       acc += real;
-      while (acc >= DT) { stepRK4(DT); acc -= DT; }
+      // Drain the accumulator in fixed steps; clamp the burst so a single very
+      // late frame can't lock up the loop, without scaling the motion down.
+      let steps = 0;
+      while (acc >= DT && steps < MAX_STEPS) { stepRK4(DT); acc -= DT; steps++; }
+      if (acc > DT) acc = DT;      // shed any unprocessed backlog beyond the cap
       const p = bobPos();
       trail.push({ x: p.bobX, y: p.bobY });
       if (trail.length > TRAIL_MAX) trail.shift();
@@ -973,10 +1050,11 @@
       lastF = 0;
     }
 
-    // Background training: run a budget of trials per frame so the
-    // page stays interactive while the policy improves quickly.
+    // Background training: run a small budget of trials per frame so the policy
+    // improves without stealing enough wall-clock time to push the frame past
+    // its real-time budget (which would make the live sim look slow-motion).
     if (trainOn) {
-      const budgetMs = 8; // ~half of a 16 ms frame
+      const budgetMs = 4; // keep frames light so animation stays real-time
       const t0 = performance.now();
       while (performance.now() - t0 < budgetMs) {
         trainStep();
