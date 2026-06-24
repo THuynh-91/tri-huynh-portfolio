@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cart-Pendulum Lab — damping &amp; double pendulum</title>
+<style>
+  :root {
+    /* Scientific dark theme: deep slate/navy base, crisp light text,
+       a single cool cyan accent. High-contrast, no warm tones. */
+    --bg:      #0e1726;  /* deep slate-navy (not black) */
+    --bg2:     #0a1220;  /* slightly darker for plot/canvas wells */
+    --panel:   #13203a;  /* panel surface */
+    --panel2:  #0f1a2e;  /* pinned region / inset wells */
+    --line:    #243349;  /* hairline borders */
+    --line2:   #2e405b;  /* stronger borders */
+    --ink:     #e8eef7;  /* primary light text */
+    --muted:   #8696b0;  /* secondary text */
+    --accent:  #22d3ee;  /* cyan/teal accent */
+    --accent2: #38bdf8;  /* clean blue (secondary trace) */
+    --warn:    #f0b429;  /* amber, used sparingly for the critical badge */
+    --good:    #34d399;  /* teal-green for energy trace / "on" */
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 system-ui, Segoe UI, sans-serif; }
+  .app { display: grid; grid-template-columns: 1fr 360px; height: 100%; }
+  .stage { position: relative; overflow: hidden; min-height: 0; }
+  .stage > canvas { display: block; width: 100%; height: 100%; }
+
+  /* Panel = flex column. The control region scrolls if it must; the readouts
+     + plots region is pinned at the bottom so it never falls below the fold. */
+  .panel { background: var(--panel); border-left: 1px solid var(--line);
+           display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  .panel-scroll { flex: 1 1 auto; overflow-y: auto; padding: 10px 16px 4px; min-height: 0; }
+  .panel-pinned { flex: 0 0 auto; padding: 8px 16px 12px; border-top: 1px solid var(--line); background: var(--panel2); }
+
+  h1 { font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  .h1-row { display: flex; align-items: center; justify-content: space-between; }
+  h2 { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 7px 0 2px; }
+  .panel-pinned h2 { margin-top: 4px; }
+
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 4px 0 2px; }
+  .row label { color: var(--muted); }
+  .row .val { font-variant-numeric: tabular-nums; color: var(--ink); }
+
+  /* Compact slider control: label+number on one line, slider directly under. */
+  .ctrl { margin: 3px 0; }
+  .ctrl-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .ctrl-head label { color: var(--muted); font-size: 12px; }
+  /* Pack the System sliders into two columns to save vertical space. */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; }
+  input[type=range] { width: 100%; accent-color: var(--accent); margin: 1px 0 0; }
+
+  .btns { display: flex; gap: 8px; margin-top: 8px; }
+  button {
+    flex: 1; background: #1b2a42; color: var(--ink); border: 1px solid var(--line2);
+    padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  button:hover { background: #213452; }
+  button:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  button.primary { background: var(--accent); color: #052430; border-color: var(--accent); font-weight: 600; }
+  button.toggle.on  { background: var(--good); color: #052719; border-color: var(--good); font-weight: 600; }
+  button.toggle.off { background: #1b2a42; color: var(--muted); }
+
+  /* Mode tabs: Single / Double pendulum. */
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin: 2px 0 8px;
+          border: 1px solid var(--line2); border-radius: 7px; overflow: hidden; }
+  .tabs button { flex: none; border: none; border-radius: 0; background: var(--panel2);
+                 color: var(--muted); font-size: 12px; letter-spacing: .04em;
+                 text-transform: uppercase; padding: 7px 8px; font-weight: 600; }
+  .tabs button + button { border-left: 1px solid var(--line2); }
+  .tabs button.active { background: var(--accent); color: #052430; }
+  .tabs button:not(.active):hover { background: #1b2a42; color: var(--ink); }
+
+  .presets { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 3px; }
+  .presets button { font-size: 12px; padding: 5px 8px; }
+
+  .stats .val { color: var(--ink); }
+  /* Two-column readout grid keeps Live state compact in the pinned region. */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 16px; }
+  .stats-grid .row { margin: 1px 0; }
+
+  .hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  /* Help lives in the header row (saves a row); when open it overlays so the
+     summary text doesn't get squeezed by the flex layout. */
+  .h1-row { position: relative; }
+  details.help { margin-top: 0; }
+  details.help summary { cursor: pointer; color: var(--accent); font-size: 12px; list-style: none; white-space: nowrap; }
+  details.help summary::-webkit-details-marker { display: none; }
+  details.help summary::before { content: '▸ '; }
+  details.help[open] summary::before { content: '▾ '; }
+  details.help[open] .hint {
+    position: absolute; right: 0; top: 100%; z-index: 5; width: 320px;
+    background: var(--panel2); border: 1px solid var(--line2); border-radius: 6px;
+    padding: 10px 12px; margin-top: 4px;
+  }
+  details.help .hint b { color: var(--ink); }
+
+  #spark { width: 100%; height: 38px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; margin-top: 6px; display: block; }
+  #plot { width: 100%; height: 78px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; margin-top: 4px; display: block; }
+  #phase { width: 100%; height: 132px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; margin-top: 4px; display: block; }
+
+  .num { width: 60px; background: var(--bg2); color: var(--ink); border: 1px solid var(--line2);
+         border-radius: 4px; padding: 2px 4px; font: inherit; font-variant-numeric: tabular-nums; text-align: right; }
+  .num::-webkit-outer-spin-button, .num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .regime { display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            margin-top: 4px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line2); background: var(--bg2); }
+  .badge { font-weight: 600; letter-spacing: .03em; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+  .badge.under { background: rgba(34,211,238,0.16); color: var(--accent); }
+  .badge.crit  { background: rgba(240,180,41,0.16); color: var(--warn); }
+  .badge.over  { background: rgba(52,211,153,0.16); color: var(--good); }
+  .legend { display: flex; gap: 12px; font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .legend i { display: inline-block; width: 10px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+  .plots-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  .plots-2col h2 { margin-top: 0; }
+
+  /* Learning detail collapses to keep the control column short. */
+  details.learn summary { cursor: pointer; list-style: none; }
+  details.learn summary::-webkit-details-marker { display: none; }
+
+  /* Responsive: stack panel under the stage on narrow viewports. */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: minmax(280px, 48vh) 1fr; }
+    .panel { border-left: none; border-top: 1px solid var(--line); }
+    .panel-pinned { border-top: 1px solid var(--line); }
+    .plots-2col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<!-- Shared, unit-tested cart-pendulum physics (see physics.js + tests/). -->
+<script src="physics.js"></script>
+<!-- Double-pendulum-on-cart physics for the Double tab (physics-double.js + tests/). -->
+<script src="physics-double.js"></script>
+<div class="app">
+  <div class="stage"><canvas id="cv"></canvas></div>
+  <aside class="panel">
+    <div class="panel-scroll">
+      <div class="h1-row">
+        <h1>Cart-Pendulum</h1>
+        <details class="help" style="margin-top:0">
+          <summary>What is this?</summary>
+          <p class="hint">
+          A cart on a rail carries a pendulum. <b>Drag the bob</b> to set an angle, then release
+          to drop it. Friction at the pivot (<b>cP</b>) and rail (<b>cR</b>) bleeds energy away, so
+          the swing decays over time. The damping <b>regime</b> depends on the damping ratio
+          <b>ζ</b>: ζ&lt;1 is <b>underdamped</b> (it oscillates while decaying), ζ=1 is
+          <b>critically damped</b> (fastest return without overshoot), ζ&gt;1 is <b>overdamped</b>
+          (slow, no oscillation). Critical occurs at cP = 2·√(g·L). The <b>Motor</b> uses a small
+          neural network that learns in the background (hill-climbing) to actively push the cart and
+          cancel the swing — turn it ON to watch the learned policy stabilize the pendulum.
+        </p>
+        </details>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Pendulum mode">
+        <button id="tabSingle" class="active" role="tab" aria-selected="true">Single</button>
+        <button id="tabDouble" role="tab" aria-selected="false">Double</button>
+      </div>
+
+      <div class="btns" style="margin-top:0">
+        <button id="playBtn" class="primary">Pause</button>
+        <button id="resetBtn">Drop again</button>
+      </div>
+
+      <h2>System</h2>
+      <div class="grid2">
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="L">Rod length L (m)</label><input class="num" id="nL" aria-label="Rod length in meters" type="number" min="0.4" max="2.5" step="0.01" value="1.20" /></div>
+          <input id="L" type="range" min="0.4" max="2.5" step="0.01" value="1.2" aria-label="Rod length L in meters" />
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="m">Bob mass m (kg)</label><input class="num" id="nm" aria-label="Bob mass in kilograms" type="number" min="0.1" max="5" step="0.05" value="1.00" /></div>
+          <input id="m" type="range" min="0.1" max="5" step="0.05" value="1.0" aria-label="Bob mass m in kilograms" />
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="M">Cart mass M (kg)</label><input class="num" id="nM" aria-label="Cart mass in kilograms" type="number" min="0.2" max="10" step="0.05" value="2.00" /></div>
+          <input id="M" type="range" min="0.2" max="10" step="0.05" value="2.0" aria-label="Cart mass M in kilograms" />
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="g">Gravity g (m/s²)</label><input class="num" id="ng" aria-label="Gravity in meters per second squared" type="number" min="0" max="20" step="0.05" value="9.81" /></div>
+          <input id="g" type="range" min="0" max="20" step="0.05" value="9.81" aria-label="Gravity g in meters per second squared" />
+        </div>
+      </div>
+      <!-- Second link: only meaningful (and shown) in Double mode. -->
+      <div class="grid2" id="link2Ctrls" style="display:none">
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="L2">Rod 2 length L₂ (m)</label><input class="num" id="nL2" aria-label="Second rod length in meters" type="number" min="0.3" max="2.0" step="0.01" value="0.90" /></div>
+          <input id="L2" type="range" min="0.3" max="2.0" step="0.01" value="0.9" aria-label="Second rod length L2 in meters" />
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="m2">Bob 2 mass m₂ (kg)</label><input class="num" id="nm2" aria-label="Second bob mass in kilograms" type="number" min="0.1" max="5" step="0.05" value="0.80" /></div>
+          <input id="m2" type="range" min="0.1" max="5" step="0.05" value="0.8" aria-label="Second bob mass m2 in kilograms" />
+        </div>
+      </div>
+
+      <h2>Damping</h2>
+      <div class="grid2">
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="cP">Pivot friction cP</label><input class="num" id="ncP" aria-label="Pivot friction coefficient" type="number" min="0" max="12" step="0.01" value="5.00" /></div>
+          <input id="cP" type="range" min="0" max="12" step="0.01" value="5.0" aria-label="Pivot friction coefficient cP" />
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-head"><label for="cR">Rail friction cR</label><input class="num" id="ncR" aria-label="Rail friction coefficient" type="number" min="0" max="5" step="0.01" value="0.20" /></div>
+          <input id="cR" type="range" min="0" max="5" step="0.01" value="0.2" aria-label="Rail friction coefficient cR" />
+        </div>
+      </div>
+
+      <h2>Regime presets</h2>
+      <div class="presets">
+        <button id="preUnder" type="button">Underdamped</button>
+        <button id="preCrit" type="button">Critically damped</button>
+        <button id="preOver" type="button">Overdamped</button>
+        <button id="preReset" type="button">Reset params</button>
+      </div>
+
+      <div class="regime" style="margin-top:6px">
+        <span class="badge under" id="regimeBadge">underdamped</span>
+        <span class="val" style="font-size:12px" id="regimeInfo">ζ — · crit cP —</span>
+      </div>
+
+      <h2>Motor</h2>
+      <button id="ctrlBtn" class="toggle off" style="width:100%;padding:6px 10px" aria-pressed="false" aria-label="Toggle motor controller">Motor OFF</button>
+
+      <div class="ctrl" style="margin-top:6px">
+        <div class="ctrl-head"><label for="Fmax">Max force (N)</label><span class="val" id="vFmax">120</span></div>
+        <input id="Fmax" type="range" min="2" max="400" step="1" value="120" aria-label="Maximum motor force in newtons" />
+      </div>
+
+      <details class="learn">
+        <summary><h2 style="display:inline">Learning ▾</h2></summary>
+        <div class="stats-grid" style="margin-top:4px">
+          <div class="row"><label>Generation</label><span class="val" id="sGen">0</span></div>
+          <div class="row"><label>Best score</label><span class="val" id="sScore">−∞</span></div>
+          <div class="row"><label>Mutation σ</label><span class="val" id="sSigma">0.30</span></div>
+          <div class="row"><label>Trials / sec</label><span class="val" id="sRate">0</span></div>
+        </div>
+        <canvas id="spark" aria-label="Best training score history"></canvas>
+        <div class="btns">
+          <button id="resetLearnBtn" type="button">Reset learning</button>
+          <button id="trainBtn" class="toggle on" type="button" aria-pressed="true">Training ON</button>
+        </div>
+      </details>
+    </div>
+
+    <div class="panel-pinned">
+      <h2>Live state</h2>
+      <div class="stats stats-grid" aria-live="polite">
+        <div class="row"><label>time t</label><span class="val" id="sT">0.00 s</span></div>
+        <div class="row"><label>θ angle</label><span class="val" id="sTh">0°</span></div>
+        <div class="row"><label>ω ang. vel</label><span class="val" id="sOm">0.00 rad/s</span></div>
+        <div class="row"><label>cart x</label><span class="val" id="sX">0.00 m</span></div>
+        <div class="row"><label>cart v</label><span class="val" id="sV">0.00 m/s</span></div>
+        <div class="row"><label>motor F</label><span class="val" id="sF">0.0 N</span></div>
+        <div class="row"><label>energy E</label><span class="val" id="sE">0.00 J</span></div>
+      </div>
+
+      <div class="plots-2col" style="margin-top:8px">
+        <div>
+          <h2>θ &amp; energy vs time</h2>
+          <canvas id="plot" aria-label="Theta and energy versus time"></canvas>
+          <div class="legend">
+            <span><i style="background:#22d3ee"></i>θ (deg)</span>
+            <span><i style="background:#34d399"></i>energy (J)</span>
+          </div>
+        </div>
+        <div>
+          <h2>Phase space θ–ω</h2>
+          <canvas id="phase" aria-label="Phase space plot of angle versus angular velocity"></canvas>
+          <div class="legend"><span>x: θ &nbsp; y: ω &nbsp; spirals to origin</span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const spark = document.getElementById('spark');
+  const sctx = spark.getContext('2d');
+  const plot = document.getElementById('plot');
+  const pctx = plot.getContext('2d');
+  const phase = document.getElementById('phase');
+  const phctx = phase.getContext('2d');
+
+  // ---------- Live state ----------
+  let mode = 'single';          // 'single' | 'double'
+  let x = 0, v = 0;
+  let theta = 0.6, omega = 0;   // single-pendulum angle / rate
+  // Double-pendulum angles/rates (link 1 off the cart, link 2 off bob 1).
+  let th1 = 0.6, om1 = 0, th2 = 0.9, om2 = 0;
+  let lastF = 0;
+  let simT = 0; // elapsed simulation time (s)
+
+  // Parameters
+  let L = 1.2, m = 1.0, M = 2.0, g = 9.81;
+  let L2 = 0.9, m2 = 0.8;       // second link (double mode only)
+  // Default pivot damping is near-critical (zeta ~ 0.73 at the default L, g) so a
+  // normal drop kills its momentum in one or two swoops — the whole point of a
+  // damping demo. cP_crit = 2*sqrt(g*L) ~ 6.86 here; 5.0 sits just under it.
+  let cP = 5.0, cR = 0.20;
+  let Fmax = 120;
+  let ctrlOn = false;
+  let trainOn = true;
+  let playing = true;
+  let dragging = false;
+
+  // Rail half-length (meters). Wide enough that natural damped motion — and
+  // even an only-partly-trained motor — never reaches the walls during normal
+  // use. (The bounded rail still exercises the one-sided wall constraint in
+  // physics.js; it's just placed far outside the cart's natural travel.)
+  const RAIL = 4.0;
+
+  // Visualization
+  const trail = [];
+  const TRAIL_MAX = 260;
+  let ppm = 220, railY = 0, centerX = 0;
+
+  // ---------- Policy: 4 -> 8 (tanh) -> 1 (tanh) MLP ----------
+  // Inputs: (theta, omega, x, v). Output: u in [-1,1], force = u·Fmax.
+  // The controller is NOT given any physics. It only sees the state.
+  const NIN = 4, NHID = 8;
+
+  function gaussian() {
+    // Box-Muller
+    const u = 1 - Math.random();
+    const r = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r);
+  }
+
+  function randPolicy() {
+    const s1 = Math.sqrt(2 / NIN), s2 = Math.sqrt(2 / NHID);
+    const p = {
+      W1: new Float32Array(NIN * NHID),
+      b1: new Float32Array(NHID),
+      W2: new Float32Array(NHID),
+      b2: 0,
+    };
+    for (let i = 0; i < p.W1.length; i++) p.W1[i] = gaussian() * s1;
+    for (let i = 0; i < p.W2.length; i++) p.W2[i] = gaussian() * s2;
+    return p;
+  }
+  function clonePolicy(p) {
+    return { W1: p.W1.slice(), b1: p.b1.slice(), W2: p.W2.slice(), b2: p.b2 };
+  }
+  function mutate(p, sigma) {
+    for (let i = 0; i < p.W1.length; i++) p.W1[i] += gaussian() * sigma;
+    for (let i = 0; i < p.b1.length; i++) p.b1[i] += gaussian() * sigma;
+    for (let i = 0; i < p.W2.length; i++) p.W2[i] += gaussian() * sigma * 0.5;
+    p.b2 += gaussian() * sigma * 0.5;
+  }
+  // Scratch buffer reused to avoid GC pressure during training.
+  const hScratch = new Float32Array(NHID);
+  function policy(p, th, om, xs, vs) {
+    for (let i = 0; i < NHID; i++) {
+      let s = p.b1[i];
+      s += p.W1[i*4+0] * th;
+      s += p.W1[i*4+1] * om;
+      s += p.W1[i*4+2] * xs;
+      s += p.W1[i*4+3] * vs;
+      hScratch[i] = Math.tanh(s);
+    }
+    let out = p.b2;
+    for (let i = 0; i < NHID; i++) out += p.W2[i] * hScratch[i];
+    return Math.tanh(out);
+  }
+
+  let best = randPolicy();
+  let bestScore = -Infinity;
+  let sigma = 0.3;
+  let gen = 0;
+
+  // ---------- Physics (shared by training rollouts & live sim) ----------
+  // Equations of motion + RK4 live in physics.js so the live sim, the training
+  // rollouts, and the test suite all run identical, unit-tested dynamics.
+  const { accel, rk4Step, energy } = PendulumPhysics;
+  const DBL = DoublePendulumPhysics; // accel/energy/rk4Step for the double mode
+  function params() { return { M, m, L, g, cR, cP }; }
+  function paramsD() { return { M, m1: m, m2, L1: L, L2, g, cR, cP }; }
+  function dblState() { return { x, v, th1, om1, th2, om2 }; }
+  // Current total mechanical energy for the active mode.
+  function curEnergy() {
+    return mode === 'double' ? DBL.energy(dblState(), paramsD())
+                             : energy(theta, omega, x, v, params());
+  }
+
+  // Soft-wall guard on the *applied* motor force (not the physics). A fresh /
+  // untrained policy often outputs a saturated, near-constant force that would
+  // drive the cart straight into a wall and park there. To keep the motor
+  // graceful without touching the unit-tested EOM in physics.js, we shape the
+  // controller's force near the walls:
+  //   1. fade out any force still pushing the cart further toward a wall, and
+  //   2. add a virtual spring+damper "cushion" that gently pushes/brakes the
+  //      cart back toward the playfield as it enters the margin.
+  // Away from the walls the controller's force is untouched (just its own Fmax
+  // budget); only inside the cushion can the restoring term exceed Fmax.
+  const WALL_MARGIN = 1.6; // m: width of the cushion zone near each wall
+  function limitForce(F, xs, vs) {
+    // Clamp the raw controller force to its budget first.
+    F = Math.max(-Fmax, Math.min(Fmax, F));
+    // Depth into the right/left cushion zone (0 outside, ->1 at the wall).
+    const dR = Math.max(0, (xs - (RAIL - WALL_MARGIN)) / WALL_MARGIN);
+    const dL = Math.max(0, ((-RAIL + WALL_MARGIN) - xs) / WALL_MARGIN);
+    if (dR > 0) {
+      if (F > 0) F *= (1 - dR);                        // don't push further in
+      // Spring+damper cushion with authority above Fmax so it dominates even a
+      // saturated controller and brakes the cart smoothly before the wall.
+      F -= Fmax * (3.0 * dR * dR + 0.8 * Math.max(0, vs) * dR);
+    } else if (dL > 0) {
+      if (F < 0) F *= (1 - dL);
+      F += Fmax * (3.0 * dL * dL + 0.8 * Math.max(0, -vs) * dL);
+    }
+    // Bound the total to a modest multiple of Fmax so the cushion stays smooth,
+    // never an impulsive snap.
+    const cap = 6 * Fmax;
+    return Math.max(-cap, Math.min(cap, F));
+  }
+
+  function stepRK4(dt) {
+    if (mode === 'double') {
+      const P = paramsD();
+      // The learned policy has 4 inputs; in double mode we feed it the base
+      // link's (th1, om1) plus the cart state so the motor still acts on the
+      // cart. (It was trained on the single pendulum, so it merely nudges.)
+      const forceFn = (st) => ctrlOn ? limitForce(policy(best, st.th1, st.om1, st.x, st.v) * Fmax, st.x, st.v) : 0;
+      const ns = DBL.rk4Step(dblState(), P, dt, forceFn, RAIL);
+      x = ns.x; v = ns.v; th1 = ns.th1; om1 = ns.om1; th2 = ns.th2; om2 = ns.om2;
+      lastF = ns.F;
+      if (x >  RAIL) { x =  RAIL; if (v > 0) v = 0; }
+      if (x < -RAIL) { x = -RAIL; if (v < 0) v = 0; }
+      simT += dt;
+      return;
+    }
+    const P = params();
+    const forceFn = (st) => ctrlOn ? limitForce(policy(best, st.theta, st.omega, st.x, st.v) * Fmax, st.x, st.v) : 0;
+    const ns = rk4Step({ x, v, theta, omega }, P, dt, forceFn, RAIL);
+    x = ns.x; v = ns.v; theta = ns.theta; omega = ns.omega;
+    lastF = ns.F;
+    if (x >  RAIL) { x =  RAIL; if (v > 0) v = 0; }
+    if (x < -RAIL) { x = -RAIL; if (v < 0) v = 0; }
+    simT += dt;
+  }
+
+  // ---------- Damping regime (small-angle pendulum, heavy-cart limit) ----------
+  // th'' + (cP/L) th' + (g/L) th = 0  =>  critical at cP = 2*sqrt(g*L).
+  // zeta = (cP/L) / (2*w0), w0 = sqrt(g/L). zeta<1 under, =1 critical, >1 over.
+  function dampingRegime() {
+    if (g <= 0) return { name: 'none', cls: 'under', zeta: 0, cpCrit: 0 };
+    const w0 = Math.sqrt(g / L);
+    const cpCrit = 2 * Math.sqrt(g * L);
+    const zeta = (cP / L) / (2 * w0);
+    let name = 'underdamped', cls = 'under';
+    if (Math.abs(zeta - 1) < 0.02) { name = 'critically damped'; cls = 'crit'; }
+    else if (zeta > 1) { name = 'overdamped'; cls = 'over'; }
+    return { name, cls, zeta, cpCrit };
+  }
+
+  // ---------- Training: hill climbing on the policy ----------
+  // Fast Euler integration for rollouts (faster than RK4, plenty good for
+  // scoring policies; once trained, RK4 in the live sim gives smooth motion).
+  const EVAL_ANGLES = [0.35, -0.45, 0.6, -0.25];
+  const EVAL_DT = 1/120;
+  const EVAL_STEPS = 360; // 3 seconds per rollout
+
+  function rolloutScore(p, theta0) {
+    let xs = 0, vs = 0, th = theta0, om = 0;
+    let score = 0;
+    const P = params();
+    for (let i = 0; i < EVAL_STEPS; i++) {
+      const u = policy(p, th, om, xs, vs);
+      const F = u * Fmax;
+      const a = accel(th, om, xs, vs, F, P, RAIL);
+      vs += a.xdd * EVAL_DT;
+      xs += vs * EVAL_DT;
+      if (xs >  RAIL) { xs =  RAIL; if (vs > 0) vs = 0; }
+      if (xs < -RAIL) { xs = -RAIL; if (vs < 0) vs = 0; }
+      om += a.tdd * EVAL_DT;
+      th += om * EVAL_DT;
+      // Penalize swing, motion, drift. Lower is worse; we use -cost as score.
+      score -= th*th + 0.05*om*om + 0.02*xs*xs + 0.01*vs*vs + 0.0001*F*F;
+    }
+    return score;
+  }
+  function evaluate(p) {
+    let s = 0;
+    for (let i = 0; i < EVAL_ANGLES.length; i++) s += rolloutScore(p, EVAL_ANGLES[i]);
+    return s;
+  }
+
+  function trainStep() {
+    const cand = clonePolicy(best);
+    mutate(cand, sigma);
+    const s = evaluate(cand);
+    if (s > bestScore) {
+      bestScore = s;
+      best = cand;
+      sigma = Math.max(0.01, sigma * 0.94);   // tighten when improving
+    } else {
+      sigma = Math.min(0.5, sigma * 1.015);    // widen when stuck
+    }
+    gen++;
+  }
+
+  // Score history sparkline
+  const history = [];
+  const HIST_MAX = 240;
+
+  // θ + energy time series for the live physics plot
+  const series = []; // { t, th (deg), E }
+  const SERIES_MAX = 400;
+  let plotAcc = 0;
+  function pushSeries() {
+    // In double mode the plotted angle/rate track the base link (th1, om1).
+    const th = mode === 'double' ? th1 : theta;
+    const om = mode === 'double' ? om1 : omega;
+    series.push({ t: simT, th: th * 180 / Math.PI, E: curEnergy() });
+    if (series.length > SERIES_MAX) series.shift();
+    // Phase-space sample (presentation only): angle vs angular velocity.
+    phaseBuf.push({ th, om });
+    if (phaseBuf.length > PHASE_MAX) phaseBuf.shift();
+  }
+
+  // θ–ω phase-space ring buffer (presentation only).
+  const phaseBuf = [];
+  const PHASE_MAX = 600;
+
+  // ---------- Canvas sizing ----------
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const r = cv.getBoundingClientRect();
+    cv.width = Math.floor(r.width * dpr);
+    cv.height = Math.floor(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const sr = spark.getBoundingClientRect();
+    spark.width = Math.floor(sr.width * dpr);
+    spark.height = Math.floor(sr.height * dpr);
+    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const pr = plot.getBoundingClientRect();
+    plot.width = Math.floor(pr.width * dpr);
+    plot.height = Math.floor(pr.height * dpr);
+    pctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const phr = phase.getBoundingClientRect();
+    phase.width = Math.floor(phr.width * dpr);
+    phase.height = Math.floor(phr.height * dpr);
+    phctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  // Re-measure canvases when a collapsible section opens/closes (the panel
+  // reflows, and a hidden canvas reports zero size until it becomes visible).
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', resize));
+  resize();
+
+  // ---------- Geometry ----------
+  function bobPos() {
+    const cartPx = centerX + x * ppm;
+    const cartH = 28, pivotY = railY - cartH / 2;
+    if (mode === 'double') {
+      const b1x = cartPx + Math.sin(th1) * L * ppm;
+      const b1y = pivotY + Math.cos(th1) * L * ppm;
+      const b2x = b1x + Math.sin(th2) * L2 * ppm;
+      const b2y = b1y + Math.cos(th2) * L2 * ppm;
+      return { cartX: cartPx, cartY: railY,
+               bob1X: b1x, bob1Y: b1y, bob2X: b2x, bob2Y: b2y,
+               bobX: b2x, bobY: b2y }; // bobX/Y = outer bob (used for the trail)
+    }
+    return {
+      cartX: cartPx, cartY: railY,
+      bobX:  cartPx + Math.sin(theta) * L * ppm,
+      bobY:  pivotY + Math.cos(theta) * L * ppm,
+    };
+  }
+
+  // ---------- Render ----------
+  // Scientific palette (kept in sync with the CSS :root variables).
+  const COL = {
+    bg: '#0e1726', bg2: '#0a1220',
+    rail: '#33455f', stop: '#22d3ee', tickMinor: '#1d2c44', tickMajor: '#3c5170',
+    label: '#8696b0', trail: 'rgba(34,211,238,0.30)', trail2: 'rgba(56,189,248,0.28)',
+    cartFill: '#1b2a42', cartStroke: '#5b7299', wheel: '#0a1220', wheelStroke: '#7e8ba5',
+    pivot: '#e8eef7', rod: '#c4d2e6', rod2: '#9fb4d4',
+    bob1a: '#7fe9f7', bob1b: '#22d3ee', bob1ring: '#0e7c93',
+    bob2a: '#86c5fb', bob2b: '#38bdf8', bob2ring: '#1d6fa5',
+    forceOn: '#34d399', forceOff: '#22d3ee',
+  };
+
+  // Pixels of inset between the rail endpoints and the canvas edges, so the
+  // cart and end-stops never touch the canvas border (clear gutter all round).
+  const EDGE_MARGIN = 56;
+
+  function draw() {
+    const w = cv.clientWidth, h = cv.clientHeight;
+    ctx.fillStyle = COL.bg; ctx.fillRect(0, 0, w, h);
+
+    railY = Math.min(h * 0.24, 170);
+    const wantRodPx  = h - railY - 110;
+    // Inset the rail well within the canvas so the end-stops sit comfortably
+    // off both edges. The drawable rail width excludes EDGE_MARGIN on each side.
+    const wantRailPx = w - 2 * EDGE_MARGIN;
+    const rodReach = mode === 'double' ? (L + L2) : L;
+    ppm = Math.min(wantRodPx / rodReach, wantRailPx / (2 * RAIL));
+    centerX = w / 2;
+
+    const railLeft  = centerX - RAIL * ppm;
+    const railRight = centerX + RAIL * ppm;
+
+    // Rail
+    ctx.strokeStyle = COL.rail; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(railLeft, railY); ctx.lineTo(railRight, railY); ctx.stroke();
+    ctx.lineCap = 'butt';
+    // End stops (cyan accent)
+    ctx.strokeStyle = COL.stop; ctx.lineWidth = 3;
+    for (const ex of [railLeft, railRight]) {
+      ctx.beginPath(); ctx.moveTo(ex, railY - 18); ctx.lineTo(ex, railY + 18); ctx.stroke();
+    }
+    // Ticks
+    ctx.strokeStyle = COL.tickMinor; ctx.lineWidth = 1;
+    for (let mx = -RAIL; mx <= RAIL + 1e-6; mx += 0.5) {
+      const px = centerX + mx * ppm;
+      ctx.beginPath(); ctx.moveTo(px, railY - 6); ctx.lineTo(px, railY + 6); ctx.stroke();
+    }
+    ctx.strokeStyle = COL.tickMajor; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(centerX, railY - 10); ctx.lineTo(centerX, railY + 10); ctx.stroke();
+    ctx.fillStyle = COL.label;
+    ctx.font = '11px system-ui, Segoe UI, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText((2 * RAIL).toFixed(1) + ' m rail', centerX, railY - 24);
+    ctx.textAlign = 'start';
+
+    const p = bobPos();
+    const cartH = 28;
+    drawCart(p.cartX, p.cartY, cartH);
+    const pivotY = p.cartY - cartH / 2;
+
+    // Trail of the (outermost) bob.
+    if (trail.length > 1) {
+      ctx.strokeStyle = COL.trail; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(trail[0].x, trail[0].y);
+      for (let i = 1; i < trail.length; i++) ctx.lineTo(trail[i].x, trail[i].y);
+      ctx.stroke();
+    }
+
+    if (mode === 'double') {
+      // Two links + two bobs hanging from the cart pivot.
+      drawRod(p.cartX, pivotY, p.bob1X, p.bob1Y, COL.rod);
+      drawRod(p.bob1X, p.bob1Y, p.bob2X, p.bob2Y, COL.rod2);
+      drawBob(p.bob1X, p.bob1Y, 8 + Math.sqrt(m) * 6, COL.bob1a, COL.bob1b, COL.bob1ring);
+      drawBob(p.bob2X, p.bob2Y, 8 + Math.sqrt(m2) * 6, COL.bob2a, COL.bob2b, COL.bob2ring);
+    } else {
+      drawRod(p.cartX, pivotY, p.bobX, p.bobY, COL.rod);
+      drawBob(p.bobX, p.bobY, 9 + Math.sqrt(m) * 8, COL.bob1a, COL.bob1b, COL.bob1ring);
+    }
+
+    // Motor force arrow
+    if (Math.abs(lastF) > 0.5) {
+      const arrowLen = Math.max(-140, Math.min(140, lastF * 1.0));
+      const y0 = p.cartY, x0 = p.cartX, x1 = x0 + arrowLen;
+      ctx.strokeStyle = ctrlOn ? COL.forceOn : COL.forceOff; ctx.fillStyle = ctx.strokeStyle;
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); ctx.stroke();
+      const head = 8 * Math.sign(arrowLen || 1);
+      ctx.beginPath(); ctx.moveTo(x1, y0); ctx.lineTo(x1 - head, y0 - 5); ctx.lineTo(x1 - head, y0 + 5);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+
+  function drawCart(cx, cy, cartH) {
+    const cartW = 60 + Math.sqrt(M) * 14;
+    ctx.fillStyle = COL.cartFill; ctx.strokeStyle = COL.cartStroke; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.rect(cx - cartW/2, cy - cartH/2, cartW, cartH);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = COL.wheel; ctx.strokeStyle = COL.wheelStroke;
+    for (const dx of [-cartW/2 + 12, cartW/2 - 12]) {
+      ctx.beginPath(); ctx.arc(cx + dx, cy + cartH/2 + 4, 6, 0, Math.PI*2);
+      ctx.fill(); ctx.stroke();
+    }
+    ctx.fillStyle = COL.pivot;
+    ctx.beginPath(); ctx.arc(cx, cy - cartH/2, 4, 0, Math.PI*2); ctx.fill();
+  }
+
+  function drawRod(x0, y0, x1, y1, color) {
+    ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.lineCap = 'butt';
+  }
+
+  function drawBob(bx, by, r, c0, c1, ring) {
+    const grad = ctx.createRadialGradient(bx - r*0.3, by - r*0.3, r*0.2, bx, by, r);
+    grad.addColorStop(0, c0); grad.addColorStop(1, c1);
+    ctx.fillStyle = grad; ctx.strokeStyle = ring; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(bx, by, r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  }
+
+  function drawSparkline() {
+    const w = spark.clientWidth, h = spark.clientHeight;
+    sctx.fillStyle = COL.bg2; sctx.fillRect(0, 0, w, h);
+    if (history.length < 2) return;
+    let lo = Infinity, hi = -Infinity;
+    for (const v of history) { if (v < lo) lo = v; if (v > hi) hi = v; }
+    if (hi - lo < 1e-6) hi = lo + 1;
+    sctx.strokeStyle = COL.bob1b; sctx.lineWidth = 1.5;
+    sctx.beginPath();
+    for (let i = 0; i < history.length; i++) {
+      const px = (i / (HIST_MAX - 1)) * w;
+      const py = h - ((history[i] - lo) / (hi - lo)) * (h - 4) - 2;
+      if (i === 0) sctx.moveTo(px, py); else sctx.lineTo(px, py);
+    }
+    sctx.stroke();
+  }
+
+  function drawPlot() {
+    const w = plot.clientWidth, h = plot.clientHeight;
+    pctx.fillStyle = COL.bg2; pctx.fillRect(0, 0, w, h);
+    // zero line for theta
+    pctx.strokeStyle = COL.tickMinor; pctx.lineWidth = 1;
+    pctx.beginPath(); pctx.moveTo(0, h / 2); pctx.lineTo(w, h / 2); pctx.stroke();
+    if (series.length < 2) return;
+    const t0 = series[0].t, t1 = series[series.length - 1].t;
+    const span = Math.max(1e-3, t1 - t0);
+    // theta: symmetric scale; energy: own scale
+    let thMax = 1e-6, eLo = Infinity, eHi = -Infinity;
+    for (const s of series) {
+      thMax = Math.max(thMax, Math.abs(s.th));
+      if (s.E < eLo) eLo = s.E; if (s.E > eHi) eHi = s.E;
+    }
+    if (eHi - eLo < 1e-6) eHi = eLo + 1;
+    const X = t => ((t - t0) / span) * w;
+    // energy (green)
+    pctx.strokeStyle = COL.forceOn; pctx.lineWidth = 1.5; pctx.beginPath();
+    for (let i = 0; i < series.length; i++) {
+      const py = h - ((series[i].E - eLo) / (eHi - eLo)) * (h - 6) - 3;
+      i ? pctx.lineTo(X(series[i].t), py) : pctx.moveTo(X(series[i].t), py);
+    }
+    pctx.stroke();
+    // theta (blue)
+    pctx.strokeStyle = COL.bob1b; pctx.lineWidth = 1.5; pctx.beginPath();
+    for (let i = 0; i < series.length; i++) {
+      const py = h / 2 - (series[i].th / thMax) * (h / 2 - 4);
+      i ? pctx.lineTo(X(series[i].t), py) : pctx.moveTo(X(series[i].t), py);
+    }
+    pctx.stroke();
+  }
+
+  // ---------- Phase-space plot (presentation-only) ----------
+  // θ on x-axis, ω on y-axis. The damped trajectory spirals into the origin.
+  function drawPhase() {
+    const w = phase.clientWidth, h = phase.clientHeight;
+    phctx.fillStyle = COL.bg2; phctx.fillRect(0, 0, w, h);
+    // Symmetric scales from the data so the spiral fills the box.
+    let thMax = 1e-3, omMax = 1e-3;
+    for (const s of phaseBuf) {
+      const at = Math.abs(s.th), ao = Math.abs(s.om);
+      if (at > thMax) thMax = at;
+      if (ao > omMax) omMax = ao;
+    }
+    thMax *= 1.1; omMax *= 1.1;
+    const cx = w / 2, cy = h / 2;
+    const X = th => cx + (th / thMax) * (w / 2 - 4);
+    const Y = om => cy - (om / omMax) * (h / 2 - 4);
+    // Axes through origin.
+    phctx.strokeStyle = COL.tickMinor; phctx.lineWidth = 1;
+    phctx.beginPath(); phctx.moveTo(0, cy); phctx.lineTo(w, cy); phctx.stroke();
+    phctx.beginPath(); phctx.moveTo(cx, 0); phctx.lineTo(cx, h); phctx.stroke();
+    if (phaseBuf.length < 2) return;
+    // Trajectory: fade older samples by drawing as a single path (cheap).
+    phctx.strokeStyle = 'rgba(34,211,238,0.85)'; phctx.lineWidth = 1.4;
+    phctx.beginPath();
+    for (let i = 0; i < phaseBuf.length; i++) {
+      const px = X(phaseBuf[i].th), py = Y(phaseBuf[i].om);
+      i ? phctx.lineTo(px, py) : phctx.moveTo(px, py);
+    }
+    phctx.stroke();
+    // Current point.
+    const last = phaseBuf[phaseBuf.length - 1];
+    phctx.fillStyle = COL.bob1a;
+    phctx.beginPath(); phctx.arc(X(last.th), Y(last.om), 2.5, 0, Math.PI * 2); phctx.fill();
+  }
+
+  // ---------- UI wiring ----------
+  const $ = id => document.getElementById(id);
+  // Registry of apply() handlers so presets can drive the same sync path.
+  const applies = {};
+  // Two-way bind a slider (#id) and an optional numeric input (#n+id) to a setter.
+  const bindRange = (id, fmt, fn) => {
+    const el = $(id), num = $('n'+id), out = $('v'+id);
+    const clamp = v => Math.min(+el.max, Math.max(+el.min, v));
+    const apply = (val, fromNum) => {
+      val = clamp(val);
+      if (out) out.textContent = fmt(val);
+      if (num && !fromNum) num.value = fmt(val);
+      el.value = val;
+      fn(val);
+    };
+    applies[id] = apply;
+    apply(+el.value, false);
+    el.addEventListener('input', e => apply(+e.target.value, false));
+    if (num) {
+      num.addEventListener('input', e => { const v = parseFloat(e.target.value); if (!isNaN(v)) apply(v, true); });
+      num.addEventListener('blur',  () => { num.value = fmt(clamp(+el.value)); });
+    }
+  };
+  bindRange('L',   v => v.toFixed(2), v => { L = v; });
+  bindRange('m',   v => v.toFixed(2), v => { m = v; });
+  bindRange('M',   v => v.toFixed(2), v => { M = v; });
+  bindRange('g',   v => v.toFixed(2), v => { g = v; });
+  bindRange('L2',  v => v.toFixed(2), v => { L2 = v; });
+  bindRange('m2',  v => v.toFixed(2), v => { m2 = v; });
+  bindRange('cP',  v => v.toFixed(2), v => { cP = v; });
+  bindRange('cR',  v => v.toFixed(2), v => { cR = v; });
+  bindRange('Fmax',v => v.toFixed(0), v => { Fmax = v; bestScore = -Infinity; }); // re-eval after change
+
+  // ---------- Regime presets ----------
+  // Set cP relative to the critical value 2*sqrt(g*L) for the current g, L,
+  // routing through the bound apply() so slider, number and state stay synced.
+  function setCP(val) { applies['cP'](val, false); }
+  function critCP() { return 2 * Math.sqrt(g * L); }
+  $('preUnder').addEventListener('click', () => setCP(0.2 * critCP()));
+  $('preCrit').addEventListener('click',  () => setCP(critCP()));
+  $('preOver').addEventListener('click',  () => setCP(2.5 * critCP()));
+  $('preReset').addEventListener('click', () => {
+    applies['L'](1.2, false);  applies['m'](1.0, false);
+    applies['M'](2.0, false);  applies['g'](9.81, false);
+    applies['cP'](5.0, false); applies['cR'](0.20, false);
+    applies['Fmax'](120, false);
+  });
+
+  const ctrlBtn = $('ctrlBtn');
+  ctrlBtn.addEventListener('click', () => {
+    ctrlOn = !ctrlOn;
+    ctrlBtn.classList.toggle('on', ctrlOn);
+    ctrlBtn.classList.toggle('off', !ctrlOn);
+    ctrlBtn.setAttribute('aria-pressed', ctrlOn ? 'true' : 'false');
+    ctrlBtn.textContent = ctrlOn ? 'Motor ON' : 'Motor OFF';
+  });
+
+  const trainBtn = $('trainBtn');
+  trainBtn.addEventListener('click', () => {
+    trainOn = !trainOn;
+    trainBtn.classList.toggle('on', trainOn);
+    trainBtn.classList.toggle('off', !trainOn);
+    trainBtn.setAttribute('aria-pressed', trainOn ? 'true' : 'false');
+    trainBtn.textContent = trainOn ? 'Training ON' : 'Training OFF';
+  });
+
+  $('resetLearnBtn').addEventListener('click', () => {
+    best = randPolicy();
+    bestScore = -Infinity;
+    sigma = 0.3;
+    gen = 0;
+    history.length = 0;
+  });
+
+  const playBtn = $('playBtn');
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    playBtn.textContent = playing ? 'Pause' : 'Play';
+  });
+  function dropAgain() {
+    const a = (Math.random() * 0.8 + 0.3) * (Math.random() < 0.5 ? -1 : 1);
+    if (mode === 'double') {
+      // Offset the two links a little so a double drop looks lively (and, in the
+      // near-undamped regime, chaotic) rather than perfectly aligned.
+      th1 = a; om1 = 0;
+      th2 = a + (Math.random() * 0.7 + 0.2) * (Math.random() < 0.5 ? -1 : 1);
+      om2 = 0;
+    } else {
+      theta = a; omega = 0;
+    }
+    x = 0; v = 0; trail.length = 0;
+    simT = 0; series.length = 0; phaseBuf.length = 0;
+  }
+  $('resetBtn').addEventListener('click', dropAgain);
+
+  // ---------- Mode tabs (Single / Double) ----------
+  const tabSingle = $('tabSingle'), tabDouble = $('tabDouble'), link2Ctrls = $('link2Ctrls');
+  function setMode(next) {
+    if (next === mode) return;
+    mode = next;
+    const dbl = mode === 'double';
+    tabDouble.classList.toggle('active', dbl);
+    tabSingle.classList.toggle('active', !dbl);
+    tabDouble.setAttribute('aria-selected', dbl ? 'true' : 'false');
+    tabSingle.setAttribute('aria-selected', dbl ? 'false' : 'true');
+    link2Ctrls.style.display = dbl ? 'grid' : 'none';
+    bestScore = -Infinity; // re-evaluate the policy against the new dynamics
+    dropAgain();
+    resize();
+  }
+  tabSingle.addEventListener('click', () => setMode('single'));
+  tabDouble.addEventListener('click', () => setMode('double'));
+
+  // Drag bob
+  cv.addEventListener('pointerdown', (e) => {
+    const r = cv.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    const p = bobPos();
+    const dx = px - p.bobX, dy = py - p.bobY;
+    if (dx*dx + dy*dy < 40*40) {
+      dragging = true;
+      cv.setPointerCapture(e.pointerId);
+    }
+  });
+  cv.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const r = cv.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    const cartPx = centerX + x * ppm;
+    const cartH = 28, pivotY = railY - cartH / 2;
+    const ang = Math.atan2(px - cartPx, py - pivotY);
+    if (mode === 'double') {
+      // Drag swings the whole chain rigidly to the pointer angle (both links
+      // straight); release then lets it fall and (lightly damped) go chaotic.
+      th1 = ang; om1 = 0; th2 = ang; om2 = 0;
+    } else {
+      theta = ang; omega = 0;
+    }
+  });
+  cv.addEventListener('pointerup',    () => { if (dragging) { simT = 0; series.length = 0; phaseBuf.length = 0; } dragging = false; });
+  cv.addEventListener('pointercancel',() => { dragging = false; });
+
+  // Stats
+  const sT=$('sT'), sTh=$('sTh'), sOm=$('sOm'), sX=$('sX'), sV=$('sV'), sF=$('sF'), sE=$('sE');
+  const sGen=$('sGen'), sScore=$('sScore'), sSigma=$('sSigma'), sRate=$('sRate');
+  const regimeBadge=$('regimeBadge'), regimeInfo=$('regimeInfo');
+  function updateStats() {
+    const dbl = mode === 'double';
+    const thShow = dbl ? th1 : theta, omShow = dbl ? om1 : omega;
+    sT.textContent  = simT.toFixed(2) + ' s';
+    sTh.textContent = dbl
+      ? (th1 * 180 / Math.PI).toFixed(0) + '° / ' + (th2 * 180 / Math.PI).toFixed(0) + '°'
+      : (theta * 180 / Math.PI).toFixed(1) + '°';
+    sOm.textContent = omShow.toFixed(2) + ' rad/s';
+    sX.textContent  = x.toFixed(2) + ' m';
+    sV.textContent  = v.toFixed(2) + ' m/s';
+    sF.textContent  = lastF.toFixed(1) + ' N';
+    sE.textContent  = curEnergy().toFixed(2) + ' J';
+    sGen.textContent = gen;
+    sScore.textContent = bestScore === -Infinity ? '−∞' : bestScore.toFixed(1);
+    sSigma.textContent = sigma.toFixed(3);
+
+    const r = dampingRegime();
+    regimeBadge.textContent = r.name;
+    regimeBadge.className = 'badge ' + r.cls;
+    regimeInfo.textContent = 'ζ ' + r.zeta.toFixed(2) + ' · crit cP ' + r.cpCrit.toFixed(2);
+  }
+
+  // ---------- Animation + training loop ----------
+  const DT = 1/480;
+  let acc = 0, last = performance.now();
+  let trialsThisSec = 0, secMark = last;
+
+  function frame(now) {
+    const real = Math.min(0.05, (now - last) / 1000);
+    last = now;
+
+    // Live sim
+    if (playing && !dragging) {
+      acc += real;
+      while (acc >= DT) { stepRK4(DT); acc -= DT; }
+      const p = bobPos();
+      trail.push({ x: p.bobX, y: p.bobY });
+      if (trail.length > TRAIL_MAX) trail.shift();
+      // Sample the θ/energy time series ~50 Hz for the plot.
+      plotAcc += real;
+      if (plotAcc >= 0.02) { pushSeries(); plotAcc = 0; }
+    } else {
+      trail.length = 0;
+      lastF = 0;
+    }
+
+    // Background training: run a budget of trials per frame so the
+    // page stays interactive while the policy improves quickly.
+    if (trainOn) {
+      const budgetMs = 8; // ~half of a 16 ms frame
+      const t0 = performance.now();
+      while (performance.now() - t0 < budgetMs) {
+        trainStep();
+        trialsThisSec++;
+        history.push(bestScore);
+        if (history.length > HIST_MAX) history.shift();
+      }
+    }
+    if (now - secMark > 1000) {
+      sRate.textContent = trialsThisSec;
+      trialsThisSec = 0;
+      secMark = now;
+    }
+
+    draw();
+    drawSparkline();
+    drawPlot();
+    drawPhase();
+    updateStats();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
