@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 
-// The hidden character's image. Swap this for any image you drop in
-// /public/images to change the mascot.
+// The hidden character's image. Swap this for any file you drop in
+// /public/images (e.g. '/images/waldo.png') to change the mascot.
 const CHARACTER_SRC = '/images/waldo.png';
 
 // A hidden mascot that peeks from the LEFT edge and stays pinned to the page as
@@ -41,7 +41,7 @@ export default function EggHunt() {
   return (
     <>
       {!found && (
-        <div className="fixed -left-[12.5px] top-[42%] z-40 flex items-center">
+        <div className="fixed -left-5 top-[42%] z-40 flex items-center">
           <motion.button
             onClick={collect}
             data-cursor="hover"
