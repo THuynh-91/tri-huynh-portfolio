@@ -222,10 +222,10 @@
       "Admin panel for managing players and balances",
       "Playable solo demo embedded here — the same game engines, running fully client-side (no server)"
     ],
-    "demoUrl": null,
+    "demoUrl": "https://maison-casino.onrender.com",
     "embedUrl": "/demos/casino/index.html",
     "localUrl": "http://localhost:4900",
-    "githubUrl": null,
+    "githubUrl": "https://github.com/THuynh-91/maison-casino",
     "imageUrl": "/images/covers/casino.svg",
     "previewImage": "/images/previews/casino.png",
     "runLocally": "Multiplayer needs the Node + Socket.io server; the embedded demo here plays the solo games (roulette, blackjack, slots, plinko) with no backend.",
