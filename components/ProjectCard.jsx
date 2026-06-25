@@ -18,7 +18,8 @@ export default function ProjectCard({ project, onView }) {
   // Interactive embedded demos open in a new tab (basePath-aware URL).
   const embedHref = project.embedUrl ? `${basePath}${project.embedUrl}` : null;
   // Screenshot previews still open in the in-page modal (a screenshot is useless in a new tab).
-  const canPreview = !embedHref && !!project.previewImage;
+  // Suppressed when a live local app (localUrl) or embedded demo exists — the live app is the primary action.
+  const canPreview = !embedHref && !project.localUrl && !!project.previewImage;
 
   // 3D tilt
   const mx = useMotionValue(0.5);
@@ -124,6 +125,17 @@ export default function ProjectCard({ project, onView }) {
         </ul>
 
         <div className="mt-6 flex flex-wrap gap-3 font-mono text-sm">
+          {project.localUrl && (
+            <a
+              href={project.localUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-medium text-accent hover:underline"
+              data-cursor="hover"
+            >
+              Open app ↗
+            </a>
+          )}
           {embedHref && (
             <a
               href={embedHref}

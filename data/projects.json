@@ -51,6 +51,7 @@
       "End-to-end TypeScript architecture deployed on Vercel"
     ],
     "demoUrl": "https://custom-ai-wordle.vercel.app",
+    "localUrl": "http://localhost:5173",
     "githubUrl": "https://github.com/THuynh-91/custom_wordle",
     "imageUrl": "/images/ai-wordle.png",
     "tag": "Full-Stack",
@@ -70,6 +71,7 @@
       "Explains why each track was recommended"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4200",
     "githubUrl": "https://github.com/THuynh-91/music-recommendation-spotify",
     "imageUrl": "/images/spotify-rec.png",
     "previewImage": "/images/previews/spotify.png",
@@ -91,6 +93,7 @@
       "Docker Compose for reproducible environments"
     ],
     "demoUrl": "https://rock-paper-scissor-mind-game.vercel.app",
+    "localUrl": "http://localhost:4600",
     "githubUrl": "https://github.com/THuynh-91/Rock-Paper-Scissor-Mind-Game",
     "imageUrl": "/images/rps-ai.png",
     "tag": "ML",
@@ -110,6 +113,7 @@
       "Vision support: solve from a screenshot of a problem"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4710",
     "githubUrl": null,
     "imageUrl": "/images/covers/code-studio.svg",
     "previewImage": "/images/previews/code-studio.png",
@@ -131,6 +135,7 @@
       "Documented methodology in reproducible notebooks"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4830",
     "githubUrl": "https://github.com/THuynh-91/Tennis-Match-Modeling",
     "imageUrl": "/images/covers/tennis.svg",
     "previewImage": "/images/previews/tennis.png",
@@ -173,6 +178,7 @@
       "Deterministic offline mock mode for development"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4100",
     "githubUrl": null,
     "imageUrl": "/images/covers/ai-architect.svg",
     "previewImage": "/images/previews/business-case.png",
@@ -194,6 +200,7 @@
       "Accessible UI with error boundaries and recovery flows"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4400",
     "githubUrl": null,
     "imageUrl": "/images/covers/taxassistant.svg",
     "previewImage": "/images/previews/taxassistant.png",
@@ -215,6 +222,7 @@
       "Admin panel for managing players and balances"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4900",
     "githubUrl": null,
     "imageUrl": "/images/covers/casino.svg",
     "previewImage": "/images/previews/casino.png",
@@ -276,6 +284,7 @@
       "Runs fully free without any API key"
     ],
     "demoUrl": null,
+    "localUrl": "http://localhost:4812",
     "githubUrl": null,
     "imageUrl": "/images/covers/receipt.svg",
     "runLocally": "Streamlit app; run locally to split a receipt (manual mode needs no API key).",
