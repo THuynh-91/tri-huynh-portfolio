@@ -11,15 +11,32 @@ const initials = (title) =>
     .join('')
     .toUpperCase();
 
+// A localhost "Open app" link is only useful to the person running the apps on
+// their own machine — it is DEAD for public visitors on GitHub Pages. We show it
+// only in local development. Two guards, belt-and-suspenders:
+//   1. Build-time: `process.env.NODE_ENV` is inlined by Next at export; the Pages
+//      build runs with NODE_ENV=production, so this whole branch is dropped.
+//   2. Run-time: even in a prod bundle opened on localhost (rare), we re-check the
+//      hostname, so a locally-served production build still behaves correctly.
+const IS_DEV_BUILD = process.env.NODE_ENV !== 'production';
+function showLocalLinks() {
+  if (!IS_DEV_BUILD) return false;
+  if (typeof window === 'undefined') return IS_DEV_BUILD; // SSR/export: trust the build flag
+  const h = window.location.hostname;
+  return h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || h === '';
+}
+
 export default function ProjectCard({ project, onView }) {
   const router = useRouter();
   const basePath = router.basePath || '';
   const imageSrc = project.imageUrl ? `${basePath}${project.imageUrl}` : null;
   // Interactive embedded demos open in a new tab (basePath-aware URL).
   const embedHref = project.embedUrl ? `${basePath}${project.embedUrl}` : null;
+  // Only surface a localhost "Open app" link in local dev (never on the published site).
+  const localHref = showLocalLinks() && project.localUrl ? project.localUrl : null;
   // Screenshot previews still open in the in-page modal (a screenshot is useless in a new tab).
-  // Suppressed when a live local app (localUrl) or embedded demo exists — the live app is the primary action.
-  const canPreview = !embedHref && !project.localUrl && !!project.previewImage;
+  // Suppressed when a live demo, an embedded demo, OR a shown local link is the primary action.
+  const canPreview = !embedHref && !project.demoUrl && !localHref && !!project.previewImage;
 
   // 3D tilt
   const mx = useMotionValue(0.5);
@@ -125,9 +142,9 @@ export default function ProjectCard({ project, onView }) {
         </ul>
 
         <div className="mt-6 flex flex-wrap gap-3 font-mono text-sm">
-          {project.localUrl && (
+          {localHref && (
             <a
-              href={project.localUrl}
+              href={localHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-accent hover:underline"

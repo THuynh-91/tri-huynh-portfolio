@@ -219,14 +219,16 @@
       "Five games: Roulette, Blackjack, Slots, Plinko, and No-Limit Texas Hold'em",
       "Real-time shared rooms with synced, server-authoritative balances",
       "Drag-and-drop chip betting with correct payouts and crypto RNG",
-      "Admin panel for managing players and balances"
+      "Admin panel for managing players and balances",
+      "Playable solo demo embedded here — the same game engines, running fully client-side (no server)"
     ],
     "demoUrl": null,
+    "embedUrl": "/demos/casino/index.html",
     "localUrl": "http://localhost:4900",
     "githubUrl": null,
     "imageUrl": "/images/covers/casino.svg",
     "previewImage": "/images/previews/casino.png",
-    "runLocally": "Node + Socket.io server; run locally to host a real-time multiplayer room.",
+    "runLocally": "Multiplayer needs the Node + Socket.io server; the embedded demo here plays the solo games (roulette, blackjack, slots, plinko) with no backend.",
     "tag": "Full-Stack",
     "year": "2026",
     "featured": true
