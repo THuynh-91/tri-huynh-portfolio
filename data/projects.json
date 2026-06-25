@@ -127,14 +127,14 @@
     "title": "Tennis Match Modeling",
     "tagline": "Predicting ATP match winners from historical data",
     "description": "An ML study that engineers features from decades of ATP match data and trains gradient-boosted and random-forest models to predict the winner between two players.",
-    "tech": ["Python", "scikit-learn", "XGBoost", "Pandas", "NumPy", "Jupyter"],
+    "tech": ["Python", "Streamlit", "scikit-learn", "Pandas", "NumPy"],
     "impact": [
-      "Feature engineering over historical ATP match records",
-      "Compared random forest and XGBoost classifiers",
-      "Explored how player and match context drive win probability",
-      "Documented methodology in reproducible notebooks"
+      "Live Streamlit dashboard: pick a year range and train models in-browser",
+      "Leakage-free feature engineering over 1990-2024 ATP match records",
+      "Compares logistic regression and random-forest classifiers with time-aware splits",
+      "Explores how player and match context drive win probability"
     ],
-    "demoUrl": null,
+    "demoUrl": "https://tennis-dashboard-pfyp.onrender.com",
     "localUrl": "http://localhost:4830",
     "githubUrl": "https://github.com/THuynh-91/Tennis-Match-Modeling",
     "imageUrl": "/images/covers/tennis.svg",
