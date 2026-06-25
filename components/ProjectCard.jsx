@@ -107,6 +107,13 @@ export default function ProjectCard({ project, onView }) {
             <span className="rounded-full glass px-2.5 py-1 text-muted">{project.year}</span>
           )}
         </div>
+        {project.wip && (
+          <div className="absolute right-3 top-3 font-mono text-[11px]">
+            <span className="rounded-full bg-amber-400/90 px-2.5 py-1 font-semibold text-black shadow-sm">
+              ⚠ work in progress
+            </span>
+          </div>
+        )}
       </div>
 
       {/* body */}
