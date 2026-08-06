@@ -20,6 +20,26 @@
     "featured": true
   },
   {
+    "id": 4,
+    "title": "AI Wordle Duel",
+    "tagline": "Race optimized AI solvers across multiple word lengths",
+    "description": "A full-stack word-guessing game featuring AI opponents powered by algorithmic solvers. Play daily Wordle, challenge the AI with custom words, or race it head-to-head across 3-7 letter words.",
+    "tech": ["TypeScript", "React", "Vite", "Node.js", "Express", "Python", "Vercel"],
+    "impact": [
+      "Four modes: Daily Wordle, Challenge AI, Race Mode, and Human Play",
+      "Variable word lengths (3-7 letters) with intelligent solving",
+      "Real-time competitive play with live scoreboard and turn indicators",
+      "End-to-end TypeScript architecture deployed on Vercel"
+    ],
+    "demoUrl": "https://custom-ai-wordle.vercel.app",
+    "localUrl": "http://localhost:5173",
+    "githubUrl": "https://github.com/THuynh-91/custom_wordle",
+    "imageUrl": "/images/ai-wordle.png",
+    "tag": "Full-Stack",
+    "year": "2025",
+    "featured": true
+  },
+  {
     "id": 1,
     "wip": true,
     "title": "USCIS AI Assistant",
@@ -57,26 +77,6 @@
     "imageUrl": "/images/art/study-chatbot.svg",
     "tag": "Agentic AI",
     "year": "2026",
-    "featured": true
-  },
-  {
-    "id": 4,
-    "title": "AI Wordle Duel",
-    "tagline": "Race optimized AI solvers across multiple word lengths",
-    "description": "A full-stack word-guessing game featuring AI opponents powered by algorithmic solvers. Play daily Wordle, challenge the AI with custom words, or race it head-to-head across 3-7 letter words.",
-    "tech": ["TypeScript", "React", "Vite", "Node.js", "Express", "Python", "Vercel"],
-    "impact": [
-      "Four modes: Daily Wordle, Challenge AI, Race Mode, and Human Play",
-      "Variable word lengths (3-7 letters) with intelligent solving",
-      "Real-time competitive play with live scoreboard and turn indicators",
-      "End-to-end TypeScript architecture deployed on Vercel"
-    ],
-    "demoUrl": "https://custom-ai-wordle.vercel.app",
-    "localUrl": "http://localhost:5173",
-    "githubUrl": "https://github.com/THuynh-91/custom_wordle",
-    "imageUrl": "/images/ai-wordle.png",
-    "tag": "Full-Stack",
-    "year": "2025",
     "featured": true
   },
   {
