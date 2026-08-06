@@ -27,6 +27,7 @@ and `tag` are required; everything else is optional.
 | `year`         | string      | no       | Shown as a pill on the cover. |
 | `featured`     | boolean     | no       | `true` shows it in the default top-3 "featured" view. |
 | `demoUrl`      | string/null | no       | A **public** hosted demo (e.g. a Vercel URL). Highest-priority action. |
+| `demoLabel`    | string/null | no       | Overrides the card's demo link text (default `live demo ↗`). Use the product's real name when the link points at a named, publicly launched product — e.g. `"CruxPack"` renders `CruxPack ↗`. |
 | `embedUrl`     | string/null | no       | Path to a self-contained static demo bundled under `public/` (e.g. `/demos/casino/index.html`). Opens in a new tab. Works on GitHub Pages with no backend. |
 | `previewImage` | string/null | no       | Path to a screenshot under `public/` (e.g. `/images/previews/foo.png`). Opens the in-page lightbox. Used only when there's no live/embedded demo. |
 | `imageUrl`     | string/null | no       | Card cover image under `public/`. Falls back to initials if omitted. |

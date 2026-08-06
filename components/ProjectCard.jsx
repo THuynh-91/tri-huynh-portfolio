@@ -189,7 +189,7 @@ export default function ProjectCard({ project, onView }) {
               className="inline-flex items-center gap-1 text-accent hover:underline"
               data-cursor="hover"
             >
-              live demo ↗
+              {`${project.demoLabel || 'live demo'} ↗`}
             </a>
           )}
           {project.githubUrl && (

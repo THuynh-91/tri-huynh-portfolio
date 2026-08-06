@@ -1,5 +1,25 @@
 [
   {
+    "id": 15,
+    "title": "CruxPack",
+    "tagline": "Upload a lecture deck or PDF, get a full study pack back",
+    "description": "CruxPack — an AI study-pack generator that turns lecture slides and PDFs into flashcards, structured notes, practice problems and a printable cheat sheet. It is live at cruxpack.io: a Next.js app deployed on Fly.io, using Google's Gemini models for generation and Stripe for paid plans.",
+    "tech": ["Next.js", "TypeScript", "Gemini", "Stripe", "Fly.io"],
+    "impact": [
+      "CruxPack turns lecture slides and PDFs into flashcards, structured notes, practice problems, and a printable cheat sheet",
+      "Live at cruxpack.io with user accounts and Stripe-backed paid plans",
+      "Google's Gemini models drive extraction and generation across the whole pack",
+      "Next.js app deployed on Fly.io"
+    ],
+    "demoUrl": "https://cruxpack.io",
+    "demoLabel": "CruxPack",
+    "githubUrl": null,
+    "imageUrl": "/images/art/cruxpack.svg",
+    "tag": "Full-Stack",
+    "year": "2026",
+    "featured": true
+  },
+  {
     "id": 1,
     "wip": true,
     "title": "USCIS AI Assistant",
