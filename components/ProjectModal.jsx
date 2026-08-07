@@ -3,13 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 
 /**
- * Project preview modal / lightbox.
+ * Project detail modal / lightbox.
  *
- * Used only for SCREENSHOT-PREVIEW projects (no real hosted/embedded demo):
+ * Reachable from EVERY card, including ones with a live demo — the card shows only the
+ * tagline, five tech chips and two impact bullets, so this is the only place the full
+ * description, the complete impact list and the whole stack are readable.
  *   - previewImage → renders a real screenshot + a "run locally" note
- *   - (none)       → falls back to the cover image + description
+ *   - (none)       → falls back to the cover image
  *
- * Real interactive/live demos open in a new tab from the card instead.
+ * A live demo still opens in a new tab from the card; this is the detail view, not a
+ * replacement for it.
  *
  * Accessible: focus trap, Escape to close, restores focus on close,
  * locks body scroll while open. Uses the existing design tokens only.
@@ -75,7 +78,7 @@ export default function ProjectModal({ project, onClose }) {
           onKeyDown={onKeyDown}
           role="dialog"
           aria-modal="true"
-          aria-label={`${project.title} — preview`}
+          aria-label={`${project.title} — project details`}
         >
           <motion.div
             ref={panelRef}
@@ -103,7 +106,7 @@ export default function ProjectModal({ project, onClose }) {
                 ref={closeRef}
                 onClick={onClose}
                 data-cursor="hover"
-                aria-label="Close preview"
+                aria-label="Close project details"
                 className="shrink-0 rounded-lg border border-line px-3 py-1.5 font-mono text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
               >
                 esc ✕
@@ -121,18 +124,52 @@ export default function ProjectModal({ project, onClose }) {
                   />
                 </div>
               ) : coverSrc ? (
+                // Decorative cover art, not a screenshot — capped to roughly the card's own
+                // media height so it stays a header and doesn't push the actual write-up
+                // (the entire reason this modal exists) below the fold on a laptop.
                 <div className="bg-surface-2 p-3 sm:p-4">
                   <img
                     src={coverSrc}
                     alt={project.title}
-                    className="mx-auto w-full rounded-lg border border-line"
+                    className="mx-auto max-h-52 w-full rounded-lg border border-line object-cover"
                   />
                 </div>
               ) : null}
 
-              {/* description + run-locally note */}
+              {/* description + full impact list + full stack + run-locally note */}
               <div className="px-5 py-4">
                 <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+
+                {project.impact?.length > 0 && (
+                  <div className="mt-5">
+                    <h4 className="eyebrow">highlights</h4>
+                    <ul className="mt-2.5 space-y-1.5">
+                      {project.impact.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted">
+                          <span className="mt-0.5 text-accent">▸</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {project.tech?.length > 0 && (
+                  <div className="mt-5">
+                    <h4 className="eyebrow">stack</h4>
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
+                      {project.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-muted"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {project.runLocally && (
                   <p className="mt-3 flex items-start gap-2 font-mono text-[13px] text-muted">
                     <span className="mt-0.5 text-accent">▸</span>

@@ -34,9 +34,21 @@ export default function ProjectCard({ project, onView }) {
   const embedHref = project.embedUrl ? `${basePath}${project.embedUrl}` : null;
   // Only surface a localhost "Open app" link in local dev (never on the published site).
   const localHref = showLocalLinks() && project.localUrl ? project.localUrl : null;
-  // Screenshot previews still open in the in-page modal (a screenshot is useless in a new tab).
-  // Suppressed when a live demo, an embedded demo, OR a shown local link is the primary action.
-  const canPreview = !embedHref && !project.demoUrl && !localHref && !!project.previewImage;
+  // A demo — hosted, embedded, or (in dev) local — is the card's PRIMARY action.
+  const hasPrimaryAction = !!(embedHref || project.demoUrl || localHref);
+  // The card itself only ever shows the tagline, five tech chips and two impact bullets. The
+  // full write-up — description, every impact bullet, the whole stack — lives in the modal, so
+  // the modal has to stay reachable for EVERY project. It used to be suppressed whenever a card
+  // had a primary action, which hid the details of exactly the projects that are live.
+  // A screenshot-only project keeps its original accent "view →" wording (a screenshot is
+  // useless in a new tab, so the modal IS its primary action); when a demo is the primary
+  // action the details button takes the secondary muted treatment already used by "source ↗",
+  // so the live link and the details button read as clearly different things.
+  const canPreview = !hasPrimaryAction && !!project.previewImage;
+  const detailsLabel = canPreview ? 'view →' : 'details →';
+  const detailsClass = hasPrimaryAction
+    ? 'text-muted hover:text-fg transition-colors'
+    : 'text-accent hover:underline';
 
   // 3D tilt
   const mx = useMotionValue(0.5);
@@ -171,16 +183,6 @@ export default function ProjectCard({ project, onView }) {
               open demo ↗
             </a>
           )}
-          {canPreview && (
-            <button
-              type="button"
-              onClick={() => onView?.(project)}
-              className="inline-flex items-center gap-1 text-accent hover:underline"
-              data-cursor="hover"
-            >
-              view →
-            </button>
-          )}
           {project.demoUrl && (
             <a
               href={project.demoUrl}
@@ -192,6 +194,17 @@ export default function ProjectCard({ project, onView }) {
               {`${project.demoLabel || 'live demo'} ↗`}
             </a>
           )}
+          {/* Always present: the only route to the full write-up. Sits after the primary
+              action so the live demo stays the first thing in the tab order. */}
+          <button
+            type="button"
+            onClick={() => onView?.(project)}
+            aria-label={`View full details for ${project.title}`}
+            className={`inline-flex items-center gap-1 ${detailsClass}`}
+            data-cursor="hover"
+          >
+            {detailsLabel}
+          </button>
           {project.githubUrl && (
             <a
               href={project.githubUrl}

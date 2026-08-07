@@ -3,14 +3,15 @@
     "id": 15,
     "title": "CruxPack",
     "tagline": "Upload a lecture deck or PDF, get a full study pack back",
-    "description": "CruxPack turns lecture slides and PDFs into a full study pack — flashcards, structured notes, practice problems, and a printable cheat sheet. Behind it is a self-hosted, stateful production system: ~121k lines of TypeScript across 299 files and 60 API routes on a long-lived Fly.io VM with a 10 GB volume rather than serverless, because SQLite, uploads, rendered figures, and the headless Chromium that rasterises PDF exports all need a real disk and no function timeout. Gemini generates, Stripe takes real payments, Litestream backs up the database continuously, and 5,092 tests keep it honest.",
+    "description": "CruxPack turns a lecture PDF into something you can actually revise from: flashcards, structured notes, practice problems and a printable cheat sheet, with the original figures kept and cited back to the page they came from. Most of the engineering is in what happens after the upload — pulling out text and figures, rendering diagrams, mathematics and chemical structures, screening every image before anyone sees it, and exporting to seven formats including a real Anki deck. That pipeline needs a filesystem and no function timeout, so it is self-hosted on a long-lived VM rather than serverless.",
     "tech": ["Next.js", "Fly.io", "SQLite (Drizzle)", "Gemini", "Stripe", "TypeScript", "Docker", "Puppeteer"],
     "impact": [
-      "Self-hosted on a long-lived Fly.io VM with a 10 GB persistent volume — SQLite on local disk via Drizzle, continuous Litestream backups",
-      "121k lines of TypeScript across 299 files and 60 API routes, covered by 5,092 tests",
-      "Ships its own Chromium in a multi-stage Docker image to rasterise PDF exports server-side — one of seven export formats, including native Anki decks",
-      "Extracts text and figures from PDFs, renders diagrams, math, and chemical structures, and screens every figure with an on-device nsfwjs model",
-      "Google OAuth with HMAC-signed sessions, CSRF origin checks, rate limiting, and Stripe subscriptions taking real payments"
+      "Deliberately not serverless: uploads, rendered figures, a SQLite database and a headless Chromium for PDF export all need a real disk and no function timeout, so it runs on a long-lived VM with continuous backups",
+      "Screens every figure it pulls out of an uploaded document with an on-device model before it can be shown to anyone else",
+      "Exports to seven formats, including a native Anki deck with real Basic and Cloze notetypes, so a student can take their work and leave",
+      "Extracts text and figures from PDFs, then renders diagrams, mathematics and chemical structures server-side",
+      "Google sign-in with HMAC-signed sessions, CSRF origin checks, rate limiting, and Stripe subscriptions taking real payments",
+      "Covered by 5,092 tests across 241 files"
     ],
     "demoUrl": "https://cruxpack.io",
     "demoLabel": "CruxPack",
