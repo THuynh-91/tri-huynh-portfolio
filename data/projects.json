@@ -3,15 +3,24 @@
     "id": 15,
     "title": "CruxPack",
     "tagline": "Upload a lecture deck or PDF, get a full study pack back",
-    "description": "CruxPack turns a lecture PDF into flashcards, notes, practice problems and a printable cheat sheet, keeping the source figures and citing the page each came from. Self-hosted on a long-lived VM rather than serverless, because the extraction, rendering and PDF pipeline needs a real filesystem.",
-    "tech": ["Next.js", "Fly.io", "SQLite (Drizzle)", "Gemini", "Stripe", "TypeScript", "Docker", "Puppeteer"],
+    "description": "Upload a lecture PDF and get back a full study pack: atomic flashcards, structured notes with source-page citations, practice problems with worked answers, and a printable two-side cheat sheet. It keeps the real diagrams from your slides instead of describing them, and exports the whole pack to Anki, Quizlet, PDF, Word, LaTeX or NotebookLM.",
+    "tech": [
+      "Next.js",
+      "Fly.io",
+      "SQLite (Drizzle)",
+      "Gemini",
+      "Stripe",
+      "TypeScript",
+      "Docker",
+      "Puppeteer"
+    ],
     "impact": [
-      "Runs on a long-lived VM with a persistent disk, not serverless",
-      "Screens every extracted figure with an on-device model before it's public",
-      "Exports to seven formats, including a native Anki deck",
-      "Extracts text and figures from PDFs; renders diagrams, math, and chemistry",
-      "Google OAuth, HMAC sessions, CSRF checks, rate limiting, Stripe subscriptions",
-      "5,092 tests across 241 files"
+      "Keeps the real diagrams from your slides instead of describing them",
+      "Exports to Anki, Quizlet, PDF, Word, LaTeX and NotebookLM",
+      "Cornell or plain notes, practice problems with worked answers, printable cheat sheet",
+      "Flip-and-grade flashcards, a timed exam mode, and answers drawn from your own pack",
+      "Handles diagrams, equations and chemical structures, not just text",
+      "Self-hosted with Stripe payments and 5,092 tests behind it"
     ],
     "demoUrl": "https://cruxpack.io",
     "demoLabel": "CruxPack",
@@ -26,7 +35,15 @@
     "title": "AI Wordle Duel",
     "tagline": "Race optimized AI solvers across multiple word lengths",
     "description": "A full-stack word-guessing game featuring AI opponents powered by algorithmic solvers. Play daily Wordle, challenge the AI with custom words, or race it head-to-head across 3-7 letter words.",
-    "tech": ["TypeScript", "React", "Vite", "Node.js", "Express", "Python", "Vercel"],
+    "tech": [
+      "TypeScript",
+      "React",
+      "Vite",
+      "Node.js",
+      "Express",
+      "Python",
+      "Vercel"
+    ],
     "impact": [
       "Four modes: Daily Wordle, Challenge AI, Race Mode, and Human Play",
       "Variable word lengths (3-7 letters) with intelligent solving",
@@ -47,7 +64,14 @@
     "title": "USCIS AI Assistant",
     "tagline": "Plain-English N-400 naturalization prep that fills the form for you (work in progress)",
     "description": "A guided service that walks applicants through the USCIS N-400 (Naturalization) form in plain English, generates a filled, print-ready PDF, and produces a personalized document checklist.",
-    "tech": ["Python", "FastAPI", "Next.js", "Docker", "Anthropic API", "PDF"],
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Next.js",
+      "Docker",
+      "Anthropic API",
+      "PDF"
+    ],
     "impact": [
       "Translates dense immigration forms into a guided, plain-English flow",
       "Generates a filled, print-ready N-400 PDF from user answers",
@@ -67,7 +91,14 @@
     "title": "RAG Study Chatbot",
     "tagline": "Answers from your own notes, not from pretraining",
     "description": "A retrieval-augmented study assistant that answers from user-uploaded content, keeping responses current and grounded in your material rather than the model's pretraining.",
-    "tech": ["Python", "Streamlit", "ChromaDB", "Sentence-Transformers", "Ollama (Qwen 7B)", "RAG"],
+    "tech": [
+      "Python",
+      "Streamlit",
+      "ChromaDB",
+      "Sentence-Transformers",
+      "Ollama (Qwen 7B)",
+      "RAG"
+    ],
     "impact": [
       "Custom RAG pipeline: format-aware extraction → overlap chunking → embeddings → persistent vector index",
       "Source-grounded responses so answers stay current vs. pretraining",
@@ -86,7 +117,16 @@
     "title": "Spotify Recommendation Engine",
     "tagline": "Explainable music discovery powered by audio DSP + vector search",
     "description": "A full-stack Spotify intelligence platform that authenticates via OAuth, ingests tracks and playlists, and surfaces explainable recommendations using FAISS vector search blended with librosa DSP features.",
-    "tech": ["Python", "FastAPI", "Next.js", "FAISS", "librosa", "PostgreSQL", "Redis", "Docker"],
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Next.js",
+      "FAISS",
+      "librosa",
+      "PostgreSQL",
+      "Redis",
+      "Docker"
+    ],
     "impact": [
       "PKCE OAuth with Spotify and secure HTTP-only token storage",
       "Blends librosa DSP descriptors with Spotify audio features for richer vectors",
@@ -108,7 +148,14 @@
     "title": "Rock Paper Scissors Mind Game",
     "tagline": "An online-learning AI that adapts to how you play",
     "description": "An intelligent game that learns and adapts to player patterns in real time, combining a TensorFlow/Keras model with behavioral frequency heuristics and streak detection.",
-    "tech": ["TensorFlow", "Keras", "Next.js", "FastAPI", "Docker", "Tailwind CSS"],
+    "tech": [
+      "TensorFlow",
+      "Keras",
+      "Next.js",
+      "FastAPI",
+      "Docker",
+      "Tailwind CSS"
+    ],
     "impact": [
       "Launched publicly and reached 1,000+ unique visitors",
       "Deep learning blended with behavioral heuristics and streak detection",
@@ -128,7 +175,14 @@
     "title": "Code Problem Studio",
     "tagline": "A local-first AI coding tutor with teaching scaffolds + UML",
     "description": "A chat-style coding tutor that takes a prompt (or image + caption), then returns a runnable solution, a TODO-based teaching scaffold, complexity notes, and interactive UML, all running locally via Ollama with no API keys.",
-    "tech": ["React", "Vite", "FastAPI", "Ollama", "Mermaid", "Tailwind CSS"],
+    "tech": [
+      "React",
+      "Vite",
+      "FastAPI",
+      "Ollama",
+      "Mermaid",
+      "Tailwind CSS"
+    ],
     "impact": [
       "Local-only inference via Ollama - fully private, no external keys",
       "Structured output: teaching, examples, reasoning, complexity, solution",
@@ -150,7 +204,13 @@
     "title": "Tennis Match Modeling",
     "tagline": "Predicting ATP match winners from historical data",
     "description": "An ML study that engineers features from decades of ATP match data and trains gradient-boosted and random-forest models to predict the winner between two players.",
-    "tech": ["Python", "Streamlit", "scikit-learn", "Pandas", "NumPy"],
+    "tech": [
+      "Python",
+      "Streamlit",
+      "scikit-learn",
+      "Pandas",
+      "NumPy"
+    ],
     "impact": [
       "Live Streamlit dashboard: pick a year range and train models in-browser",
       "Leakage-free feature engineering over 1990-2024 ATP match records",
@@ -172,7 +232,12 @@
     "title": "AAOC Planner",
     "tagline": "Average Age of Credit calculator with what-if planning",
     "description": "A financial planning tool that calculates your current Average Age of Credit and runs what-if scenarios for future credit decisions, built on a modular object-oriented architecture.",
-    "tech": ["Python", "OOP", "CLI", "GitHub Actions"],
+    "tech": [
+      "Python",
+      "OOP",
+      "CLI",
+      "GitHub Actions"
+    ],
     "impact": [
       "Automates Average Age of Credit calculations",
       "Runs what-if scenarios for future credit planning",
@@ -193,7 +258,14 @@
     "title": "AI Solution Architect",
     "tagline": "Turns a rough business idea into a structured implementation plan",
     "description": "A multi-agent system that takes a vague business idea and runs a pipeline of specialized agents (analyst, architecture, roadmap, risk, impact) to produce a structured, fully-editable implementation plan, streamed live over SSE.",
-    "tech": ["Python", "FastAPI", "Next.js", "Anthropic API", "SSE", "SQLAlchemy"],
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Next.js",
+      "Anthropic API",
+      "SSE",
+      "SQLAlchemy"
+    ],
     "impact": [
       "Pipeline of specialized agents via forced tool-use",
       "Live SSE streaming of each agent's output",
@@ -215,7 +287,13 @@
     "title": "TaxAssistant",
     "tagline": "Guided tax-year prep with AI document extraction",
     "description": "A guided tax-preparation app that organizes filing info, people, and documents, builds tax worksheets and a 1040 view, and uses AI to extract data from uploaded tax documents (with a manual fallback).",
-    "tech": ["Next.js", "React", "better-sqlite3", "Anthropic API", "Gemini"],
+    "tech": [
+      "Next.js",
+      "React",
+      "better-sqlite3",
+      "Anthropic API",
+      "Gemini"
+    ],
     "impact": [
       "Structured worksheets (brackets, deductions, Schedule E) with CSV export",
       "AI document extraction with retry/timeout + graceful no-key fallback",
@@ -237,7 +315,13 @@
     "title": "Maison - Multiplayer Casino",
     "tagline": "Play roulette, blackjack, poker, slots & plinko with friends in real time",
     "description": "A real-time multiplayer casino where friends join a shared room by code and play five games together, with server-authoritative chip balances, drag-and-drop betting, and an admin panel.",
-    "tech": ["Node.js", "Express", "Socket.io", "HTML5 Canvas", "JavaScript"],
+    "tech": [
+      "Node.js",
+      "Express",
+      "Socket.io",
+      "HTML5 Canvas",
+      "JavaScript"
+    ],
     "impact": [
       "Five games: Roulette, Blackjack, Slots, Plinko, and No-Limit Texas Hold'em",
       "Real-time shared rooms with synced, server-authoritative balances",
@@ -260,7 +344,12 @@
     "title": "Damped Pendulum Lab",
     "tagline": "Interactive cart-pendulum physics, verified against analytical solutions",
     "description": "An interactive physics sandbox simulating a damped cart-pendulum, with live controls for mass, length, gravity, and damping, plus energy and phase-space plots. The dynamics are verified against closed-form damped-oscillator solutions.",
-    "tech": ["JavaScript", "HTML5 Canvas", "RK4 Integration", "Physics"],
+    "tech": [
+      "JavaScript",
+      "HTML5 Canvas",
+      "RK4 Integration",
+      "Physics"
+    ],
     "impact": [
       "Full coupled cart-pendulum equations of motion via RK4",
       "Verified vs analytical solutions across under/critical/over-damped regimes",
@@ -280,7 +369,11 @@
     "title": "European Roulette Table",
     "tagline": "A polished single-player roulette table you can play right here",
     "description": "A self-contained European (single-zero) roulette table rendered on HTML5 Canvas, with drag-and-drop-style chip betting, inside/outside bets, a spinning wheel, payouts, and bet history — no server required.",
-    "tech": ["JavaScript", "HTML5 Canvas", "CSS"],
+    "tech": [
+      "JavaScript",
+      "HTML5 Canvas",
+      "CSS"
+    ],
     "impact": [
       "Single-zero European wheel with correct payouts and crypto-grade RNG",
       "Full betting board: straight, splits, columns, dozens, and even-money bets",
@@ -300,7 +393,12 @@
     "title": "Receipt Splitter",
     "tagline": "Split a receipt fairly, with AI extraction or manual entry",
     "description": "A bill-splitting tool that turns a photo of a receipt into itemized costs using built-in Gemini vision extraction (or manual entry) and divides totals across people, including shared items, tax, and tip.",
-    "tech": ["Next.js", "React", "TypeScript", "Gemini"],
+    "tech": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Gemini"
+    ],
     "impact": [
       "Snap a receipt and let Gemini vision itemize it automatically",
       "Assign items to people, handle shared items, tax, and tip",
