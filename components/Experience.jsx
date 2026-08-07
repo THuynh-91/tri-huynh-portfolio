@@ -14,9 +14,9 @@ export default function Experience() {
         <SectionHeader
           index="02"
           eyebrow="experience"
-          title="Where I built"
-          accent="real AI."
-          note="My most recent chapter: production AI agents and internal tools inside a Fortune-500 biotech."
+          title="Where I put AI"
+          accent="into production."
+          note="My most recent chapter: AI agents and internal tools running inside a Fortune-500 biotech."
         />
 
         <Reveal className="mt-12">

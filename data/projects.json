@@ -3,13 +3,14 @@
     "id": 15,
     "title": "CruxPack",
     "tagline": "Upload a lecture deck or PDF, get a full study pack back",
-    "description": "CruxPack — an AI study-pack generator that turns lecture slides and PDFs into flashcards, structured notes, practice problems and a printable cheat sheet. It is live at cruxpack.io: a Next.js app deployed on Fly.io, using Google's Gemini models for generation and Stripe for paid plans.",
-    "tech": ["Next.js", "TypeScript", "Gemini", "Stripe", "Fly.io"],
+    "description": "CruxPack turns lecture slides and PDFs into a full study pack — flashcards, structured notes, practice problems, and a printable cheat sheet. Behind it is a self-hosted, stateful production system: ~121k lines of TypeScript across 299 files and 60 API routes on a long-lived Fly.io VM with a 10 GB volume rather than serverless, because SQLite, uploads, rendered figures, and the headless Chromium that rasterises PDF exports all need a real disk and no function timeout. Gemini generates, Stripe takes real payments, Litestream backs up the database continuously, and 5,092 tests keep it honest.",
+    "tech": ["Next.js", "Fly.io", "SQLite (Drizzle)", "Gemini", "Stripe", "TypeScript", "Docker", "Puppeteer"],
     "impact": [
-      "CruxPack turns lecture slides and PDFs into flashcards, structured notes, practice problems, and a printable cheat sheet",
-      "Live at cruxpack.io with user accounts and Stripe-backed paid plans",
-      "Google's Gemini models drive extraction and generation across the whole pack",
-      "Next.js app deployed on Fly.io"
+      "Self-hosted on a long-lived Fly.io VM with a 10 GB persistent volume — SQLite on local disk via Drizzle, continuous Litestream backups",
+      "121k lines of TypeScript across 299 files and 60 API routes, covered by 5,092 tests",
+      "Ships its own Chromium in a multi-stage Docker image to rasterise PDF exports server-side — one of seven export formats, including native Anki decks",
+      "Extracts text and figures from PDFs, renders diagrams, math, and chemical structures, and screens every figure with an on-device nsfwjs model",
+      "Google OAuth with HMAC-signed sessions, CSRF origin checks, rate limiting, and Stripe subscriptions taking real payments"
     ],
     "demoUrl": "https://cruxpack.io",
     "demoLabel": "CruxPack",
