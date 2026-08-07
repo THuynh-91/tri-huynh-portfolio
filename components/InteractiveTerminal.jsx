@@ -3,6 +3,53 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import projectsData from '../data/projects.json';
 
+// The `project` command is driven entirely by data/projects.json so the terminal can never
+// drift from the cards. Slugs are derived from the title rather than stored, for the same
+// reason: rename a project and its command name follows automatically.
+const slugify = (title) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+// Forgiving lookup: "cruxpack", "CruxPack", "ai-wordle-duel" and "ai wordle duel" all match,
+// as does any unambiguous prefix.
+const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+const findProject = (query) => {
+  const q = normalize(query);
+  if (!q) return null;
+  const exact = projectsData.find((p) => normalize(p.title) === q);
+  if (exact) return exact;
+  const partial = projectsData.filter((p) => normalize(p.title).startsWith(q));
+  return partial.length === 1 ? partial[0] : null;
+};
+
+const projectNamesLine = () => [
+  { type: 'output', text: 'Valid names:' },
+  { type: 'output', text: projectsData.map((p) => slugify(p.title)).join(', ') },
+];
+
+// One long paragraph per line is correct here: the terminal body is a normal wrapping
+// block, not a <pre>, so the browser reflows it to whatever width the panel has. That is
+// what keeps the ~590-character description readable at 390px as well as on a desktop.
+const describeProject = (p) => {
+  const lines = [
+    {
+      type: 'system',
+      text: `${p.title} — ${p.tag} · ${p.year}${p.wip ? ' · work in progress' : ''}`,
+    },
+    { type: 'output', text: p.tagline },
+    { type: 'output', text: '' },
+    { type: 'output', text: p.description },
+  ];
+  if (p.impact?.length) {
+    lines.push({ type: 'output', text: '' }, { type: 'output', text: 'highlights:' });
+    p.impact.forEach((item) => lines.push({ type: 'output', text: `▸ ${item}` }));
+  }
+  lines.push({ type: 'output', text: '' }, { type: 'output', text: `stack: ${p.tech.join(', ')}` });
+  if (p.demoUrl) lines.push({ type: 'output', text: `live: ${p.demoUrl}` });
+  if (p.githubUrl) lines.push({ type: 'output', text: `source: ${p.githubUrl}` });
+  if (p.runLocally) lines.push({ type: 'output', text: `run locally: ${p.runLocally}` });
+  return lines;
+};
+
 export default function InteractiveTerminal({ isOpen, onClose }) {
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
@@ -70,7 +117,34 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
           type: 'output',
           text: `${String(i + 1).padStart(2)}. ${p.title} (${p.tagline})`,
         })),
+        { type: 'output', text: '' },
+        {
+          type: 'output',
+          text: `(tip: try "project ${slugify(projectsData[0].title)}" for the full write-up)`,
+        },
       ]
+    },
+    project: {
+      description: 'Full write-up for one project, e.g. project cruxpack',
+      action: (args = []) => {
+        const query = args.join(' ').trim();
+        if (!query) {
+          return [
+            { type: 'output', text: 'Usage: project <name>' },
+            { type: 'output', text: '' },
+            ...projectNamesLine(),
+          ];
+        }
+        const found = findProject(query);
+        if (!found) {
+          return [
+            { type: 'error', text: `No project matching "${query}".` },
+            { type: 'output', text: '' },
+            ...projectNamesLine(),
+          ];
+        }
+        return describeProject(found);
+      }
     },
     contact: {
       description: 'Get contact information',

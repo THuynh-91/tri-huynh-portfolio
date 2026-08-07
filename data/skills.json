@@ -5,6 +5,7 @@
     "Codex",
     "Copilot Studio",
     "Ollama",
+    "Gemini",
     "LangSmith",
     "RAG",
     "Agentic Workflows"
@@ -49,6 +50,8 @@
   ],
   "databases": [
     "ChromaDB",
+    "SQLite",
+    "Drizzle ORM",
     "PostgreSQL",
     "Redis",
     "MongoDB",
@@ -63,11 +66,15 @@
     "Jupyter Notebook",
     "VS Code",
     "PyCharm",
-    "Posit"
+    "Posit",
+    "Stripe",
+    "Litestream",
+    "Puppeteer"
   ],
   "cloud": [
     "AWS",
     "GitHub Actions (CI/CD)",
+    "Fly.io",
     "Vercel",
     "Render"
   ]

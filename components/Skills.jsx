@@ -29,7 +29,7 @@ export default function Skills() {
           eyebrow="toolkit"
           title="The stack I"
           accent="reach for."
-          note="A working toolkit across ML, backend, and full-stack, picked up by shipping real projects, not just coursework."
+          note="The tools I build with day to day: models and agents, the backend around them, and the app on top."
         />
       </div>
 

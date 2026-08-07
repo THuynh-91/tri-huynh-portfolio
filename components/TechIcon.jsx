@@ -37,6 +37,13 @@ const techIcons = {
   'Redis': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg',
   'MongoDB': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg',
   'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg',
+  'SQLite': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg',
+  // Fly.io, Gemini, Stripe and Drizzle have no devicon path (that CDN 403s for all four),
+  // so they follow the existing "served locally" pattern above: the Simple Icons glyph with
+  // an explicit fill. Brand colour where it reads on BOTH themes (surface-2 is #d7d7d4 light
+  // / #1e2130 dark); neutral #6B7280 where the official hex does not — same call already
+  // made for ollama.svg. Litestream has no Simple Icon, so it keeps the letter tile.
+  'Drizzle ORM': '/images/icons/drizzle.svg',
 
   // Tools
   'Git': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg',
@@ -46,6 +53,8 @@ const techIcons = {
   'Linux (Ubuntu)': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg',
   'Jupyter Notebook': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jupyter/jupyter-original.svg',
   'PyCharm': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pycharm/pycharm-original.svg',
+  'Puppeteer': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/puppeteer/puppeteer-original.svg',
+  'Stripe': '/images/icons/stripe.svg',
 
   // Cloud
   'AWS (Certified Cloud Practitioner)': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg',
@@ -61,11 +70,14 @@ const techIcons = {
 
   // Libraries (missing ones)
   'librosa': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-  'spotipy': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spotify/spotify-original.svg',
+  // devicon has no spotify icon (that path 403s), and spotipy is a Python library, so it
+  // uses the same Python mark as librosa and FAISS above.
+  'spotipy': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
   'FAISS': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
 
   // Platforms
   'Render': 'https://avatars.githubusercontent.com/u/36424661?s=200&v=4',
+  'Fly.io': '/images/icons/flyio.svg',
 
   // AI / agents - served locally (the simpleicons CDN was flaky / bot-blocked)
   'Claude': '/images/icons/claude.svg',
@@ -74,6 +86,7 @@ const techIcons = {
   'Codex': '/images/icons/codex.svg',
   'Copilot Studio': '/images/icons/copilot.svg',
   'Ollama': '/images/icons/ollama.svg',
+  'Gemini': '/images/icons/gemini.svg',
   'LangSmith': '/images/icons/langsmith.svg',
 
   // data / cloud - Databricks/Snowflake served locally; Azure via devicon
@@ -125,7 +138,11 @@ export default function TechIcon({ name, size = 'md', label = false }) {
   if (!iconUrl) {
     return (
       <div className="relative inline-block">
+        {/* No icon: the tile shows one letter, so it needs an accessible name of its own --
+            otherwise a screen reader (and any non-hover device) gets "L" and nothing else. */}
         <div
+          role="img"
+          aria-label={name}
           className={`${sizeClasses[size]} bg-surface-2 border border-line rounded-lg flex items-center justify-center text-accent font-bold cursor-help`}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
