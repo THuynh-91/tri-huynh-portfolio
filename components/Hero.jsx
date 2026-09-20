@@ -109,7 +109,7 @@ export default function Hero() {
               </div>
               <dl className="mt-4 space-y-3">
                 {[
-                  ['location', 'Boston, MA'],
+                  ['location', 'Boston, MA · open to relocate'],
                   ['school', 'Northeastern → 2027'],
                   ['focus', 'Agentic AI · ML · Backend'],
                   ['recent', 'AI agents @ Biogen'],

@@ -30,7 +30,7 @@ export default function About() {
                 where messy real-world data meets clean, usable software.
               </p>
               <p>
-                Right now I'm an <span className="text-accent">AI Engineer Co-op at Biogen</span>,
+                Through June 2026 I was an <span className="text-accent">AI Engineer Co-op at Biogen</span>,
                 building a persistent enterprise AI agent on the Claude SDK, Azure, and
                 Databricks: contextual conversations, data retrieval, and workflow
                 automation across business units.
@@ -70,8 +70,8 @@ export default function About() {
             <p className="eyebrow mb-4">quick facts</p>
             <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
               {[
-                'AI Engineer Co-op @ Biogen',
-                'Based in Boston, MA',
+                'AI Engineer Co-op @ Biogen (Jan–Jun 2026)',
+                'Boston, MA — open nationwide',
                 'Concentration in AI',
                 'Always shipping side projects',
               ].map((f) => (
@@ -85,10 +85,10 @@ export default function About() {
 
           {/* currently */}
           <Reveal delay={0.1} className={`${card} flex flex-col justify-center`}>
-            <p className="eyebrow mb-3">currently</p>
+            <p className="eyebrow mb-3">building now</p>
             <p className="text-fg text-sm leading-relaxed">
-              Shipping <span className="text-accent">enterprise AI agents</span> with the
-              Claude SDK, Azure & Databricks.
+              <span className="text-accent">CruxPack</span> and{' '}
+              <span className="text-accent">GitTimeline</span>, and graduating May 2027.
             </p>
           </Reveal>
         </div>

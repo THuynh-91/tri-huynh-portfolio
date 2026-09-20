@@ -17,7 +17,7 @@ export default function Contact() {
           eyebrow="contact"
           title="Let's build"
           accent="something."
-          note="Open to AI / ML roles, collaborations, and interesting problems. The fastest way to reach me is email."
+          note="Graduating May 2027 — open to new-grad software and AI engineering roles, nationwide or remote. The fastest way to reach me is email."
         />
 
         <div className="mt-12 grid gap-4 lg:grid-cols-5">

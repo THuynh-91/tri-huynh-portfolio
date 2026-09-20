@@ -35,7 +35,7 @@ export default function Education() {
             </div>
             <div className="font-mono text-sm md:text-right">
               <p className="text-fg">Boston, MA</p>
-              <p className="text-accent">expected · April 2027</p>
+              <p className="text-accent">expected · May 2027</p>
             </div>
           </div>
 
