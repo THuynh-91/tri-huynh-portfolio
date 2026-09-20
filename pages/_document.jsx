@@ -8,8 +8,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="utf-8" />
-        <meta name="description" content="Tri Huynh - AI & Backend Engineer. I build intelligent systems that turn messy data into useful products." />
-        <meta name="keywords" content="Full-Stack Developer, AI Engineer, Machine Learning, Backend Developer, Tri Huynh, Northeastern" />
         <meta name="author" content="Tri Huynh" />
         <meta name="theme-color" content="#0e0f15" />
         <script

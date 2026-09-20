@@ -13,8 +13,8 @@
   --border: #c0c0be;         /* Wordle border gray */
   --border-strong: #a9a9a5;
   --text: #1a1a1b;           /* Wordle near-black */
-  --text-muted: #787c7e;     /* Wordle secondary gray */
-  --accent: #6366f1;          /* indigo — primary brand accent (fills) */
+  --text-muted: #5f6368;     /* 6.05:1 on white, 4.71:1 on --bg; #787c7e failed AA */
+  --accent: #5457e0;          /* indigo — 5.50:1 with white; #6366f1 was 4.47:1 */
   --accent-soft: rgba(99, 102, 241, 0.12);
   --accent-text: #4f46e5;     /* indigo-600 — readable as text on light */
   --accent-2: #8b5cf6;        /* violet — secondary */
