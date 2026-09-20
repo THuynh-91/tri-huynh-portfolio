@@ -13,7 +13,7 @@ export default function Contact() {
     <section id="contact" className="section-padding">
       <div className="mx-auto max-w-wide">
         <SectionHeader
-          index="06"
+          index="05"
           eyebrow="contact"
           title="Let's build"
           accent="something."

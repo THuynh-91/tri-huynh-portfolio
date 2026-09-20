@@ -12,7 +12,7 @@ export default function Experience() {
     <section id="experience" className="section-padding">
       <div className="mx-auto max-w-wide">
         <SectionHeader
-          index="03"
+          index="02"
           eyebrow="experience"
           title="Where I put AI"
           accent="into production."

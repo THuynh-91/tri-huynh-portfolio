@@ -31,7 +31,7 @@ export default function Projects() {
       <div className="mx-auto max-w-wide">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <SectionHeader
-            index="04"
+            index="03"
             eyebrow="selected work"
             title="Things I've"
             accent="built."

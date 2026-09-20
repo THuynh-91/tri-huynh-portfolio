@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 import SectionHeader from './SectionHeader';
 import AnimatedCounter from './AnimatedCounter';
 import Reveal from './Reveal';
@@ -7,7 +8,21 @@ import projectsData from '../data/projects.json';
 const card =
   'rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-line-strong';
 
+const coursework = [
+  'Algorithms & Data Structures',
+  'Artificial Intelligence',
+  'Machine Learning',
+  'Object-Oriented Design',
+  'Data Science',
+  'Theory of Computation',
+  'Computer Systems',
+  'Computer Organization & Architecture',
+];
+
 export default function About() {
+  const router = useRouter();
+  const basePath = router.basePath || '';
+
   return (
     <section id="about" className="px-6 pb-10 pt-2 md:pb-14 md:pt-4">
       <div className="mx-auto max-w-wide">
@@ -25,9 +40,8 @@ export default function About() {
             <div className="space-y-4 text-muted leading-relaxed">
               <p>
                 I'm a Computer Science student at{' '}
-                <span className="text-fg">Northeastern University's Khoury College</span>,
-                concentrating in Artificial Intelligence. I care about the seam
-                where messy real-world data meets clean, usable software.
+                <span className="text-fg">Northeastern's Khoury College</span>. I care
+                about the seam where messy real-world data meets clean, usable software.
               </p>
               <p>
                 Through June 2026 I was an <span className="text-accent">AI Engineer Co-op at Biogen</span>,
@@ -59,10 +73,16 @@ export default function About() {
             <p className="mt-2 text-sm text-muted">projects designed & shipped</p>
           </Reveal>
 
-          {/* stat - graduation */}
+          {/* education */}
           <Reveal delay={0.1} className={`${card} flex flex-col justify-center`}>
-            <div className="font-display text-5xl font-semibold text-accent">2027</div>
-            <p className="mt-2 text-sm text-muted">expected B.S. graduation</p>
+            <img
+              src={`${basePath}/images/northeastern.svg`}
+              alt="Northeastern University"
+              className="h-6 w-auto"
+            />
+            <p className="mt-4 text-fg">B.S. Computer Science</p>
+            <p className="text-sm text-muted">Concentration in Artificial Intelligence</p>
+            <p className="mt-3 font-mono text-sm text-accent">expected &middot; May 2027</p>
           </Reveal>
 
           {/* quick facts */}
@@ -72,7 +92,7 @@ export default function About() {
               {[
                 'AI Engineer Co-op @ Biogen (Jan–Jun 2026)',
                 'Boston, MA — open nationwide',
-                'Concentration in AI',
+                'Open to 2027 new-grad roles',
                 'Always shipping side projects',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-muted">
@@ -88,8 +108,22 @@ export default function About() {
             <p className="eyebrow mb-3">building now</p>
             <p className="text-fg text-sm leading-relaxed">
               <span className="text-accent">CruxPack</span> and{' '}
-              <span className="text-accent">GitTimeline</span>, and graduating May 2027.
+              <span className="text-accent">GitTimeline</span>.
             </p>
+          </Reveal>
+          {/* coursework: the only thing the separate education section carried */}
+          <Reveal delay={0.15} className={`${card} md:col-span-3`}>
+            <p className="eyebrow mb-4">relevant coursework</p>
+            <div className="grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+              {coursework.map((course, i) => (
+                <div key={course} className="flex items-baseline gap-2.5 text-sm">
+                  <span className="font-mono text-xs text-muted">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-fg/90">{course}</span>
+                </div>
+              ))}
+            </div>
           </Reveal>
         </div>
       </div>
