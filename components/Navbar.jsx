@@ -111,6 +111,8 @@ export default function Navbar() {
           className="rounded-full p-2 hover:bg-surface-2 md:hidden"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-menu"
         >
           <svg className="h-5 w-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
             {isMobileMenuOpen ? <path d="M6 18L18 6M6 6l12 12" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -121,6 +123,7 @@ export default function Navbar() {
       {/* mobile menu */}
       {isMobileMenuOpen && (
         <motion.div
+          id="mobile-menu"
           className="absolute right-4 top-full mt-2 w-[min(20rem,calc(100%-2rem))] rounded-2xl glass p-4 font-mono md:hidden"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}

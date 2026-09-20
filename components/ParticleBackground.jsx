@@ -52,9 +52,19 @@ export default function ParticleBackground() {
 
     const LINK = 140;
     const MOUSE_LINK = 200;
+    const LINK2 = LINK * LINK;
+    const MOUSE_LINK2 = MOUSE_LINK * MOUSE_LINK;
+
+    // The theme only changes when <html> gains or loses `.dark`, so read the CSS
+    // variable then, instead of calling getComputedStyle inside the frame loop.
+    let colour = rgb();
+    const themeObserver = new MutationObserver(() => {
+      colour = rgb();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     const draw = () => {
-      const c = rgb();
+      const c = colour;
       ctx.clearRect(0, 0, w, h);
 
       for (const p of parts) {
@@ -71,8 +81,9 @@ export default function ParticleBackground() {
         // link to cursor
         const mdx = p.x - mouse.x;
         const mdy = p.y - mouse.y;
-        const md = Math.hypot(mdx, mdy);
-        if (md < MOUSE_LINK) {
+        const md2 = mdx * mdx + mdy * mdy;
+        if (md2 < MOUSE_LINK2) {
+          const md = Math.sqrt(md2);
           ctx.strokeStyle = `rgba(${c}, ${(1 - md / MOUSE_LINK) * 0.5})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -87,8 +98,9 @@ export default function ParticleBackground() {
         for (let j = i + 1; j < parts.length; j++) {
           const dx = parts[i].x - parts[j].x;
           const dy = parts[i].y - parts[j].y;
-          const d = Math.hypot(dx, dy);
-          if (d < LINK) {
+          const d2 = dx * dx + dy * dy;
+          if (d2 < LINK2) {
+            const d = Math.sqrt(d2);
             ctx.strokeStyle = `rgba(${c}, ${(1 - d / LINK) * 0.22})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -99,12 +111,31 @@ export default function ParticleBackground() {
         }
       }
 
-      raf = requestAnimationFrame(draw);
     };
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const loop = () => {
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (!raf && !reduce.matches) raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const onVisibility = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVisibility);
+
+    // Reduced motion still gets the field, just not the movement.
     draw();
+    start();
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      themeObserver.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseout', onLeave);
       window.removeEventListener('resize', resize);
