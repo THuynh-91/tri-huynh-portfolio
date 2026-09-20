@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 
 const initials = (title) =>
   title
@@ -56,38 +57,84 @@ export default function ProjectCard({ project, onView }) {
   const rotateX = useSpring(useTransform(my, [0, 1], [6, -6]), { stiffness: 200, damping: 20 });
   const rotateY = useSpring(useTransform(mx, [0, 1], [-6, 6]), { stiffness: 200, damping: 20 });
   // cursor-following glow position (%)
-  const glowX = useTransform(mx, (v) => `${v * 100}%`);
-  const glowY = useTransform(my, (v) => `${v * 100}%`);
+  /**
+   * The glow was a radial-gradient whose `at x y` was rebuilt every frame. A moving
+   * gradient cannot be composited, so the browser re-rasterised and repainted the
+   * whole card on every pointer sample. It is a fixed gradient that gets translated
+   * now, which the compositor handles without a repaint.
+   *
+   * getBoundingClientRect() per mousemove is also a forced synchronous layout, and
+   * mousemove fires at pointer polling rate rather than frame rate. The rect is read
+   * on enter and the updates are coalesced to one per frame.
+   */
+  const GLOW = 280;
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  const glowX = useTransform(px, (v) => v - GLOW);
+  const glowY = useTransform(py, (v) => v - GLOW);
+
+  const rectRef = useRef(null);
+  const frameRef = useRef(0);
+  const pendingRef = useRef(null);
+
+  const handleEnter = (e) => {
+    rectRef.current = e.currentTarget.getBoundingClientRect();
+  };
 
   const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width);
-    my.set((e.clientY - rect.top) / rect.height);
+    if (!rectRef.current) rectRef.current = e.currentTarget.getBoundingClientRect();
+    pendingRef.current = { cx: e.clientX, cy: e.clientY };
+    if (frameRef.current) return;
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = 0;
+      const rect = rectRef.current;
+      const pt = pendingRef.current;
+      if (!rect || !pt) return;
+      const lx = pt.cx - rect.left;
+      const ly = pt.cy - rect.top;
+      px.set(lx);
+      py.set(ly);
+      mx.set(lx / rect.width);
+      my.set(ly / rect.height);
+    });
   };
+
   const reset = () => {
+    if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    frameRef.current = 0;
+    rectRef.current = null;
     mx.set(0.5);
     my.set(0.5);
   };
 
+  useEffect(() => () => {
+    if (frameRef.current) cancelAnimationFrame(frameRef.current);
+  }, []);
+
   return (
     <motion.article
       className="tilt-card h-full group"
-      style={{ rotateX, rotateY, transformPerspective: 900 }}
+      style={{ rotateX, rotateY, transformPerspective: 900, willChange: 'transform' }}
+      onMouseEnter={handleEnter}
       onMouseMove={handleMove}
       onMouseLeave={reset}
       whileHover={{ y: -6 }}
       transition={{ type: 'spring', stiffness: 300, damping: 22 }}
     >
-      {/* cursor glow */}
-      <motion.div
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          background: useTransform(
-            [glowX, glowY],
-            ([gx, gy]) => `radial-gradient(280px circle at ${gx} ${gy}, var(--accent-soft), transparent 65%)`
-          ),
-        }}
-      />
+      {/* cursor glow: a static gradient that is moved, not a gradient that is rebuilt */}
+      <div className="pointer-events-none absolute -inset-px overflow-hidden rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <motion.div
+          className="absolute left-0 top-0"
+          style={{
+            width: GLOW * 2,
+            height: GLOW * 2,
+            x: glowX,
+            y: glowY,
+            willChange: 'transform',
+            background: 'radial-gradient(circle closest-side, var(--accent-soft), transparent 65%)',
+          }}
+        />
+      </div>
 
       {/* media */}
       <div className="relative h-44 overflow-hidden border-b border-line">
