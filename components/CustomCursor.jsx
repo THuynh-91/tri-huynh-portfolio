@@ -17,16 +17,34 @@ export default function CustomCursor() {
     setEnabled(true);
     document.documentElement.classList.add('cursor-enabled');
 
+    // mousemove fires at pointer polling rate, so nothing in here may do work that
+    // is not strictly needed: no setState unless the value actually changed, and the
+    // closest() walk only when the element under the pointer is a different one.
+    let lastTarget = null;
+    let lastHovering = null;
+    let lastHidden = null;
     const move = (e) => {
       x.set(e.clientX);
       y.set(e.clientY);
-      setHidden(false);
-      const interactive = e.target.closest(
-        'a, button, [data-cursor="hover"], input, textarea'
-      );
-      setHovering(Boolean(interactive));
+      if (lastHidden !== false) {
+        lastHidden = false;
+        setHidden(false);
+      }
+      if (e.target !== lastTarget) {
+        lastTarget = e.target;
+        const interactive = Boolean(
+          e.target.closest('a, button, [data-cursor="hover"], input, textarea')
+        );
+        if (interactive !== lastHovering) {
+          lastHovering = interactive;
+          setHovering(interactive);
+        }
+      }
     };
-    const leave = () => setHidden(true);
+    const leave = () => {
+      lastHidden = true;
+      setHidden(true);
+    };
 
     window.addEventListener('mousemove', move);
     document.addEventListener('mouseleave', leave);

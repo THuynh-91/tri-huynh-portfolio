@@ -121,6 +121,13 @@ body {
     border: 1px solid var(--border);
   }
 
+  /* Same surface, no blur. For small decorative chips, where a backdrop-filter
+     costs a re-blur every time the particle canvas behind it moves. */
+  .glass-flat {
+    @apply border border-line;
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+  }
+
   .hairline {
     border: 1px solid var(--border);
   }

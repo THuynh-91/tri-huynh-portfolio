@@ -11,7 +11,8 @@ export default function ParticleBackground() {
     let raf;
     let w = 0;
     let h = 0;
-    const dpr = 1; // soft dots and hairlines; 1.5x cost 2.25x the pixels for no visible gain
+    const dpr = 0.5; // the field is soft dots and hairlines, so it upscales cleanly;
+    // this is a quarter of the pixels of the original 1.5x backing store
 
     const rgb = () =>
       getComputedStyle(document.documentElement).getPropertyValue('--particle').trim() ||

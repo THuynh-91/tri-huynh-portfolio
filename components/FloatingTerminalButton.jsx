@@ -37,7 +37,7 @@ export default function FloatingTerminalButton() {
 
         {showTooltip && (
           <motion.div
-            className="absolute bottom-full right-0 mb-2 px-3 py-2 glass text-fg font-mono text-xs rounded-lg whitespace-nowrap"
+            className="absolute bottom-full right-0 mb-2 px-3 py-2 glass-flat text-fg font-mono text-xs rounded-lg whitespace-nowrap"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >

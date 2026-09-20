@@ -97,7 +97,7 @@ export default function ProjectModal({ project, onClose }) {
                     {project.tag}
                   </span>
                   {previewSrc && (
-                    <span className="rounded-full glass px-2.5 py-1 text-muted">preview</span>
+                    <span className="rounded-full glass-flat px-2.5 py-1 text-muted">preview</span>
                   )}
                 </div>
                 <h3 className="mt-2 font-display text-xl font-semibold">{project.title}</h3>

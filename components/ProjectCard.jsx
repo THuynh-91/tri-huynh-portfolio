@@ -167,7 +167,7 @@ export default function ProjectCard({ project, onView }) {
             {project.tag}
           </span>
           {project.year && (
-            <span className="rounded-full glass px-2.5 py-1 text-muted">{project.year}</span>
+            <span className="rounded-full glass-flat px-2.5 py-1 text-muted">{project.year}</span>
           )}
         </div>
         {project.wip && (
