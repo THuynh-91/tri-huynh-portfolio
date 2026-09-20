@@ -63,10 +63,10 @@ export default function Home() {
       <main className="relative z-10">
         <Hero />
         <About />
+        <Education />
         <Experience />
         <Projects />
         <Skills />
-        <Education />
         <Contact />
         <Footer />
       </main>

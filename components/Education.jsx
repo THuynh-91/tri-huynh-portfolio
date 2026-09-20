@@ -19,7 +19,7 @@ export default function Education() {
   return (
     <section id="education" className="section-padding">
       <div className="mx-auto max-w-wide">
-        <SectionHeader index="05" eyebrow="education" title="Where I'm" accent="learning." />
+        <SectionHeader index="02" eyebrow="education" title="Where I'm" accent="learning." />
 
         <Reveal className="mt-12 rounded-2xl border border-line bg-surface p-8 md:p-10">
           <div className="flex flex-col gap-6 border-b border-line pb-8 md:flex-row md:items-start md:justify-between">

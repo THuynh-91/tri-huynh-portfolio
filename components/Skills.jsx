@@ -25,7 +25,7 @@ export default function Skills() {
     <section id="skills" className="section-padding">
       <div className="mx-auto max-w-wide">
         <SectionHeader
-          index="04"
+          index="05"
           eyebrow="toolkit"
           title="The stack I"
           accent="reach for."
