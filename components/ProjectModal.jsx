@@ -140,6 +140,22 @@ export default function ProjectModal({ project, onClose }) {
               <div className="px-5 py-4">
                 <p className="text-sm leading-relaxed text-muted">{project.description}</p>
 
+                {project.metrics?.length > 0 && (
+                  <dl
+                    aria-label={`${project.title} key numbers`}
+                    className="mt-5 flex flex-wrap gap-x-8 gap-y-3"
+                  >
+                    {project.metrics.map((m) => (
+                      <div key={m.label} className="flex flex-col-reverse">
+                        <dt className="mt-0.5 text-xs text-muted">{m.label}</dt>
+                        <dd className="font-mono text-xl font-semibold tabular-nums text-accent">
+                          {m.value}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+
                 {project.impact?.length > 0 && (
                   <div className="mt-5">
                     <h4 className="eyebrow">highlights</h4>

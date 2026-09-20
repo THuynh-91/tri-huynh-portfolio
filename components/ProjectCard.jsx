@@ -94,7 +94,11 @@ export default function ProjectCard({ project, onView }) {
         {imageSrc ? (
           <img
             src={imageSrc}
-            alt={project.title}
+            alt={`${project.title} cover art`}
+            width={1200}
+            height={600}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
@@ -150,6 +154,22 @@ export default function ProjectCard({ project, onView }) {
             </span>
           )}
         </div>
+
+        {project.metrics?.length > 0 && (
+          <dl
+            aria-label={`${project.title} key numbers`}
+            className="mt-5 flex flex-wrap gap-x-6 gap-y-3 border-t border-line pt-4"
+          >
+            {project.metrics.slice(0, 3).map((m) => (
+              <div key={m.label} className="flex min-w-[5rem] flex-col-reverse">
+                <dt className="mt-0.5 text-[11px] leading-snug text-muted">{m.label}</dt>
+                <dd className="font-mono text-base font-semibold leading-tight tabular-nums text-accent">
+                  {m.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
 
         <ul className="mt-4 space-y-1.5">
           {project.impact.slice(0, 2).map((item, i) => (

@@ -25,7 +25,8 @@ and `tag` are required; everything else is optional.
 | `impact`       | string[]    | yes      | Bullet highlights (first 2 shown on the card). |
 | `tag`          | string      | yes      | Filter category. Existing: `Agentic AI`, `ML`, `Full-Stack`, `Tools`. A new value automatically creates a new filter pill. |
 | `year`         | string      | no       | Shown as a pill on the cover. |
-| `featured`     | boolean     | no       | `true` shows it in the default top-3 "featured" view. |
+| `featured`     | boolean     | no       | `true` puts it in the default view on the homepage. Exactly three are featured today; adding a fourth adds a fourth card, and `Projects.jsx` no longer slices, so this flag — not array order — decides the front page. |
+| `metrics`      | object[]    | no       | Up to three `{ value, label }` pairs, rendered as a strip on the card and in the modal. Keep `value` short (`4.9M`, `33ms`, `300/300`) and `label` to two or three words. Every number must be one you can defend. |
 | `demoUrl`      | string/null | no       | A **public** hosted demo (e.g. a Vercel URL). Highest-priority action. |
 | `demoLabel`    | string/null | no       | Overrides the card's demo link text (default `live demo ↗`). Use the product's real name when the link points at a named, publicly launched product — e.g. `"CruxPack"` renders `CruxPack ↗`. |
 | `embedUrl`     | string/null | no       | Path to a self-contained static demo bundled under `public/` (e.g. `/demos/casino/index.html`). Opens in a new tab. Works on GitHub Pages with no backend. |

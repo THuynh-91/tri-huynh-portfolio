@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" font-family="'Segoe UI',Helvetica,Arial,sans-serif">
+<defs>
+  <radialGradient id="gtg" cx="0.5" cy="0.45" r="0.8"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#020617"/></radialGradient>
+  <filter id="gtglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="600" fill="url(#gtg)"/>
+<ellipse cx="600" cy="300" rx="660" ry="330" fill="#38bdf8" opacity="0.07"/>
+<g filter="url(#gtglow)">
+  <line x1="90" y1="300" x2="1110" y2="300" stroke="#f8fafc" stroke-width="7" stroke-linecap="round"/>
+  <path d="M300 300 C 360 300 370 200 440 200 L 610 200 C 690 200 690 300 760 300" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+  <path d="M470 300 C 530 300 540 410 610 410 L 730 410 C 810 410 820 300 880 300" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+  <path d="M170 300 C 220 300 226 130 300 130 L 380 130" fill="none" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g fill="#f8fafc" filter="url(#gtglow)">
+  <circle cx="90" cy="300" r="10"/><circle cx="300" cy="300" r="10"/><circle cx="470" cy="300" r="10"/>
+  <circle cx="760" cy="300" r="15"/><circle cx="880" cy="300" r="19"/><circle cx="1110" cy="300" r="12"/>
+</g>
+<g fill="#7dd3fc" filter="url(#gtglow)">
+  <circle cx="440" cy="200" r="9"/><circle cx="610" cy="200" r="9"/>
+  <circle cx="610" cy="410" r="9"/><circle cx="730" cy="410" r="9"/><circle cx="380" cy="130" r="8"/>
+</g>
+<g fill="#fbbf24" filter="url(#gtglow)"><circle cx="960" cy="300" r="7"/><circle cx="1030" cy="300" r="7"/></g>
+<g fill="#64748b" font-size="26" font-family="monospace">
+  <text x="90" y="356">2005</text><text x="1010" y="356">2026</text>
+</g>
+<g fill="#94a3b8" font-size="22" font-family="monospace"><text x="836" y="258">12</text></g>
+</svg>
