@@ -20,7 +20,7 @@
       "Cornell or plain notes, practice problems with worked answers, printable cheat sheet",
       "Flip-and-grade flashcards, a timed exam mode, and answers drawn from your own pack",
       "Handles diagrams, equations and chemical structures, not just text",
-      "Self-hosted with Stripe payments and 5,092 tests behind it"
+      "Self-hosted on Fly.io with Stripe billing"
     ],
     "demoUrl": "https://cruxpack.io",
     "demoLabel": "CruxPack",
@@ -31,12 +31,12 @@
     "featured": true,
     "metrics": [
       {
-        "value": "5,000+",
-        "label": "automated tests"
+        "value": "98.7%",
+        "label": "claim accuracy"
       },
       {
-        "value": "1.3%",
-        "label": "audited error rate"
+        "value": "5 of 5",
+        "label": "bad structures caught"
       },
       {
         "value": "100+",
@@ -90,7 +90,7 @@
     "id": 16,
     "title": "GitTimeline",
     "tagline": "Paste a GitHub URL and watch a repository's real commit history perform itself",
-    "description": "A static Canvas2D app that rebuilds the honest commit DAG from public history, compiles it into a performance inside a Web Worker, and plays it on a canvas stage. No backend. Twelve large histories ship pre-built, so they open with no GitHub requests at all.",
+    "description": "A static Canvas2D app that rebuilds the honest commit DAG from public history, compiles it into a performance inside a Web Worker, and plays it on a canvas stage. No backend. Large histories ship pre-built, so they open with no GitHub requests at all.",
     "tech": [
       "TypeScript",
       "Preact",
@@ -101,8 +101,8 @@
     ],
     "metrics": [
       {
-        "value": "4.9M",
-        "label": "commits pre-built"
+        "value": "0",
+        "label": "GitHub API calls"
       },
       {
         "value": "33ms",
