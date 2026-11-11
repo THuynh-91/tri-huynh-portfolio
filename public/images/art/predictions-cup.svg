@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" font-family="'Segoe UI',Helvetica,Arial,sans-serif">
+<defs>
+  <radialGradient id="pcg" cx="0.5" cy="0.45" r="0.8"><stop offset="0" stop-color="#14213d"/><stop offset="1" stop-color="#040814"/></radialGradient>
+  <linearGradient id="pcfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399" stop-opacity="0.28"/><stop offset="1" stop-color="#34d399" stop-opacity="0"/></linearGradient>
+  <filter id="pcglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="600" fill="url(#pcg)"/>
+<ellipse cx="600" cy="300" rx="660" ry="330" fill="#34d399" opacity="0.05"/>
+<!-- price grid -->
+<g stroke="#1e3a5f" stroke-width="2">
+  <line x1="110" y1="470" x2="1110" y2="470"/><line x1="110" y1="370" x2="1110" y2="370"/><line x1="110" y1="270" x2="1110" y2="270"/>
+</g>
+<!-- the 0.97 line -->
+<line x1="110" y1="150" x2="1110" y2="150" stroke="#94a3b8" stroke-width="3" stroke-dasharray="14 12"/>
+<!-- the lead between the market and the call -->
+<rect x="640" y="110" width="250" height="380" fill="#fbbf24" opacity="0.07"/>
+<path d="M640 128 L890 128" stroke="#fbbf24" stroke-width="3" opacity="0.85"/>
+<path d="M640 120 L640 136 M890 120 L890 136" stroke="#fbbf24" stroke-width="3" opacity="0.85"/>
+<!-- the winner's price -->
+<path d="M110 430 C 200 425 250 400 310 405 C 370 410 400 350 450 330 C 500 310 530 260 570 230 C 610 200 620 165 640 150 C 680 130 760 126 1110 120 L 1110 490 L 110 490 Z" fill="url(#pcfill)"/>
+<g filter="url(#pcglow)">
+  <path d="M110 430 C 200 425 250 400 310 405 C 370 410 400 350 450 330 C 500 310 530 260 570 230 C 610 200 620 165 640 150 C 680 130 760 126 1110 120" fill="none" stroke="#34d399" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="640" cy="150" r="12" fill="#f8fafc"/>
+  <!-- the agency's call -->
+  <line x1="890" y1="100" x2="890" y2="490" stroke="#fbbf24" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="890" cy="122" r="11" fill="#fbbf24"/>
+</g>
+<g font-family="monospace">
+  <text x="120" y="138" fill="#94a3b8" font-size="26">0.97</text>
+  <text x="904" y="96" fill="#fbbf24" font-size="26">AP call</text>
+  <text x="700" y="100" fill="#fde68a" font-size="24">108 min</text>
+  <text x="120" y="530" fill="#64748b" font-size="22">election night, Nov 3 2026</text>
+</g>
+</svg>

@@ -45,6 +45,48 @@
     ]
   },
   {
+    "id": 17,
+    "title": "Predictions Cup Trading System",
+    "tagline": "A live trading system for Susquehanna's 2026 midterms market, and a working paper on election night",
+    "description": "Designed and led, with AI coding agents, a live trading system for Susquehanna's Predictions Cup, a play-money market on the 2026 US midterms. It took real-time feeds from Kalshi, Polymarket and the Cup's own exchange and ran with risk caps, live monitoring and a kill switch. The strategy was tuned for the chance of finishing first, not expected profit. Afterwards I wrote a working paper on election night: Kalshi had the winner at 0.97 a median 108 minutes before the Associated Press called the race.",
+    "tech": [
+      "Python",
+      "asyncio",
+      "WebSockets",
+      "NumPy",
+      "Monte Carlo",
+      "LaTeX"
+    ],
+    "metrics": [
+      {
+        "value": "108 min",
+        "label": "before the AP call"
+      },
+      {
+        "value": "<1 ms",
+        "label": "p95 to order"
+      },
+      {
+        "value": "3.9%",
+        "label": "odds from 10x back"
+      }
+    ],
+    "impact": [
+      "Working paper on SSRN: Kalshi priced the winner at 0.97 a median 108 minutes before the AP called the race",
+      "Sub-millisecond signal-to-order latency (p95) on live feeds from three venues, with risk caps, live monitoring and a kill switch",
+      "Optimized by Monte Carlo simulation for the probability of finishing first, not expected profit",
+      "Measured play-money price compression against Kalshi by logistic regression (slope 0.71-0.87) and derived a 3.9% ceiling on finishing first from 10x behind without an edge",
+      "Fixed all 14 defects an independent AI reviewer found, then verified with live orders on the Cup's exchange"
+    ],
+    "demoUrl": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7682417",
+    "demoLabel": "Paper on SSRN",
+    "githubUrl": null,
+    "imageUrl": "/images/art/predictions-cup.svg",
+    "tag": "Quant",
+    "year": "2026",
+    "featured": true
+  },
+  {
     "id": 4,
     "title": "AI Wordle Duel",
     "tagline": "Race optimized AI solvers across multiple word lengths",
@@ -70,7 +112,7 @@
     "imageUrl": "/images/ai-wordle.png",
     "tag": "Full-Stack",
     "year": "2025",
-    "featured": true,
+    "featured": false,
     "metrics": [
       {
         "value": "300/300",
