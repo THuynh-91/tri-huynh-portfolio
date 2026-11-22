@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import BendCard, { CardDefs } from './BendCard';
 import { CardBack } from './CardArt';
 import { ChipStack, ChipTop } from './Chips';
+import Pct from './SixSeven';
 import { card as C, cardText, evaluate, handName, odds as calcOdds, shuffled, rankOf, suitOf } from '../../lib/holdem';
 
 // A real hand of heads-up hold'em against Tri, who holds A♠ K♠ every hand (it is his table). The visitor gets
@@ -372,7 +373,7 @@ export default function PokerTable() {
             {ready && live && deal && !home && ['tri', 'you'].map((seat) => (
               <div key={seat} className={`pk-tag${done && result.winner === seat ? ' is-win' : ''}`} style={pct(L.tag[seat])}>
                 <b>{seat === 'tri' ? 'Tri' : 'You'}</b>
-                <span className="pk-tag-odds">{done ? (result.winner === seat ? 'Winner' : result.winner === 'split' ? 'Split' : '–') : showOdds ? pctOf(seat === 'tri' ? o.b : o.a) : '…'}</span>
+                <span className="pk-tag-odds">{done ? (result.winner === seat ? 'Winner' : result.winner === 'split' ? 'Split' : '–') : showOdds ? <Pct value={(seat === 'tri' ? o.b : o.a) * 100} auto /> : '…'}</span>
                 {(up[seat === 'tri' ? TRI[0] : deal.you[0]] || done) && <em>{made(seat === 'tri' ? TRI : deal.you)}</em>}
               </div>
             ))}
@@ -401,9 +402,9 @@ export default function PokerTable() {
               <i className="tri" style={{ width: showOdds ? `${o.b * 100}%` : '50%' }} />
             </span>
             <span className="pk-odds-k">
-              <span>You {showOdds ? pctOf(o.a) : '…'}</span>
+              <span>You {showOdds ? <Pct value={o.a * 100} auto /> : '…'}</span>
               {showOdds && o.tie >= 0.005 && <span>Tie {pctOf(o.tie)}</span>}
-              <span>Tri {showOdds ? pctOf(o.b) : '…'}</span>
+              <span>Tri {showOdds ? <Pct value={o.b * 100} auto /> : '…'}</span>
             </span>
           </div>
           {played > 0 && <p className="pk-score">Hands won: you {score.you}, Tri {score.tri}{score.split ? `, split ${score.split}` : ''}</p>}

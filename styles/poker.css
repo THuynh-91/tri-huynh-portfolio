@@ -127,7 +127,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 2; opacity: 0; transition: opacity .35s; background: radial-gradient(circle at var(--gx, 30%) var(--gy, 10%), rgba(255, 255, 255, .55), rgba(255, 255, 255, .12) 32%, transparent 58%); mix-blend-mode: soft-light; }
 .pk-card.is-hero:hover .pk-glare, .pk-card.is-hero:focus-visible .pk-glare { opacity: 1; }
 .pk-hero-note { position: absolute; left: 6%; right: 0; bottom: 0; margin: 0; font: 500 14px/1.5 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif; color: var(--pk-muted); }
-.pk-hero-note span { color: var(--pk-text); margin-right: .5em; }
+.pk-hero-note > span:first-child { color: var(--pk-text); margin-right: .5em; }
 
 /* ---- buttons ------------------------------------------------------------------------------ */
 .pk-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
@@ -514,6 +514,25 @@ body:has(.pk-page) { background: var(--pk-bg); }
 /* ---- the site-wide widgets on this page --------------------------------------------------- */
 :root:has(.pk-page) .site-term-btn { background-color: var(--pk-raised) !important; color: var(--pk-text) !important; border: 1px solid var(--pk-line); }
 
+/* ---- easter egg: a 67 does the six-seven (the 6 and the 7 go up and down in turn) ------------- */
+.pk-67 { display: inline-flex; cursor: default; }
+.pk-67 i { display: inline-block; font-style: normal; }
+.pk-67.is-go i { color: var(--pk-accent); }
+.pk-67.is-go i:first-child { animation: pk-six 1.35s ease-in-out; }
+.pk-67.is-go i:last-child { animation: pk-seven 1.35s ease-in-out; }
+@keyframes pk-six {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  12%, 37%, 62% { transform: translateY(-42%) rotate(-8deg); }
+  25%, 50%, 75% { transform: translateY(18%) rotate(4deg); }
+  88% { transform: translateY(-14%) rotate(-3deg); }
+}
+@keyframes pk-seven {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  12%, 37%, 62% { transform: translateY(18%) rotate(4deg); }
+  25%, 50%, 75% { transform: translateY(-42%) rotate(8deg); }
+  88% { transform: translateY(6%) rotate(2deg); }
+}
+
 /* ---- phones: the table turns portrait ----------------------------------------------------- */
 .pk-room.is-tall { --pk-cw: 19%; }
 .pk-room.is-tall .pk-table { aspect-ratio: .64 / 1; border-radius: 120px / 160px; transform: rotateX(10deg); }
@@ -576,6 +595,6 @@ body:has(.pk-page) { background: var(--pk-bg); }
 @media (prefers-reduced-motion: reduce) {
   .pk-card-inner, .pk-card, .pk-btn, .pk-table { transition: none; }
   .pk-card.is-glow .pk-face::after { animation: none; display: none; }
-  .pk-slot .pk-card.is-up .pk-card-inner, .pk-deck.is-shuffling span, .bc.is-up, .bc.is-up .bc-shade { animation: none; }
+  .pk-slot .pk-card.is-up .pk-card-inner, .pk-deck.is-shuffling span, .bc.is-up, .bc.is-up .bc-shade, .pk-67.is-go i { animation: none; }
   .bc, .bc.is-up, .pk-odds-bar i { transition: none; }
 }

@@ -5,13 +5,13 @@
 
 export const PROFILE = {
   name: 'Tri Huynh',
-  role: 'AI & software engineer',
+  role: 'I build software, ML systems and trading tools.',
   school: 'Northeastern University',
   degree: 'B.S. Computer Science, concentration in AI',
   grad: 'May 2027',
   standing: 'GPA 3.7 · Dean’s List',
   place: 'Boston, MA · open to relocating · U.S. citizen',
-  seeking: 'Full-time AI and software engineering roles from May 2027',
+  seeking: 'Full-time roles from May 2027 in software engineering, machine learning, data science and quant',
   courses: ['Engineering LLM-Integrated Systems', 'Machine Learning', 'Distributed Systems', 'Algorithms & Data'],
 };
 

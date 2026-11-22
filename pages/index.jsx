@@ -11,7 +11,7 @@ import FloatingTerminalButton from '../components/FloatingTerminalButton';
 import { HOLE, BOARD, CONTACT, PROFILE, STACK } from '../data/hand';
 
 const URL = 'https://thuynh-91.github.io/tri-huynh-portfolio/';
-const DESC = 'Tri Huynh: AI and software engineer, Northeastern University, graduating May 2027. Projects in AI, full-stack and trading systems.';
+const DESC = 'Tri Huynh: computer science at Northeastern University, graduating May 2027. Software, machine learning and trading systems; looking for full-time roles in software, ML, data science and quant.';
 const RED = /[♦♥]/;
 
 function Links({ basePath }) {
@@ -83,12 +83,12 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Tri Huynh · AI &amp; software engineer</title>
+        <title>Tri Huynh · Northeastern CS &apos;27</title>
         <meta name="description" content={DESC} />
         <link rel="canonical" href={URL} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={URL} />
-        <meta property="og:title" content="Tri Huynh · AI & software engineer" />
+        <meta property="og:title" content="Tri Huynh · Northeastern CS '27" />
         <meta property="og:description" content={DESC} />
         <meta property="og:image" content={`${URL}images/og.png`} />
         <meta name="twitter:card" content="summary_large_image" />

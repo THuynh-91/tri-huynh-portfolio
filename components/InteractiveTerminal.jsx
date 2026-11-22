@@ -201,7 +201,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     },
     easteregg: {
       description: 'Reveal the hidden stuff',
-      action: () => [
+      action: () => (typeof window !== 'undefined' && window.location.pathname.includes('/classic') ? [
         { type: 'output', text: '🥚 EASTER EGG HUNT 🥚' },
         { type: 'output', text: '' },
         { type: 'output', text: '1. A tiny 🕵️  is peeking from the left edge, click them' },
@@ -209,7 +209,15 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
         { type: 'output', text: '2. Secret terminal commands: matrix, sudo' },
         { type: 'output', text: '' },
         { type: 'output', text: 'Happy hunting! 🎉' },
-      ]
+      ] : [
+        { type: 'output', text: 'Hidden at the table:' },
+        { type: 'output', text: '' },
+        { type: 'output', text: '1. The deck is stacked. Count how often Tri is dealt A♠ K♠.' },
+        { type: 'output', text: '2. Shuffle a few times. Something that is not in this game falls out.' },
+        { type: 'output', text: '3. Click the bare felt.' },
+        { type: 'output', text: '4. Find a 67.' },
+        { type: 'output', text: '5. Secret terminal commands: matrix, sudo' },
+      ])
     },
     sudo: {
       description: 'Run with superuser privileges',

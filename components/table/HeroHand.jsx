@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import PlayingCard from './PlayingCard';
+import Pct from './SixSeven';
 import { HOLE, EQUITY } from '../../data/hand';
 
 // The two hole cards in the hero. They lean toward the pointer, a highlight slides across the face under it,
@@ -36,7 +37,7 @@ export default function HeroHand({ onOpen }) {
     <div className="pk-hero-cards" ref={ref}>
       <div className="pk-fan a"><PlayingCard card={HOLE[0]} faceUp hero onOpen={onOpen} /></div>
       <div className="pk-fan b"><PlayingCard card={HOLE[1]} faceUp hero onOpen={onOpen} /></div>
-      <p className="pk-hero-note"><span>A♠ K♠ suited</span> {EQUITY[0]}% against one random hand</p>
+      <p className="pk-hero-note"><span>A♠ K♠ suited</span> <Pct value={EQUITY[0]} /> against one random hand</p>
     </div>
   );
 }
