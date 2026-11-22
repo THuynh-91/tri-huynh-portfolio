@@ -59,4 +59,4 @@ styles/          # globals.css (design tokens + utilities)
 ## Author
 
 **Tri Huynh** — CS @ Northeastern (Khoury), AI & Backend Engineer, AWS Certified Cloud Practitioner
-[GitHub](https://github.com/THuynh-91) · [LinkedIn](https://www.linkedin.com/in/tri-huynh-81735326a) · triqhuynh91@gmail.com
+[GitHub](https://github.com/THuynh-91) · [LinkedIn](https://www.linkedin.com/in/tri-huynh-ai) · triqhuynh91@gmail.com
