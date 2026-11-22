@@ -5,6 +5,20 @@ const COLORS = {
   paper: ['var(--pk-paper)', 'var(--pk-paper-deep)'],
 };
 
+// One chip seen from above: rim, edge spots, an inner ring. Used for tossed chips and the showdown burst.
+export function ChipTop({ color = 'red', size = 30 }) {
+  const [face] = COLORS[color] || COLORS.red;
+  const spot = color === 'paper' ? 'var(--pk-red)' : 'var(--pk-paper)';
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ display: 'block', overflow: 'visible' }}>
+      <circle cx="20" cy="22" r="18" style={{ fill: 'rgba(0,0,0,.35)' }} />
+      <circle cx="20" cy="20" r="18" style={{ fill: face, stroke: 'var(--pk-ink)', strokeWidth: 1.4 }} />
+      <circle cx="20" cy="20" r="18" style={{ fill: 'none', stroke: spot, strokeWidth: 4.5, strokeDasharray: '6.3 7.8' }} />
+      <circle cx="20" cy="20" r="11" style={{ fill: face, stroke: spot, strokeWidth: 1.2, strokeDasharray: '2 2' }} />
+    </svg>
+  );
+}
+
 export function ChipStack({ color = 'red', count = 5, width = 46 }) {
   const [face, side] = COLORS[color] || COLORS.red;
   const spot = color === 'paper' ? 'var(--pk-red)' : 'var(--pk-paper)';

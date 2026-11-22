@@ -144,15 +144,17 @@ body:has(.pk-page) { background: var(--pk-bg); }
 
 /* ---- the room and the table --------------------------------------------------------------- */
 .pk-room { position: relative; --pk-cw: 11.5%; margin-top: 10px; }
+.pk-stage { perspective: 1150px; perspective-origin: 50% 0%; padding: 0 0 10px; }
 .pk-table {
   position: relative; aspect-ratio: 1.95 / 1; border-radius: 999px; padding: clamp(14px, 2vw, 26px);
+  transform: rotateX(calc(31deg + var(--rxd, 0deg))) rotateY(var(--ry, 0deg)); transform-origin: 50% 70%; transform-style: preserve-3d; transition: transform .4s ease-out;
   background: linear-gradient(180deg, var(--pk-rail), var(--pk-rail-deep));
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, .08), inset 0 -3px 8px rgba(0, 0, 0, .45), 0 40px 80px rgba(0, 0, 0, .6), 0 10px 20px rgba(0, 0, 0, .4);
 }
 /* stitching on the rail */
 .pk-table::before { content: ''; position: absolute; inset: clamp(6px, .8vw, 10px); border-radius: 999px; border: 1.5px dashed rgba(236, 229, 214, .35); pointer-events: none; }
 .pk-felt {
-  position: relative; width: 100%; height: 100%; border-radius: 999px; overflow: hidden;
+  position: relative; width: 100%; height: 100%; border-radius: 999px; transform-style: preserve-3d; cursor: crosshair;
   background-color: var(--pk-felt);
   background-image: radial-gradient(circle, rgba(236, 229, 214, .06) 0 1px, transparent 1.5px);
   background-size: 6px 6px;
@@ -160,8 +162,13 @@ body:has(.pk-page) { background: var(--pk-bg); }
 }
 /* the printed line, and the seat's name printed on it */
 .pk-felt::after { content: ''; position: absolute; inset: 9% 7%; border-radius: 999px; border: 1.5px solid rgba(236, 229, 214, .16); pointer-events: none; }
-.pk-print { position: absolute; left: 50%; top: 9%; transform: translate(-50%, -50%); z-index: 1; margin: 0; padding: 0 14px; background: var(--pk-felt); white-space: nowrap; font: 700 clamp(9px, .95vw, 13px)/1 'Zen Kaku Gothic New', sans-serif; letter-spacing: .32em; color: rgba(236, 229, 214, .3); }
-.pk-focus { position: absolute; inset: 0; z-index: 1; pointer-events: none; animation: pk-focus-in .35s ease-out both; }
+.pk-lamp { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(circle at var(--lx, 50%) var(--ly, 58%), rgba(255, 214, 160, .14), rgba(255, 214, 160, .05) 24%, transparent 50%); }
+/* the card layer covers the felt (3D makes it the cards' containing block) but lets clicks reach the felt */
+.pk-cards { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; z-index: 3; }
+.pk-cards .pk-slot { pointer-events: auto; }
+.pk-tossed, .pk-burst { position: absolute; z-index: 2; pointer-events: none; }
+.pk-print { pointer-events: none; position: absolute; left: 50%; top: 9%; transform: translate(-50%, -50%); z-index: 1; margin: 0; padding: 0 14px; background: var(--pk-felt); white-space: nowrap; font: 700 clamp(9px, .95vw, 13px)/1 'Zen Kaku Gothic New', sans-serif; letter-spacing: .32em; color: rgba(236, 229, 214, .3); }
+.pk-focus { position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; overflow: hidden; animation: pk-focus-in .35s ease-out both; }
 .pk-focus .ink-focus { position: absolute; inset: 0; width: 100%; height: 100%; }
 .pk-focus .ink-focus path { fill: rgba(236, 229, 214, .5); }
 .pk-focus .ink-focus path.r { fill: var(--pk-accent); }
@@ -178,12 +185,17 @@ body:has(.pk-page) { background: var(--pk-bg); }
 /* ---- cards -------------------------------------------------------------------------------- */
 .pk-slot { position: absolute; width: var(--pk-cw); }
 .pk-slot.is-peek .pk-card { animation: pk-peek 7s ease-in-out 2.5s infinite; transform-origin: 85% 90%; }
-@keyframes pk-peek { 0%, 86%, 100% { transform: none; } 90%, 94% { transform: rotate(-5deg) translateY(-5%); } }
-.pk-card { display: block; width: 100%; aspect-ratio: 5 / 7; padding: 0; border: 0; background: none; perspective: 900px; cursor: default; container-type: inline-size; color: inherit; font: inherit; }
+/* rotate and translate (not transform), so a hover can still lift the peeking card */
+@keyframes pk-peek { 0%, 86%, 100% { rotate: 0deg; translate: 0 0; } 90%, 94% { rotate: -5deg; translate: 0 -5%; } }
+.pk-card { display: block; width: 100%; aspect-ratio: 5 / 7; padding: 0; border: 0; background: none; perspective: 900px; cursor: default; container-type: inline-size; color: inherit; font: inherit; transform-style: preserve-3d; transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
 .pk-card.is-up:not(.is-still) { cursor: pointer; }
 .pk-card-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.3, .7, .2, 1); }
 .pk-card.is-up .pk-card-inner { transform: rotateY(180deg); }
-.pk-card.is-up:not(.is-still):hover .pk-card-inner, .pk-card.is-up:not(.is-still):focus-visible .pk-card-inner { transform: rotateY(180deg) translateY(-6%) rotateZ(-1.5deg); }
+.pk-card.is-up:not(.is-still):hover, .pk-card.is-up:not(.is-still):focus-visible { transform: translateZ(70px) rotateX(-31deg) scale(1.04); }
+.pk-card.is-up:not(.is-still):hover .pk-face { box-shadow: 0 30px 40px rgba(0, 0, 0, .55), 0 6px 10px rgba(0, 0, 0, .35); }
+.pk-slot:hover, .pk-slot:focus-within { z-index: 20 !important; }
+.pk-slot.is-out .pk-card { transform: scale(.82); filter: brightness(.72) saturate(.7); }
+.pk-slot.is-out .pk-card:hover { filter: none; }
 .pk-back, .pk-face { position: absolute; inset: 0; display: block; border-radius: 6% / 4.3%; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 10px 18px rgba(0, 0, 0, .5), 0 2px 4px rgba(0, 0, 0, .4); }
 .pk-back { background: var(--back); border: 3cqw solid var(--card-face); }
 .pk-face {
@@ -204,6 +216,10 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-title { display: block; font: 700 12.5cqw/1.05 'Zen Kaku Gothic New', sans-serif; color: var(--card-ink); letter-spacing: -.01em; }
 .pk-card.is-glow .pk-card-inner { transform: rotateY(180deg) translateY(-7%); }
 .pk-card.is-glow .pk-face { box-shadow: 0 0 0 1.4cqw var(--pk-accent), 0 18px 28px rgba(0, 0, 0, .6); }
+.pk-card.is-glow .pk-face::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(112deg, transparent 36%, rgba(255, 243, 214, .8) 46%, rgba(232, 85, 62, .3) 52%, transparent 62%); background-size: 320% 100%; background-position: 110% 0; animation: pk-sheen 1.5s ease-out 1s both; }
+.pk-card.is-glow:hover .pk-face::after { animation: pk-sheen-again 1s ease-out both; }
+@keyframes pk-sheen { from { background-position: 110% 0; } to { background-position: -15% 0; } }
+@keyframes pk-sheen-again { from { background-position: 110% 0; } to { background-position: -15% 0; } }
 .pk-card.is-compact .pk-title { font-size: 13cqw; }
 
 /* ---- showdown ----------------------------------------------------------------------------- */
@@ -275,7 +291,8 @@ body:has(.pk-page) { background: var(--pk-bg); }
 
 /* ---- phones: the table turns portrait ----------------------------------------------------- */
 .pk-room.is-tall { --pk-cw: 22%; }
-.pk-room.is-tall .pk-table { aspect-ratio: .64 / 1; border-radius: 120px / 160px; }
+.pk-room.is-tall .pk-table { aspect-ratio: .64 / 1; border-radius: 120px / 160px; transform: rotateX(10deg); }
+.pk-room.is-tall .pk-slot.is-out .pk-card { transform: scale(.78); }
 .pk-room.is-tall .pk-felt { border-radius: 104px / 146px; }
 .pk-room.is-tall .pk-felt::after { inset: 5% 7%; border-radius: 90px / 130px; }
 .pk-room.is-tall .pk-table::before { border-radius: 114px / 154px; }
@@ -305,6 +322,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 }
 @media (max-width: 420px) { .pk-stack-grid { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) {
-  .pk-card-inner, .pk-btn, .pk-side li { transition: none; }
+  .pk-card-inner, .pk-card, .pk-btn, .pk-side li, .pk-table { transition: none; }
+  .pk-card.is-glow .pk-face::after { animation: none; display: none; }
   .pk-btn.is-idle, .pk-focus, .pk-slot.is-peek .pk-card { animation: none; }
 }

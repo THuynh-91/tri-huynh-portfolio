@@ -61,7 +61,7 @@ export const BOARD = [
       title: 'CruxPack',
       what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every card and note links back to the slide it came from.',
       how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
-      media: { kind: 'image', src: '/images/shots/cruxpack-notes.png', alt: 'CruxPack notes view: cue questions beside notes, each section linked to its source page', caption: 'The notes view, from cruxpack.io’s sample deck' },
+      media: { kind: 'image', src: '/images/shots/cruxpack-notes.png', alt: 'CruxPack notes view: cue questions beside notes, each section linked to its source page' },
       stack: ['TypeScript', 'Next.js', 'SQLite', 'Gemini', 'Stripe', 'Fly.io'],
       links: [{ label: 'Try cruxpack.io', href: 'https://cruxpack.io' }],
     },
@@ -89,7 +89,7 @@ export const BOARD = [
       title: 'GitTimeline',
       what: "Paste a public GitHub repository and its commit history plays like a performance: branches split off and merge back while contributors move along their work. Big projects, Linux's full history included, are pre-built, so they play instantly with no GitHub token.",
       how: 'TypeScript and Preact. A Web Worker turns the commit graph into lanes and a timeline, and Canvas2D draws every frame; the renderer was profiled until Linux played smoothly. Playwright tests check real playback in a browser.',
-      media: { kind: 'video', src: '/media/gittimeline-linux.mp4', poster: '/images/shots/gittimeline-linux.jpg', alt: "GitTimeline playing the Linux kernel's history", caption: 'Linux, May 2005, playing' },
+      media: { kind: 'video', src: '/media/gittimeline-linux.mp4', poster: '/images/shots/gittimeline-linux.jpg', alt: "GitTimeline playing the Linux kernel's history" },
       stack: ['TypeScript', 'Preact', 'Canvas2D', 'Web Workers', 'Playwright'],
       links: [
         { label: 'Open GitTimeline', href: 'https://thuynh-91.github.io/gittimeline/' },
