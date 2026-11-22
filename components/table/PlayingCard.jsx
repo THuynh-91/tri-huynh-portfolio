@@ -1,7 +1,7 @@
 import CardArt, { CardBack, SuitIcon } from './CardArt';
 
-// One playing card, inked: a hatched back, and a face with real corner indices, the project's
-// drawing, its name and one line on what it is. `faceUp` flips it; `glow` marks it at showdown.
+// One playing card: an oxblood back, and a cream face with real corner indices, an inner frame line,
+// a pen drawing and the name. `faceUp` flips it; `glow` lifts it at showdown; `still` makes it decoration.
 export default function PlayingCard({ card, faceUp, glow, onOpen, compact, still }) {
   const red = card.suit === 'heart' || card.suit === 'diamond';
   const label = faceUp ? `${card.rank} of ${card.suit}s: ${card.title}. Open details.` : 'Face-down card';
@@ -10,7 +10,7 @@ export default function PlayingCard({ card, faceUp, glow, onOpen, compact, still
     <Tag
       type={still ? undefined : 'button'}
       className={`pk-card${faceUp ? ' is-up' : ''}${glow ? ' is-glow' : ''}${compact ? ' is-compact' : ''}${still ? ' is-still' : ''}`}
-      onClick={still ? undefined : () => faceUp && onOpen && onOpen(card)}
+      onClick={still ? undefined : (e) => faceUp && onOpen && onOpen(card, e.currentTarget)}
       aria-label={still ? undefined : label}
       aria-hidden={still ? true : undefined}
       tabIndex={still ? undefined : faceUp ? 0 : -1}
@@ -20,9 +20,8 @@ export default function PlayingCard({ card, faceUp, glow, onOpen, compact, still
         <span className={`pk-face${red ? ' is-red' : ''}`}>
           <span className="pk-corner tl"><b>{card.rank}</b><SuitIcon suit={card.suit} size={12} /></span>
           <span className="pk-corner br"><b>{card.rank}</b><SuitIcon suit={card.suit} size={12} /></span>
-          <span className="pk-art"><CardArt art={card.art} red={red} /></span>
+          <span className="pk-art"><CardArt art={card.art} /></span>
           <span className="pk-title">{card.title}</span>
-          <span className="pk-line">{card.line}</span>
         </span>
       </span>
     </Tag>

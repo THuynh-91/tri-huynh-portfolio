@@ -9,8 +9,9 @@ export default function FloatingTerminalButton() {
   return (
     <>
       <motion.button
-        className="fixed bottom-8 right-8 bg-accent text-white p-3.5 rounded-full shadow-2xl z-50 group"
+        className="site-term-btn fixed bottom-8 right-8 bg-accent text-white p-3.5 rounded-full shadow-2xl z-50 group"
         data-cursor="hover"
+        aria-label="Open terminal"
         style={{ backgroundColor: 'var(--accent)' }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -22,6 +23,7 @@ export default function FloatingTerminalButton() {
         transition={{ delay: 1, type: 'spring' }}
       >
         <svg
+          aria-hidden="true"
           className="w-6 h-6"
           fill="none"
           stroke="currentColor"

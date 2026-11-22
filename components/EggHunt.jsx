@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 // The hidden character's image. Swap this for any file you drop in
 // /public/images (e.g. '/images/waldo.png') to change the mascot.
-const CHARACTER_SRC = '/images/waldo.png';
+const CHARACTER_SRC = '/images/joker.svg';
 
 // A hidden mascot that peeks from the LEFT edge and stays pinned to the page as
 // you scroll. After 10s a "click!" arrow points it out; clicking it reveals a
@@ -17,24 +17,28 @@ export default function EggHunt() {
   const [celebrate, setCelebrate] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem('eggHuntFound') === '1') {
+    let seen = false;
+    try { seen = localStorage.getItem('eggHuntFound') === '1'; } catch { /* storage blocked */ }
+    if (seen) {
       setFound(true);
       return;
     }
     const t = setTimeout(() => setHint(true), 10000);
+    // the hint shows once, briefly, rather than sitting over the page
+    const t2 = setTimeout(() => setHint(false), 16000);
     // eslint-disable-next-line no-console
     console.log(
       "%c🕵️  someone is peeking from the left edge… click them.",
       'color:#8b5cf6;font-weight:bold;font-size:13px'
     );
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); clearTimeout(t2); };
   }, []);
 
   const collect = () => {
     setFound(true);
     setHint(false);
     setCelebrate(true);
-    localStorage.setItem('eggHuntFound', '1');
+    try { localStorage.setItem('eggHuntFound', '1'); } catch { /* storage blocked */ }
     setTimeout(() => setCelebrate(false), 6000);
   };
 
@@ -68,7 +72,7 @@ export default function EggHunt() {
           <AnimatePresence>
             {hint && (
               <motion.div
-                className="ml-2 flex items-center gap-1 whitespace-nowrap"
+                className="egg-hint pointer-events-none ml-2 flex items-center gap-1 whitespace-nowrap"
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0 }}

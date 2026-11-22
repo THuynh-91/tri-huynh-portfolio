@@ -1,7 +1,7 @@
-// The hand the homepage deals: two hole cards (what Tri does), then the board (flop, turn, river).
-// The five spades (A K Q J 10) make a royal flush at showdown. Each card describes a project the way a
-// portfolio should: what it is, how it works, what it is built with, and where to try it. Resume bullets
-// stay on the resume.
+// The hand the homepage deals. Hole cards: the co-op (A♠) and the school (K♠). Board: the three featured
+// projects (Q♠ J♠ 10♠), then two off-suit cards for the side projects. The five spades make a royal flush,
+// so every card in the winning hand is real work. Each card says what the thing is, how it works, what it
+// is built with and where to see it; the resume's achievement bullets stay on the resume.
 
 export const PROFILE = {
   name: 'Tri Huynh',
@@ -9,42 +9,43 @@ export const PROFILE = {
   school: 'Northeastern University',
   degree: 'B.S. Computer Science, concentration in AI',
   grad: 'May 2027',
-  place: 'Boston, MA · open to relocating',
+  standing: 'GPA 3.7 · Dean’s List',
+  place: 'Boston, MA · open to relocating · U.S. citizen',
   seeking: 'Full-time AI and software engineering roles from May 2027',
-  courses: ['Machine Learning', 'Distributed Systems', 'Engineering LLM-Integrated Systems', 'Algorithms & Data'],
+  courses: ['Engineering LLM-Integrated Systems', 'Machine Learning', 'Distributed Systems', 'Algorithms & Data'],
 };
 
+// Tools the projects on this page actually show come first in each group.
 export const STACK = [
-  ['Languages', ['Python', 'TypeScript', 'JavaScript', 'Java', 'C++', 'C', 'Go', 'Rust', 'SQL']],
-  ['AI & ML', ['LLM agents', 'Claude SDK', 'MCP', 'RAG', 'Gemini', 'PyTorch', 'TensorFlow', 'scikit-learn']],
-  ['Web & backend', ['Next.js', 'React', 'Node.js', 'FastAPI', 'Flask', 'PostgreSQL', 'SQLite', 'Redis']],
-  ['Cloud & data', ['Azure', 'AWS', 'Docker', 'Kubernetes', 'Fly.io', 'Databricks', 'Snowflake', 'GitHub Actions']],
+  ['Languages', ['Python', 'TypeScript', 'JavaScript', 'SQL', 'Java', 'C++', 'C', 'Go', 'Rust']],
+  ['AI & ML', ['Claude SDK', 'MCP', 'RAG', 'Gemini', 'LLM evaluation', 'PyTorch', 'TensorFlow', 'scikit-learn']],
+  ['Web & backend', ['Next.js', 'React', 'Node.js', 'Preact', 'FastAPI', 'SQLite', 'PostgreSQL', 'Flask']],
+  ['Cloud & tooling', ['Fly.io', 'Azure', 'Databricks', 'Docker', 'GitHub Actions', 'Playwright', 'AWS', 'Kubernetes']],
 ];
 
 export const HOLE = [
   {
-    id: 'ai', rank: 'A', suit: 'spade', art: 'neural',
-    title: 'AI engineer',
-    line: 'Agents, retrieval, evaluation',
+    id: 'biogen', rank: 'A', suit: 'spade', art: 'agent',
+    title: 'Biogen',
     detail: {
-      kicker: 'Hole card · A♠',
-      title: 'AI engineering',
-      what: 'Most of what I build is LLM software that has to do real work: agents that call tools, retrieval that answers from a given set of documents, and checks that catch a model when it is wrong.',
-      how: 'I work mostly in Python and TypeScript, with the Claude SDK and MCP for agents and Gemini for generation, and PyTorch, TensorFlow and scikit-learn for models of my own.',
-      stack: ['Claude SDK', 'MCP', 'RAG', 'Gemini', 'PyTorch', 'TensorFlow'],
+      kicker: 'Hole card · A♠ · AI Engineer Co-op',
+      title: 'Biogen · AI Engineer Co-op',
+      what: "January to June 2026 in Cambridge, MA. I built the core of Biogen's production AI agent, which business teams use from Microsoft Teams to run workflows on request, and I built and owned the intake system teams across the company use to request AI work.",
+      how: 'Python and the Claude SDK, with tools connected over MCP, on Azure with a Databricks sandbox and LangSmith tracing. The intake runs on SharePoint, Power BI and Smartsheet.',
+      brief: "I built the core of Biogen's production AI agent (Python, Claude SDK, MCP on Azure), which business teams use from Microsoft Teams to run workflows on request. I also built and owned the intake system teams across the company use to request AI work, with its data pipeline and Power BI dashboard.",
+      stack: ['Python', 'Claude SDK', 'MCP', 'Azure', 'Databricks', 'LangSmith', 'Power BI'],
       links: [],
     },
   },
   {
-    id: 'swe', rank: 'K', suit: 'spade', art: 'crown',
-    title: 'Software engineer',
-    line: 'Full-stack, backends, systems',
+    id: 'northeastern', rank: 'K', suit: 'spade', art: 'cap',
+    title: 'Northeastern',
     detail: {
-      kicker: 'Hole card · K♠',
-      title: 'Software engineering',
-      what: 'I build the whole product, not just the model call: the backend, the interface, the deploy and the tests that keep it working.',
-      how: 'Next.js, React and Node.js on the web; FastAPI and Flask in Python; SQLite and PostgreSQL for data; Docker, Fly.io, AWS and Azure to run it; Playwright and Vitest to test it.',
-      stack: ['TypeScript', 'Python', 'Go', 'Rust', 'Docker', 'Kubernetes'],
+      kicker: 'Hole card · K♠ · Class of 2027',
+      title: 'Northeastern University',
+      what: 'B.S. in Computer Science with a concentration in AI, graduating in May 2027. GPA 3.7, Dean’s List.',
+      how: 'Courses include Engineering LLM-Integrated Systems, Machine Learning, Distributed Systems, and Algorithms & Data.',
+      stack: [],
       links: [],
     },
   },
@@ -58,25 +59,25 @@ export const BOARD = [
     detail: {
       kicker: 'The flop · Q♠',
       title: 'CruxPack',
-      what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every flashcard links back to the slide it came from.',
+      what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every card and note links back to the slide it came from.',
       how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
-      image: { src: '/images/ink/cruxpack-dots.png', alt: "CruxPack's landing page" },
+      media: { kind: 'image', src: '/images/shots/cruxpack-notes.png', alt: 'CruxPack notes view: cue questions beside notes, each section linked to its source page', caption: 'The notes view, from cruxpack.io’s sample deck' },
       stack: ['TypeScript', 'Next.js', 'SQLite', 'Gemini', 'Stripe', 'Fly.io'],
-      links: [{ label: 'cruxpack.io', href: 'https://cruxpack.io' }],
+      links: [{ label: 'Try cruxpack.io', href: 'https://cruxpack.io' }],
     },
   },
   {
     id: 'predictions', street: 'flop', rank: 'J', suit: 'spade', art: 'chart',
     title: 'Predictions Cup',
-    line: 'Live trading system + paper',
+    line: 'Live trading system and paper',
     detail: {
       kicker: 'The flop · J♠',
       title: 'Predictions Cup trading system',
-      what: "Susquehanna ran a play-money prediction market on the 2026 US midterms. I built a system to trade it live, and wrote a working paper on what the data showed: the contest's prices were squeezed toward 50% compared with Kalshi's real-money prices.",
+      what: "Susquehanna ran a play-money prediction market on the 2026 US midterms. I designed a system to trade it live and directed AI coding agents to build it, then wrote a working paper on what the data showed: the contest's prices were squeezed toward 50% compared with Kalshi's real-money prices.",
       how: 'Python with asyncio streams prices from three venues over WebSockets and compares the contest with real-money markets. Trades are planned with a Monte Carlo simulation of the whole contest, scored on the chance of finishing first rather than on profit, behind risk caps and a kill switch.',
-      chart: true,
+      media: { kind: 'chart', caption: 'From the paper: contest prices against Kalshi prices' },
       stack: ['Python', 'asyncio', 'WebSockets', 'NumPy'],
-      links: [{ label: 'working paper (SSRN)', href: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7682417' }],
+      links: [{ label: 'Read the paper (SSRN)', href: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7682417' }],
     },
   },
   {
@@ -88,42 +89,47 @@ export const BOARD = [
       title: 'GitTimeline',
       what: "Paste a public GitHub repository and its commit history plays like a performance: branches split off and merge back while contributors move along their work. Big projects, Linux's full history included, are pre-built, so they play instantly with no GitHub token.",
       how: 'TypeScript and Preact. A Web Worker turns the commit graph into lanes and a timeline, and Canvas2D draws every frame; the renderer was profiled until Linux played smoothly. Playwright tests check real playback in a browser.',
-      image: { src: '/images/ink/gittimeline-linux.png', alt: "GitTimeline replaying the Linux kernel's history" },
+      media: { kind: 'video', src: '/media/gittimeline-linux.mp4', poster: '/images/shots/gittimeline-linux.jpg', alt: "GitTimeline playing the Linux kernel's history", caption: 'Linux, May 2005, playing' },
       stack: ['TypeScript', 'Preact', 'Canvas2D', 'Web Workers', 'Playwright'],
       links: [
-        { label: 'open it', href: 'https://thuynh-91.github.io/gittimeline/' },
-        { label: 'source', href: 'https://github.com/THuynh-91/gittimeline' },
+        { label: 'Open GitTimeline', href: 'https://thuynh-91.github.io/gittimeline/' },
+        { label: 'Source', href: 'https://github.com/THuynh-91/gittimeline' },
       ],
     },
   },
   {
-    id: 'biogen', street: 'turn', rank: '9', suit: 'heart', art: 'agent',
-    title: 'Biogen',
-    line: 'AI Engineer Co-op · 2026',
+    id: 'games', street: 'turn', rank: '6', suit: 'diamond', art: 'wheel',
+    title: 'Games',
+    line: 'Casino, roulette, physics',
     detail: {
-      kicker: 'The turn · 9♥',
-      title: 'Biogen · AI Engineer Co-op',
-      what: "January to June 2026 in Cambridge, MA, on Biogen's AI team. I worked on the company's internal AI agent, which business teams use from Microsoft Teams, and on how teams across the company request AI work.",
-      how: 'Python and the Claude SDK, with tools connected over MCP, on Azure with a Databricks sandbox and LangSmith tracing; reporting in Power BI.',
-      brief: "On Biogen's AI team. I worked on the company's internal AI agent, which business teams use from Microsoft Teams, and on how teams across the company request AI work.",
-      stack: ['Python', 'Claude SDK', 'MCP', 'Azure', 'Databricks', 'Power BI'],
+      kicker: 'The turn · 6♦',
+      title: 'Games you can play',
+      what: 'Things I build for fun. The roulette table and the pendulum lab run right on this site.',
+      more: 'games',
+      stack: [],
       links: [],
     },
   },
   {
-    id: 'river', street: 'river', rank: '7', suit: 'diamond', art: 'wheel',
-    title: 'Side projects',
-    line: 'Games, AI tools, more',
+    id: 'builds', street: 'river', rank: '3', suit: 'club', art: 'chip',
+    title: 'More builds',
+    line: 'AI tools and models',
     detail: {
-      kicker: 'The river · 7♦',
-      title: 'Side projects',
-      what: 'What I build for fun. A few you can play right now.',
-      more: true,
+      kicker: 'The river · 3♣',
+      title: 'More builds',
+      what: 'Smaller AI tools and models, most of them live.',
+      more: 'builds',
       stack: [],
       links: [],
     },
   },
 ];
+
+// Side projects shown on the page (the strongest, with something to open). Ids from data/projects.json.
+export const SIDE = {
+  games: [11, 14, 12],
+  builds: [4, 5, 3, 7],
+};
 
 export const CONTACT = {
   email: 'triqhuynh91@gmail.com',

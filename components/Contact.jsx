@@ -5,7 +5,7 @@ import Magnetic from './Magnetic';
 export default function Contact() {
   const links = [
     { label: 'email', value: 'triqhuynh91@gmail.com', href: 'mailto:triqhuynh91@gmail.com' },
-    { label: 'linkedin', value: '/in/tri-huynh', href: 'https://www.linkedin.com/in/tri-huynh-81735326a' },
+    { label: 'linkedin', value: '/in/tri-huynh', href: 'https://www.linkedin.com/in/tri-huynh-ai' },
     { label: 'github', value: '@THuynh-91', href: 'https://github.com/THuynh-91' },
   ];
 
@@ -38,7 +38,7 @@ export default function Contact() {
               </Magnetic>
               <Magnetic>
                 <a
-                  href="https://www.linkedin.com/in/tri-huynh-81735326a"
+                  href="https://www.linkedin.com/in/tri-huynh-ai"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-secondary"

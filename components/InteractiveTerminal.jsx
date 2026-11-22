@@ -150,7 +150,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
       description: 'Get contact information',
       action: () => [
         { type: 'output', text: 'Email:    triqhuynh91@gmail.com' },
-        { type: 'output', text: 'LinkedIn: linkedin.com/in/tri-huynh-81735326a' },
+        { type: 'output', text: 'LinkedIn: linkedin.com/in/tri-huynh-ai' },
         { type: 'output', text: 'GitHub:   github.com/THuynh-91' },
       ]
     },
@@ -232,7 +232,7 @@ export default function InteractiveTerminal({ isOpen, onClose }) {
     linkedin: {
       description: 'Open LinkedIn',
       action: () => {
-        window.open('https://www.linkedin.com/in/tri-huynh-81735326a', '_blank');
+        window.open('https://www.linkedin.com/in/tri-huynh-ai', '_blank');
         return [{ type: 'output', text: 'Opening LinkedIn...' }];
       }
     },
