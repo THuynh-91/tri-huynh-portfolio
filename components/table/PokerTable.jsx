@@ -163,26 +163,26 @@ export default function PokerTable() {
   useEffect(() => {
     if (!live || !deal) return;
     setBusy(true);
-    later(1250, () => setUp((u) => ({ ...u, [TRI[0]]: true, [TRI[1]]: true })));
-    later(1800, () => setUp((u) => ({ ...u, [deal.you[0]]: true, [deal.you[1]]: true })));
-    later(2700, () => setBusy(false));
+    later(900, () => setUp((u) => ({ ...u, [TRI[0]]: true, [TRI[1]]: true })));
+    later(1150, () => setUp((u) => ({ ...u, [deal.you[0]]: true, [deal.you[1]]: true })));
+    later(1750, () => setBusy(false));
   }, [live, deal, later]);
 
   // each street: the flop lands as a pile, turns over as one and spreads; the turn and the river turn over
   // where they land. The buttons wait until the cards are still.
   useEffect(() => {
     if (!deal || street === 0) return;
-    if (street === 4) { later(1500, () => setBusy(false)); return; }
+    if (street === 4) { later(1100, () => setBusy(false)); return; }
     const b = deal.board;
     if (street === 1) {
-      later(900, () => setUp((u) => ({ ...u, [b[0]]: true, [b[1]]: true, [b[2]]: true })));
-      later(1850, () => setSpread(true));
-      later(2700, () => setBusy(false));
+      later(650, () => setUp((u) => ({ ...u, [b[0]]: true, [b[1]]: true, [b[2]]: true })));
+      later(1250, () => setSpread(true));
+      later(1800, () => setBusy(false));
       return;
     }
     const c = b[SHOWN[street] - 1];
-    later(750, () => setUp((u) => ({ ...u, [c]: true })));
-    later(1800, () => setBusy(false));
+    later(550, () => setUp((u) => ({ ...u, [c]: true })));
+    later(1150, () => setBusy(false));
   }, [street, deal, later]);
 
   // cards already on the board keep their place; only newly dealt ones animate in, staggered
