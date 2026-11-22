@@ -1,38 +1,49 @@
-// The hand the homepage deals: Tri's two hole cards, then the board (flop, turn, river).
-// The five spades (A K Q J 10) make a royal flush at showdown. Every number here is one the
-// resume also states (outcomes only, no user counts).
+// The hand the homepage deals: two hole cards (what Tri does), then the board (flop, turn, river).
+// The five spades (A K Q J 10) make a royal flush at showdown. Each card describes a project the way a
+// portfolio should: what it is, how it works, what it is built with, and where to try it. Resume bullets
+// stay on the resume.
+
+export const PROFILE = {
+  name: 'Tri Huynh',
+  role: 'AI & software engineer',
+  school: 'Northeastern University',
+  degree: 'B.S. Computer Science, concentration in AI',
+  grad: 'May 2027',
+  place: 'Boston, MA · open to relocating',
+  seeking: 'Full-time AI and software engineering roles from May 2027',
+  courses: ['Machine Learning', 'Distributed Systems', 'Engineering LLM-Integrated Systems', 'Algorithms & Data'],
+};
+
+export const STACK = [
+  ['Languages', ['Python', 'TypeScript', 'JavaScript', 'Java', 'C++', 'C', 'Go', 'Rust', 'SQL']],
+  ['AI & ML', ['LLM agents', 'Claude SDK', 'MCP', 'RAG', 'Gemini', 'PyTorch', 'TensorFlow', 'scikit-learn']],
+  ['Web & backend', ['Next.js', 'React', 'Node.js', 'FastAPI', 'Flask', 'PostgreSQL', 'SQLite', 'Redis']],
+  ['Cloud & data', ['Azure', 'AWS', 'Docker', 'Kubernetes', 'Fly.io', 'Databricks', 'Snowflake', 'GitHub Actions']],
+];
 
 export const HOLE = [
   {
     id: 'ai', rank: 'A', suit: 'spade', art: 'neural',
     title: 'AI engineer',
-    line: 'Agents, RAG, evaluation, guardrails.',
+    line: 'Agents, retrieval, evaluation',
     detail: {
       kicker: 'Hole card · A♠',
-      title: 'AI engineer',
-      summary: 'I build AI systems that hold up in production: agents that call tools, retrieval that cites its sources, and checks that catch a model when it is wrong.',
-      bullets: [
-        'Production AI agent at Biogen (Claude SDK, tool calling, MCP, Azure, Databricks)',
-        'LLM-as-judge evaluation and an independent answer checker in CruxPack',
-        'RAG, fine-tuning, NLP, prompt engineering, LangSmith tracing',
-      ],
-      stack: ['Python', 'Claude SDK', 'MCP', 'RAG', 'PyTorch', 'TensorFlow'],
+      title: 'AI engineering',
+      what: 'Most of what I build is LLM software that has to do real work: agents that call tools, retrieval that answers from a given set of documents, and checks that catch a model when it is wrong.',
+      how: 'I work mostly in Python and TypeScript, with the Claude SDK and MCP for agents and Gemini for generation, and PyTorch, TensorFlow and scikit-learn for models of my own.',
+      stack: ['Claude SDK', 'MCP', 'RAG', 'Gemini', 'PyTorch', 'TensorFlow'],
       links: [],
     },
   },
   {
     id: 'swe', rank: 'K', suit: 'spade', art: 'crown',
     title: 'Software engineer',
-    line: 'Full-stack, distributed systems, infra.',
+    line: 'Full-stack, backends, systems',
     detail: {
       kicker: 'Hole card · K♠',
-      title: 'Software engineer',
-      summary: 'I ship the whole thing, not just the notebook: backends, frontends, deploys and the tests that keep them honest.',
-      bullets: [
-        'Full-stack web apps in production (Next.js, Node, SQLite, Fly.io)',
-        'Real-time systems in Python (asyncio, WebSockets) with risk limits and a kill switch',
-        'Profiling and performance work in the browser (Canvas2D, Web Workers)',
-      ],
+      title: 'Software engineering',
+      what: 'I build the whole product, not just the model call: the backend, the interface, the deploy and the tests that keep it working.',
+      how: 'Next.js, React and Node.js on the web; FastAPI and Flask in Python; SQLite and PostgreSQL for data; Docker, Fly.io, AWS and Azure to run it; Playwright and Vitest to test it.',
       stack: ['TypeScript', 'Python', 'Go', 'Rust', 'Docker', 'Kubernetes'],
       links: [],
     },
@@ -43,54 +54,41 @@ export const BOARD = [
   {
     id: 'cruxpack', street: 'flop', rank: 'Q', suit: 'spade', art: 'pages',
     title: 'CruxPack',
-    result: '98.7%', resultLabel: 'correct on 770 claims',
-    line: 'Lecture PDF in, source-cited study pack out.',
+    line: 'Lecture PDF in, study pack out',
     detail: {
       kicker: 'The flop · Q♠',
       title: 'CruxPack',
-      summary: 'A full-stack generative-AI platform, in production, that turns a lecture PDF into source-cited notes, flashcards, practice problems and RAG-grounded Q&A.',
-      bullets: [
-        'Ran an LLM-as-judge evaluation of its Gemini pipeline on 770 claims from 20 sources: 98.7% correct',
-        'Cut its PDF export from 20.5 MB to 3.9 MB and 5.3 s to 3.6 s after tracing 95% of the bytes to images',
-        'Every practice problem is re-solved by an independent checker before it ships',
-      ],
-      stack: ['TypeScript', 'Next.js', 'SQLite/Drizzle', 'Fly.io', 'Gemini', 'Stripe'],
+      what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every flashcard links back to the slide it came from.',
+      how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
+      image: { src: '/images/ink/cruxpack-dots.png', alt: "CruxPack's landing page" },
+      stack: ['TypeScript', 'Next.js', 'SQLite', 'Gemini', 'Stripe', 'Fly.io'],
       links: [{ label: 'cruxpack.io', href: 'https://cruxpack.io' }],
     },
   },
   {
     id: 'predictions', street: 'flop', rank: 'J', suit: 'spade', art: 'chart',
     title: 'Predictions Cup',
-    result: '0.77', resultLabel: 'price squeeze vs Kalshi',
-    line: 'Live trading system and a working paper.',
+    line: 'Live trading system + paper',
     detail: {
       kicker: 'The flop · J♠',
       title: 'Predictions Cup trading system',
-      summary: "A live trading system for Susquehanna's play-money 2026 midterms contest, and a working paper on what it found: the contest's prices were squeezed toward 50% against Kalshi's.",
-      bullets: [
-        'Real-time feeds from 3 venues, risk caps, monitoring and a kill switch; built by directing AI coding agents',
-        'Logit slope of 0.71 to 0.87 against Kalshi over 3 weeks (1.0 means no squeeze)',
-        'Optimized by Monte Carlo simulation for the odds of finishing first, not expected profit; traded it live',
-      ],
+      what: "Susquehanna ran a play-money prediction market on the 2026 US midterms. I built a system to trade it live, and wrote a working paper on what the data showed: the contest's prices were squeezed toward 50% compared with Kalshi's real-money prices.",
+      how: 'Python with asyncio streams prices from three venues over WebSockets and compares the contest with real-money markets. Trades are planned with a Monte Carlo simulation of the whole contest, scored on the chance of finishing first rather than on profit, behind risk caps and a kill switch.',
       chart: true,
-      stack: ['Python', 'asyncio', 'WebSockets', 'NumPy', 'Monte Carlo'],
+      stack: ['Python', 'asyncio', 'WebSockets', 'NumPy'],
       links: [{ label: 'working paper (SSRN)', href: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7682417' }],
     },
   },
   {
     id: 'gittimeline', street: 'flop', rank: '10', suit: 'spade', art: 'commits',
     title: 'GitTimeline',
-    result: '50→33ms', resultLabel: 'p95 frame time',
-    line: "Replays Linux's 1.48M-commit history in your browser.",
+    line: "A repo's history, played back",
     detail: {
       kicker: 'The flop · 10♠',
       title: 'GitTimeline',
-      summary: "An open-source browser app that replays a repository's commit history, and scales to Linux's full 1.48M-commit history with no GitHub token or API call.",
-      bullets: [
-        'Reduced p95 frame time from 50 ms to 33 ms: profiled and debugged the renderer',
-        'Traced 20.9 ms per frame to one Canvas filter call and replaced it with a mip-chain bloom',
-        'Histories are pre-built, so visitors replay them instantly',
-      ],
+      what: "Paste a public GitHub repository and its commit history plays like a performance: branches split off and merge back while contributors move along their work. Big projects, Linux's full history included, are pre-built, so they play instantly with no GitHub token.",
+      how: 'TypeScript and Preact. A Web Worker turns the commit graph into lanes and a timeline, and Canvas2D draws every frame; the renderer was profiled until Linux played smoothly. Playwright tests check real playback in a browser.',
+      image: { src: '/images/ink/gittimeline-linux.png', alt: "GitTimeline replaying the Linux kernel's history" },
       stack: ['TypeScript', 'Preact', 'Canvas2D', 'Web Workers', 'Playwright'],
       links: [
         { label: 'open it', href: 'https://thuynh-91.github.io/gittimeline/' },
@@ -100,32 +98,26 @@ export const BOARD = [
   },
   {
     id: 'biogen', street: 'turn', rank: '9', suit: 'heart', art: 'agent',
-    title: 'Biogen co-op',
-    result: 'months→1wk', resultLabel: 'wait for an answer',
-    line: 'Production AI agent and an intake system I built.',
+    title: 'Biogen',
+    line: 'AI Engineer Co-op · 2026',
     detail: {
       kicker: 'The turn · 9♥',
       title: 'Biogen · AI Engineer Co-op',
-      summary: 'January to June 2026 in Cambridge, MA. I built the core of a production AI agent and the intake system that got AI requests answered.',
-      bullets: [
-        "Built the core of Biogen's production AI agent in Python (Claude SDK with tool calling and MCP on Azure, Databricks sandbox, LangSmith tracing), which business teams use from Microsoft Teams",
-        'Cut the wait for an answer on AI requests from months to about a week: built and owned a documented intake system, presented it to VPs and cross-functional stakeholders, and moved a 200+ request backlog into it',
-        'Built its data pipeline (SharePoint to Power BI to Smartsheet) and Power BI dashboard; automated 4 recurring workflows',
-      ],
-      stack: ['Python', 'Claude SDK', 'Azure', 'Databricks', 'Snowflake', 'Power BI'],
+      what: "January to June 2026 in Cambridge, MA, on Biogen's AI team. I worked on the company's internal AI agent, which business teams use from Microsoft Teams, and on how teams across the company request AI work.",
+      how: 'Python and the Claude SDK, with tools connected over MCP, on Azure with a Databricks sandbox and LangSmith tracing; reporting in Power BI.',
+      brief: "On Biogen's AI team. I worked on the company's internal AI agent, which business teams use from Microsoft Teams, and on how teams across the company request AI work.",
+      stack: ['Python', 'Claude SDK', 'MCP', 'Azure', 'Databricks', 'Power BI'],
       links: [],
     },
   },
   {
     id: 'river', street: 'river', rank: '7', suit: 'diamond', art: 'wheel',
-    title: 'The river',
-    result: '+14', resultLabel: 'more projects',
-    line: 'A casino, a roulette table, AI games and more.',
+    title: 'Side projects',
+    line: 'Games, AI tools, more',
     detail: {
       kicker: 'The river · 7♦',
       title: 'Side projects',
-      summary: 'What I build for fun. A few you can play right now.',
-      bullets: [],
+      what: 'What I build for fun. A few you can play right now.',
       more: true,
       stack: [],
       links: [],
