@@ -43,13 +43,16 @@ const LAYOUT = {
 
 const pct = ([x, y]) => ({ left: `${x}%`, top: `${y}%` });
 
-function DealtCard({ card, at, from, tilt, delay, faceUp, glow, out, onOpen, compact, peek, z }) {
+// `home`: the card is being swept back into the deck for a reshuffle (face down, quick, no bounce)
+function DealtCard({ card, at, from, tilt, delay, faceUp, glow, out, onOpen, compact, peek, z, home }) {
   return (
     <motion.div
       className={`pk-slot${peek ? ' is-peek' : ''}${out ? ' is-out' : ''}`}
       initial={{ ...pct(from), rotate: -40, opacity: 0 }}
-      animate={{ ...pct(at), rotate: tilt, opacity: 1 }}
-      transition={{ delay, type: 'spring', stiffness: 170, damping: 18, mass: 0.9, opacity: { duration: 0.15, delay } }}
+      animate={{ ...pct(home ? from : at), rotate: home ? -14 : tilt, opacity: 1 }}
+      transition={home
+        ? { delay, type: 'spring', stiffness: 260, damping: 30 }
+        : { delay, type: 'spring', stiffness: 170, damping: 18, mass: 0.9, opacity: { duration: 0.15, delay } }}
       style={{ zIndex: glow ? 6 : z ?? 3, x: '-50%', y: '-50%', transformStyle: 'preserve-3d' }}
     >
       <PlayingCard card={card} faceUp={faceUp} glow={glow} onOpen={onOpen} compact={compact} />
@@ -85,6 +88,10 @@ export default function PokerTable() {
   const [open, setOpen] = useState(null);
   const [idle, setIdle] = useState(false);
   const [tossed, setTossed] = useState([]);
+  // a reshuffle is seen, not just reset: 'gather' sweeps every card back to the deck face down, 'shuffle'
+  // riffles the deck, then a new hand (the next hand number) is dealt like the first one
+  const [phase, setPhase] = useState('play');
+  const [joker, setJoker] = useState(0);
   const timers = useRef([]);
   const dealt = useRef(0);
   const opener = useRef(null);
@@ -141,14 +148,12 @@ export default function PokerTable() {
   const later = useCallback((ms, fn) => { timers.current.push(setTimeout(fn, ms)); }, []);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
-  // deal and turn up the hole cards on every new round. The first time the table is seen the dealer goes on
-  // to the flop by itself (the three projects), so the felt is never just two cards; after a reshuffle the
-  // visitor deals every street.
+  // deal and turn up the hole cards on every new hand, then the dealer goes on to the flop by itself (the three
+  // projects), so the felt is never just two cards; the visitor deals the turn and the river
   useEffect(() => {
     if (!live) return;
     later(1000, () => setUp((u) => ({ ...u, biogen: true, northeastern: true })));
-    if (round === 0) later(2400, () => setStreet((s) => (s === 0 ? 1 : s)));
-    else later(3400, () => setIdle(true));
+    later(2400, () => setStreet((s) => (s === 0 ? 1 : s)));
   }, [round, live, later]);
 
   // each street: deal its cards. The flop lands as a pile, turns over as one, then spreads; the turn and the
@@ -186,10 +191,23 @@ export default function PokerTable() {
     requestAnimationFrame(() => actionRef.current?.focus());
   };
   const reshuffle = () => {
+    if (phase !== 'play') return;
     timers.current.forEach(clearTimeout);
     timers.current = [];
-    dealt.current = 0;
-    setOpen(null); setUp({}); setStreet(0); setSpread(false); setIdle(false); setTossed([]); setRound((r) => r + 1);
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setOpen(null); setIdle(false); setTossed([]); setJoker(0);
+    setPhase('gather');
+    later(still ? 0 : 750, () => setPhase('shuffle'));
+    later(still ? 10 : 1700, () => {
+      dealt.current = 0;
+      setUp({}); setStreet(0); setSpread(false); setPhase('play'); setRound((r) => r + 1);
+    });
+  };
+  // the deck hides a joker: cut it and the joker turns up on top, then goes back
+  const cutDeck = () => {
+    if (phase !== 'play') return;
+    setJoker((j) => j + 1);
+    later(2600, () => setJoker(0));
   };
   const openCard = useCallback((card, el) => { opener.current = el; setOpen(card); }, []);
   const closeCard = useCallback(() => { setOpen(null); requestAnimationFrame(() => opener.current?.focus()); }, []);
@@ -210,7 +228,14 @@ export default function PokerTable() {
 
   const L = tall ? LAYOUT.tall : LAYOUT.wide;
   const potCount = [2, 4, 5, 7, 8][street];
-  const done = street === 4;
+  const home = phase !== 'play';
+  const done = street === 4 && !home;
+  // the log's first line names the hand; each reshuffle deals the next one, and says what the visitor sees
+  const history = HISTORY.map((block, s) => (s > 0 ? block : [
+    [block[0][0].replace('#2027', `#${2027 + round}`)],
+    ...(round ? [['Reshuffled. Same two cards again: this deck is stacked.']] : []),
+    ...block.slice(1),
+  ]));
   const burned = Math.min(street, 3);
   const placeOf = (id, normal) => {
     if (!done) return normal;
@@ -229,14 +254,28 @@ export default function PokerTable() {
             <div className="pk-lamp" aria-hidden="true" />
             <p className="pk-print" aria-hidden="true">TRI HUYNH · SEAT 1 · NO LIMIT HOLD&apos;EM</p>
 
-            <div className="pk-deck" style={pct(L.deck)} aria-hidden="true"><span /><span /><span /></div>
+            <button type="button" className={`pk-deck${phase === 'shuffle' ? ' is-shuffling' : ''}`} style={pct(L.deck)} onClick={cutDeck} aria-label="Cut the deck">
+              <span /><span /><span />
+            </button>
+            <AnimatePresence>
+              {joker > 0 && (
+                <motion.img key={`joker${joker}`} className="pk-joker" src={`${basePath}/images/joker.svg`} alt="A joker" draggable="false"
+                  style={{ ...pct(L.deck), x: '-50%', y: '-50%' }}
+                  initial={{ rotate: -14, scale: 0.8, opacity: 0 }}
+                  animate={{ left: `${L.deck[0] + (tall ? 16 : 9)}%`, top: `${L.deck[1] + (tall ? 8 : -2)}%`, rotate: [-14, 16, 8], scale: 1.3, opacity: 1 }}
+                  exit={{ ...pct(L.deck), rotate: -14, scale: 0.8, opacity: 0, transition: { duration: 0.3 } }}
+                  transition={{ type: 'spring', stiffness: 220, damping: 14 }} />
+              )}
+            </AnimatePresence>
             <span className="pk-dealer" style={{ left: `${L.deck[0] + (tall ? 15 : 8.5)}%`, top: `${L.deck[1] + (tall ? 0 : 2)}%` }} aria-hidden="true">D</span>
 
             {ready && live && Array.from({ length: burned }, (_, i) => (
               <motion.span key={`burn${round}-${i}`} className="pk-burn" aria-hidden="true"
                 style={{ x: '-50%', y: '-50%' }}
                 initial={{ ...pct(L.deck), rotate: -14, opacity: 0 }}
-                animate={{ left: `${L.muck[0] + i * 0.6}%`, top: `${L.muck[1] - i * 0.8}%`, rotate: [-14, 8, -5, 11][i], opacity: done ? 0 : 1 }}
+                animate={home
+                  ? { ...pct(L.deck), rotate: -14, opacity: 1 }
+                  : { left: `${L.muck[0] + i * 0.6}%`, top: `${L.muck[1] - i * 0.8}%`, rotate: [-14, 8, -5, 11][i], opacity: street === 4 ? 0 : 1 }}
                 transition={{ type: 'spring', stiffness: 160, damping: 20, opacity: { duration: 0.2 } }}>
                 <CardBack />
               </motion.span>
@@ -261,13 +300,14 @@ export default function PokerTable() {
             {ready && live && (
               <div key={`r${round}`} className="pk-cards">
                 {HOLE.map((c, i) => (
-                  <DealtCard key={c.id} card={c} at={placeOf(c.id, L.holes[i])} from={L.deck} tilt={done ? 0 : L.holeTilt[i]} delay={done ? 0.05 * i : 0.15 + i * 0.2}
-                    faceUp={!!up[c.id]} glow={done} onOpen={openCard} compact={tall} peek={street === 0 && i === 1} />
+                  <DealtCard key={c.id} card={c} at={placeOf(c.id, L.holes[i])} from={L.deck} tilt={done ? 0 : L.holeTilt[i]}
+                    delay={home ? 0.05 * i : done ? 0.05 * i : 0.15 + i * 0.2} home={home}
+                    faceUp={!home && !!up[c.id]} glow={done} onOpen={openCard} compact={tall} peek={street === 0 && i === 1 && !home} />
                 ))}
                 {BOARD.slice(0, SHOWN[street]).map((c, i) => (
-                  <DealtCard key={c.id} card={c} at={placeOf(c.id, boardSpot(i))} from={L.deck} tilt={done ? 0 : L.tilt[i]}
-                    delay={done ? 0.05 * (i + 2) : (i < 3 && spread ? i * 0.07 : 0.3 + Math.max(0, i - dealt.current) * 0.13)}
-                    z={3 + i} faceUp={!!up[c.id]} glow={done && ROYAL.has(c.id)} out={done && !ROYAL.has(c.id)} onOpen={openCard} compact={tall} />
+                  <DealtCard key={c.id} card={c} at={placeOf(c.id, boardSpot(i))} from={L.deck} tilt={done ? 0 : L.tilt[i]} home={home}
+                    delay={home ? 0.05 * (i + 2) : done ? 0.05 * (i + 2) : (i < 3 && spread ? i * 0.07 : 0.3 + Math.max(0, i - dealt.current) * 0.13)}
+                    z={3 + i} faceUp={!home && !!up[c.id]} glow={done && ROYAL.has(c.id)} out={done && !ROYAL.has(c.id)} onOpen={openCard} compact={tall} />
                 ))}
               </div>
             )}
@@ -288,18 +328,17 @@ export default function PokerTable() {
 
       <div className="pk-bar">
         <div className="pk-log" ref={logRef} aria-live="polite" aria-label="Hand history">
-          {HISTORY.slice(0, street + 1).map((block, s) => block.map((line, j) => (
+          {history.slice(0, street + 1).map((block, s) => block.map((line, j) => (
             <motion.p key={`${round}-${s}-${j}`} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
               transition={{ delay: (s === street ? 0.35 : 0) + j * 0.45, duration: 0.3 }}>
               <LogLine line={line} />
             </motion.p>
           )))}
-          <span className="pk-log-caret" aria-hidden="true" />
         </div>
         <div className="pk-panel">
           <div className="pk-street">
-            <span className="pk-street-k">{STREET_NAME[street]}</span>
-            <span className="pk-street-hint">{done ? 'Every card opens. The two off-suit cards hold the side projects.' : touch ? 'Tap any face-up card to read it.' : 'Hover to pick a card up, click to read it.'}</span>
+            <span className="pk-street-k">{home ? 'Shuffling' : STREET_NAME[street]}</span>
+            <span className="pk-street-hint">{home ? 'Every card goes back in the deck.' : done ? 'Every card opens. The two off-suit cards hold the side projects.' : touch ? 'Tap any face-up card to read it.' : 'Hover to pick a card up, click to read it.'}</span>
           </div>
           <div className="pk-equity" role="img" aria-label={`Equity against one random hand: ${equity}%`}>
             <span className="pk-equity-k">Equity vs. one random hand</span>
@@ -307,9 +346,9 @@ export default function PokerTable() {
             <b>{equity}%{equity === 100 ? <em> the nuts</em> : null}</b>
           </div>
           <div className="pk-actions">
-            <button className="pk-btn ghost" onClick={reshuffle}>Reshuffle</button>
-            {street < 3 && <button className="pk-btn ghost" onClick={showdown}>Skip to showdown</button>}
-            <button ref={actionRef} className={`pk-btn${idle ? ' is-idle' : ''}`} onClick={act}>{ACTION[street]}</button>
+            <button className="pk-btn ghost" onClick={reshuffle} disabled={home}>Reshuffle</button>
+            {street < 3 && <button className="pk-btn ghost" onClick={showdown} disabled={home}>Skip to showdown</button>}
+            <button ref={actionRef} className={`pk-btn${idle ? ' is-idle' : ''}`} onClick={act} disabled={home}>{ACTION[street]}</button>
           </div>
         </div>
       </div>

@@ -1,15 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import PokerTable from '../components/table/PokerTable';
 import PlayingCard from '../components/table/PlayingCard';
 import HandDetail, { SideList, ProjectMedia } from '../components/table/HandDetail';
 import HeroHand from '../components/table/HeroHand';
-import RangeField from '../components/table/RangeField';
 import BoardBar from '../components/table/BoardBar';
-import Ambience from '../components/table/Ambience';
 import { SuitIcon } from '../components/table/CardArt';
-import EggHunt from '../components/EggHunt';
 import FloatingTerminalButton from '../components/FloatingTerminalButton';
 import { HOLE, BOARD, CONTACT, PROFILE, STACK } from '../data/hand';
 
@@ -28,11 +25,10 @@ function Links({ basePath }) {
   );
 }
 
-// Each section is a street of the hand: a numbered label and the cards it deals, above the section's title.
-function Street({ n, name, cards }) {
+// Each section is a street of the hand: its name and the cards it deals, above the section's title.
+function Street({ name, cards }) {
   return (
     <p className="pk-eyebrow">
-      <span className="pk-eyebrow-n">{n}</span>
       <span>{name}</span>
       {cards && <span className="pk-eyebrow-cards">{cards.split(' ').map((c) => <span key={c} className={RED.test(c) ? 'r' : undefined}>{c}</span>)}</span>}
     </p>
@@ -75,25 +71,6 @@ function Project({ card, basePath, flip, stage }) {
   );
 }
 
-// panels light up under the pointer, like the old site's cards
-function useGlow() {
-  useEffect(() => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
-    let raf = 0, last = null;
-    const apply = () => {
-      raf = 0;
-      const el = last?.target?.closest?.('[data-glow]');
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      el.style.setProperty('--gx', `${(last.clientX - r.left).toFixed(0)}px`);
-      el.style.setProperty('--gy', `${(last.clientY - r.top).toFixed(0)}px`);
-    };
-    const move = (e) => { last = e; if (!raf) raf = requestAnimationFrame(apply); };
-    window.addEventListener('pointermove', move, { passive: true });
-    return () => { window.removeEventListener('pointermove', move); cancelAnimationFrame(raf); };
-  }, []);
-}
-
 export default function Home() {
   const { basePath } = useRouter();
   const featured = BOARD.filter((c) => c.street === 'flop');
@@ -102,7 +79,6 @@ export default function Home() {
   const heroOpener = useRef(null);
   const openHero = useCallback((card, el) => { heroOpener.current = el; setHeroOpen(card); }, []);
   const closeHero = useCallback(() => { setHeroOpen(null); requestAnimationFrame(() => heroOpener.current?.focus()); }, []);
-  useGlow();
   return (
     <>
       <Head>
@@ -119,7 +95,6 @@ export default function Home() {
       </Head>
 
       <div className="pk-page">
-        <Ambience />
         <a className="pk-skip" href="#projects">Skip to projects</a>
         <header className="pk-top">
           <a className="pk-mark" href="#top"><SuitIcon suit="spade" size={14} color="currentColor" /> Tri Huynh</a>
@@ -134,11 +109,9 @@ export default function Home() {
 
         <main id="top">
           <section className="pk-hero" aria-labelledby="pk-name">
-            <RangeField />
             <div className="pk-hero-text">
-              <Street n="01" name="Pre-flop · seat 1" />
               <h1 id="pk-name">Tri Huynh</h1>
-              <p className="pk-role">{PROFILE.role}<span className="pk-caret" aria-hidden="true" /></p>
+              <p className="pk-role">{PROFILE.role}</p>
               <dl className="pk-facts">
                 <div><dt>school</dt><dd><b>{PROFILE.school}</b><br />{PROFILE.degree}</dd></div>
                 <div><dt>graduating</dt><dd><b>{PROFILE.grad}</b> · {PROFILE.standing}</dd></div>
@@ -164,23 +137,23 @@ export default function Home() {
           </section>
 
           <section id="projects" className="pk-section" aria-labelledby="pk-projects-h">
-            <Street n="02" name="The flop" cards="Q♠ J♠ 10♠" />
+            <Street name="The flop" cards="Q♠ J♠ 10♠" />
             <h2 id="pk-projects-h">Projects</h2>
-            {featured.map((c, i) => <Project key={c.id} card={c} basePath={basePath} stage={i === 0} flip={i === 2} />)}
+            {featured.map((c, i) => <Project key={c.id} card={c} basePath={basePath} flip={i === 1} />)}
           </section>
 
           <section id="hand" className="pk-section pk-hand-band" aria-labelledby="pk-hand-h">
-            <Street n="03" name="Your deal" />
+            <Street name="Your deal" />
             <h2 id="pk-hand-h">Play the hand</h2>
             <p className="pk-lede">The same work, dealt as one hand of hold&apos;em: the co-op and the school in the hole, the three projects on the flop, side projects on the turn and the river. Deal the rest of it and open any face-up card.</p>
             <PokerTable />
           </section>
 
           <section id="experience" className="pk-section" aria-labelledby="pk-exp-h">
-            <Street n="04" name="The hole cards" cards="A♠ K♠" />
+            <Street name="The hole cards" cards="A♠ K♠" />
             <h2 id="pk-exp-h">Experience &amp; education</h2>
             <div className="pk-hole">
-              <article className="pk-hole-card" data-glow>
+              <article className="pk-hole-card">
                 <div className="pk-hole-top">
                   <span className="pk-hole-mini"><PlayingCard card={coop} faceUp still /></span>
                   <div>
@@ -191,7 +164,7 @@ export default function Home() {
                 <p>{coop.detail.brief}</p>
                 <p className="pk-stackline">{coop.detail.stack.join(' · ')}</p>
               </article>
-              <article className="pk-hole-card" data-glow>
+              <article className="pk-hole-card">
                 <div className="pk-hole-top">
                   <span className="pk-hole-mini"><PlayingCard card={school} faceUp still /></span>
                   <div>
@@ -207,7 +180,7 @@ export default function Home() {
           </section>
 
           <section id="more" className="pk-section" aria-labelledby="pk-more-h">
-            <Street n="05" name="The turn and the river" cards="6♦ 3♣" />
+            <Street name="The turn and the river" cards="6♦ 3♣" />
             <h2 id="pk-more-h">More projects</h2>
             <p className="pk-lede">Games and smaller AI tools, each with something to open. Everything else is on <a href={CONTACT.github} target="_blank" rel="noreferrer">GitHub</a>.</p>
             <SideList basePath={basePath} />
@@ -215,7 +188,7 @@ export default function Home() {
 
           <section id="contact" className="pk-contact" aria-labelledby="pk-contact-h">
             <div className="pk-contact-text">
-              <Street n="06" name="Showdown" />
+              <Street name="Showdown" />
               <h2 id="pk-contact-h">Deal me in.</h2>
               <p>{PROFILE.seeking}. Email is the fastest way to reach me:</p>
               <p className="pk-addr">{CONTACT.email}</p>
@@ -232,7 +205,6 @@ export default function Home() {
         <HandDetail card={heroOpen} onClose={closeHero} />
       </div>
 
-      <EggHunt />
       <FloatingTerminalButton />
     </>
   );

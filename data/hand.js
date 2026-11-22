@@ -66,11 +66,12 @@ export const BOARD = [
       how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
       // Real captures of cruxpack.io's public sample deck (Lec 04, The Action Potential): each card's question
       // and answer face, and the source slide it cites, as cruxpack.io's own "Preview source slide" shows it.
-      // The site says this deck is hand-checked, so the page never calls it generated output.
+      // The site says this deck is hand-checked, so the page never calls it generated output. Played here as
+      // it plays there: turn a card, step through, open its source.
       media: {
         kind: 'cruxpack',
-        alt: "Cards from the sample deck on cruxpack.io. Each turns over to its answer, and the slide it cites opens beside it: page 3 (the resting membrane potential), page 5 (depolarization) and page 7 (repolarization).",
-        caption: 'The sample deck on cruxpack.io: every card cites the slide it came from.',
+        alt: 'Three cards from the sample deck on cruxpack.io, to turn over and step through; each opens the lecture slide it cites.',
+        file: 'Lec 04 — The Action Potential.pdf',
         cards: [3, 5, 7].map((p) => ({
           page: p,
           q: `/images/cruxpack/card-p${p}-q.webp`,

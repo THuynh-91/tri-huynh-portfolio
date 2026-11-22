@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import projects from '../../data/projects.json';
@@ -28,7 +29,7 @@ export function SideList({ basePath, group }) {
   return (
     <ul className="pk-side">
       {sideProjects(basePath, group).map((p) => (
-        <li key={p.id} data-glow>
+        <li key={p.id}>
           <p className="pk-side-y">{p.year}{p.here ? ' · plays on this site' : ''}</p>
           <h3>{p.title}</h3>
           <p>{p.tagline}</p>
@@ -59,9 +60,8 @@ export function ProjectMedia({ media, basePath }) {
   if (!media) return null;
   if (media.kind === 'cruxpack') {
     return (
-      <figure className="pk-media is-cruxpack">
-        <CruxScene cards={media.cards} alt={media.alt} basePath={basePath} />
-        {media.caption && <figcaption>{media.caption}</figcaption>}
+      <figure className="pk-media is-cruxpack" aria-label={media.alt}>
+        <CruxScene cards={media.cards} file={media.file} basePath={basePath} />
       </figure>
     );
   }
@@ -78,12 +78,27 @@ export function ProjectMedia({ media, basePath }) {
 }
 
 // The sheet that slides up when a face-up card is clicked. Focus moves in, stays in, and Escape closes it.
+// It is rendered at the end of <body>, so nothing on the page can paint over it, and the page behind it holds
+// still while it is open (the wheel or a swipe scrolls the sheet, never the page under it).
 export default function HandDetail({ card, onClose }) {
   const closeRef = useRef(null);
   const sheetRef = useRef(null);
   const closeFn = useRef(onClose);
   closeFn.current = onClose;
   const { basePath } = useRouter();
+  const [host, setHost] = useState(null);
+  useEffect(() => setHost(document.body), []);
+
+  // hold the page still under the sheet; the scrollbar's width is kept as padding so nothing shifts sideways
+  useEffect(() => {
+    if (!card) return undefined;
+    const html = document.documentElement;
+    const gap = window.innerWidth - html.clientWidth;
+    const prev = [html.style.overflow, html.style.paddingRight];
+    html.style.overflow = 'hidden';
+    if (gap > 0) html.style.paddingRight = `${gap}px`;
+    return () => { [html.style.overflow, html.style.paddingRight] = prev; };
+  }, [card]);
   // runs only when the card changes, so a parent re-render never pulls focus back to Close
   useEffect(() => {
     if (!card) return undefined;
@@ -101,7 +116,8 @@ export default function HandDetail({ card, onClose }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [card]);
 
-  return (
+  if (!host) return null;
+  return createPortal(
     <AnimatePresence>
       {card && (
         <motion.div className="pk-sheet-wrap" initial={{ opacity: 0 }} animate={{ opacity: 1, pointerEvents: 'auto' }} exit={{ opacity: 0, pointerEvents: 'none', transition: { duration: 0.14 } }} onClick={onClose}>
@@ -135,6 +151,7 @@ export default function HandDetail({ card, onClose }) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    host,
   );
 }
