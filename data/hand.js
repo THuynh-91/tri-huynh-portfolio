@@ -9,7 +9,7 @@ export const PROFILE = {
   school: 'Northeastern University',
   degree: 'B.S. Computer Science, concentration in AI',
   grad: 'May 2027',
-  standing: 'GPA 3.7 · Dean’s List',
+  standing: 'GPA 3.7',
   place: 'Boston, MA · open to relocating · U.S. citizen',
   seeking: 'Full-time roles from May 2027',
   courses: ['Engineering LLM-Integrated Systems', 'Machine Learning', 'Distributed Systems', 'Algorithms & Data'],
@@ -32,7 +32,7 @@ export const HOLE = [
     detail: {
       kicker: 'Hole card · A♠ · Class of 2027',
       title: 'Northeastern University',
-      what: 'B.S. in Computer Science with a concentration in AI, graduating in May 2027. GPA 3.7, Dean’s List.',
+      what: 'B.S. in Computer Science with a concentration in AI, graduating in May 2027. GPA 3.7.',
       how: 'Courses include Engineering LLM-Integrated Systems, Machine Learning, Distributed Systems, and Algorithms & Data.',
       stack: [],
       links: [],
