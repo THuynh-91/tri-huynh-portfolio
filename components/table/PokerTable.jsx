@@ -1,73 +1,85 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
-import PlayingCard from './PlayingCard';
+import BendCard, { CardDefs } from './BendCard';
 import { CardBack } from './CardArt';
 import { ChipStack, ChipTop } from './Chips';
-import HandDetail from './HandDetail';
-import { HOLE, BOARD, CONTACT, HISTORY, EQUITY } from '../../data/hand';
+import { card as C, cardText, evaluate, handName, odds as calcOdds, shuffled, rankOf, suitOf } from '../../lib/holdem';
 
-// One hand of no-limit hold'em on a table you look down at, dealt the way a dealer deals it. The hole cards
-// (A♠ the co-op, K♠ the school) come first. Each street burns a card to the muck; the flop lands as a face-down
-// pile of three, is turned over in one motion and spread; the turn and the river come one card each. At
-// showdown the five spades slide into one row, A K Q J 10. Under the table a hand history is written as you
-// deal, and the equity meter shows what A♠K♠ is worth against one random hand (67%, then 100% from the flop).
-// A lamp follows the pointer, the table leans with it, cards lift off the felt when hovered, and a click on the
-// felt tosses a chip.
+// A real hand of heads-up hold'em against Tri, who holds A♠ K♠ every hand (it is his table). The visitor gets
+// two random cards and deals the board; the odds of each seat winning are worked out on every street (exact
+// from the flop, a 15,000-board sample before it) and shown as on a broadcast; at showdown the better five
+// cards are lit and the pot slides to the winner. Reshuffle sweeps the cards back, riffles the deck and deals
+// a new random hand. While cards are moving every button waits, so nothing can be dealt twice.
+const TRI = [C('A♠'), C('K♠')];
 const SHOWN = [0, 3, 4, 5, 5];
-const ACTION = ['Deal the flop', 'Deal the turn', 'Deal the river', 'Showdown', 'Open my résumé'];
-const STREET_NAME = ['Pre-flop', 'The flop', 'The turn', 'The river', 'Showdown'];
-const ROYAL_ORDER = ['biogen', 'northeastern', 'cruxpack', 'predictions', 'gittimeline'];
-const ROYAL = new Set(ROYAL_ORDER);
+const STREET = ['Pre-flop', 'The flop', 'The turn', 'The river', 'Showdown'];
+const ACTION = ['Deal the flop', 'Deal the turn', 'Deal the river', 'Show down', 'Deal again'];
+const WORD = ['two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'jack', 'queen', 'king', 'ace'];
+const PLURAL = ['twos', 'threes', 'fours', 'fives', 'sixes', 'sevens', 'eights', 'nines', 'tens', 'jacks', 'queens', 'kings', 'aces'];
 const RED = /[♦♥]/;
 
 const LAYOUT = {
   wide: {
-    deck: [14, 30], muck: [14, 58], pot: [50, 17], potEnd: [50, 84],
-    board: [[25, 43], [37.5, 43], [50, 43], [62.5, 43], [75, 43]],
-    holes: [[43.6, 79], [56.4, 79]],
-    tilt: [-1.5, 1, -0.6, 1.4, -1], holeTilt: [-6, 6],
-    // showdown: the royal flush in one row, the side cards pushed aside
-    row: [[25.6, 47], [37.8, 47], [50, 47], [62.2, 47], [74.4, 47]],
-    aside: { games: [12.5, 72], builds: [87.5, 72] },
+    deck: [10.5, 50], muck: [89.5, 50], dealer: [10.5, 70], pot: [75, 21], potWin: { you: [70, 79], tri: [70, 21], split: [75, 21] },
+    tri: [[44.7, 21], [55.3, 21]], you: [[44.7, 79], [55.3, 79]],
+    board: [[28, 50], [39, 50], [50, 50], [61, 50], [72, 50]],
+    tag: { tri: [38.6, 21], you: [38.6, 79] },
+    tilt: [-1.5, 1, -0.6, 1.4, -1], holeTilt: [-4, 4],
   },
   tall: {
-    deck: [14, 8], muck: [86, 8], pot: [50, 16], potEnd: [50, 92],
-    board: [[21, 33.5], [50, 33.5], [79, 33.5], [35, 56], [65, 56]],
-    holes: [[36, 78.5], [64, 78.5]],
-    tilt: [-2, 1, -1, 1.5, -1.5], holeTilt: [-7, 7],
-    row: [[21, 35], [50, 35], [79, 35], [35, 58], [65, 58]],
-    aside: { games: [27, 79], builds: [73, 79] },
+    deck: [12, 23], muck: [88, 23], dealer: [12, 34], pot: [86, 76], potWin: { you: [86, 86], tri: [86, 13], split: [86, 76] },
+    tri: [[40, 13.5], [60, 13.5]], you: [[40, 86.5], [60, 86.5]],
+    board: [[21, 40], [50, 40], [79, 40], [35, 60], [65, 60]],
+    tag: { tri: [28.5, 13.5], you: [28.5, 86.5] },
+    tilt: [-2, 1, -1, 1.5, -1.5], holeTilt: [-5, 5],
   },
 };
-
 const pct = ([x, y]) => ({ left: `${x}%`, top: `${y}%` });
+const cards = (list) => list.map(cardText).join(' ');
 
-// `home`: the card is being swept back into the deck for a reshuffle (face down, quick, no bounce)
-function DealtCard({ card, at, from, tilt, delay, faceUp, glow, out, onOpen, compact, peek, z, home }) {
+function newDeal() {
+  const d = shuffled(TRI);
+  return { you: [d[0], d[1]], board: d.slice(2, 7) };
+}
+function startingHand([a, b]) {
+  const [hi, lo] = rankOf(a) >= rankOf(b) ? [a, b] : [b, a];
+  if (rankOf(hi) === rankOf(lo)) return `a pair of ${PLURAL[rankOf(hi)]}`;
+  return `${WORD[rankOf(hi)]}-${WORD[rankOf(lo)]} ${suitOf(hi) === suitOf(lo) ? 'suited' : 'offsuit'}`;
+}
+function settle(deal) {
+  const you = evaluate([...deal.you, ...deal.board]);
+  const tri = evaluate([...TRI, ...deal.board]);
+  const winner = you.score > tri.score ? 'you' : tri.score > you.score ? 'tri' : 'split';
+  return { you, tri, winner };
+}
+const label = (c) => `${cardText(c)}`;
+
+// `home`: being swept back into the deck for a reshuffle (face down, quick, no bounce)
+function DealtCard({ c, at, from, tilt, delay, up, home, win, dim, z }) {
   return (
     <motion.div
-      className={`pk-slot${peek ? ' is-peek' : ''}${out ? ' is-out' : ''}`}
+      className="pk-slot"
       initial={{ ...pct(from), rotate: -40, opacity: 0 }}
       animate={{ ...pct(home ? from : at), rotate: home ? -14 : tilt, opacity: 1 }}
       transition={home
         ? { delay, type: 'spring', stiffness: 260, damping: 30 }
         : { delay, type: 'spring', stiffness: 170, damping: 18, mass: 0.9, opacity: { duration: 0.15, delay } }}
-      style={{ zIndex: glow ? 6 : z ?? 3, x: '-50%', y: '-50%', transformStyle: 'preserve-3d' }}
+      style={{ zIndex: win ? 6 : z ?? 3, x: '-50%', y: '-50%', transformStyle: 'preserve-3d' }}
     >
-      <PlayingCard card={card} faceUp={faceUp} glow={glow} onOpen={onOpen} compact={compact} />
+      <BendCard c={c} up={up && !home} win={win} dim={dim} label={label(c)} />
     </motion.div>
   );
 }
 
 function LogLine({ line }) {
-  const [act, cards, note] = line;
+  const [act, cs, note] = line;
   return (
     <>
       <span className="pk-log-act">{act}</span>
-      {cards && (
+      {cs && (
         <span className="pk-log-cards">
-          [{cards.split(' ').map((c, i) => <span key={c} className={RED.test(c) ? 'r' : undefined}>{i ? ' ' : ''}{c}</span>)}]
+          [{cs.split(' ').map((c, i) => <span key={c} className={RED.test(c) ? 'r' : undefined}>{i ? ' ' : ''}{c}</span>)}]
         </span>
       )}
       {note && <span className="pk-log-note">{note}</span>}
@@ -79,33 +91,31 @@ export default function PokerTable() {
   const [tall, setTall] = useState(false);
   const [ready, setReady] = useState(false);
   const [live, setLive] = useState(false);
-  const [touch, setTouch] = useState(false);
-  const roomRef = useRef(null);
+  const [deal, setDeal] = useState(null);
+  const [hand, setHand] = useState(2027);
   const [street, setStreet] = useState(0);
   const [up, setUp] = useState({});
   const [spread, setSpread] = useState(false);
-  const [round, setRound] = useState(0);
-  const [open, setOpen] = useState(null);
-  const [idle, setIdle] = useState(false);
-  const [tossed, setTossed] = useState([]);
-  // a reshuffle is seen, not just reset: 'gather' sweeps every card back to the deck face down, 'shuffle'
-  // riffles the deck, then a new hand (the next hand number) is dealt like the first one
+  const [busy, setBusy] = useState(true);
+  // 'gather' sweeps every card back to the deck face down, 'shuffle' riffles it, then a new hand is dealt
   const [phase, setPhase] = useState('play');
   const [joker, setJoker] = useState(0);
-  const timers = useRef([]);
-  const dealt = useRef(0);
-  const opener = useRef(null);
-  const actionRef = useRef(null);
+  const [tossed, setTossed] = useState([]);
+  const [odds, setOdds] = useState({});
+  const [score, setScore] = useState({ you: 0, tri: 0, split: 0 });
+  const roomRef = useRef(null);
   const stageRef = useRef(null);
   const logRef = useRef(null);
+  const timers = useRef([]);
+  const dealt = useRef(0);
   const { basePath } = useRouter();
 
-  // the layout is known only in the browser; cards are mounted after it is, so none is dealt from the wrong deck
+  // the layout and the first deal exist only in the browser (the deal is random), so nothing is dealt twice
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 760px)');
     const set = () => setTall(mq.matches);
     set();
-    setTouch(window.matchMedia('(hover: none)').matches);
+    setDeal(newDeal());
     setReady(true);
     mq.addEventListener('change', set);
     return () => mq.removeEventListener('change', set);
@@ -139,7 +149,7 @@ export default function PokerTable() {
       el.style.setProperty('--rxd', `${((0.5 - y) * 3).toFixed(2)}deg`);
     };
     const move = (e) => { last = e; if (!raf) raf = requestAnimationFrame(apply); };
-    const leave = () => { last = null; el.style.removeProperty('--ry'); el.style.removeProperty('--rxd'); el.style.removeProperty('--lx'); el.style.removeProperty('--ly'); };
+    const leave = () => { last = null; ['--ry', '--rxd', '--lx', '--ly'].forEach((p) => el.style.removeProperty(p)); };
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', leave);
     return () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerleave', leave); cancelAnimationFrame(raf); };
@@ -148,78 +158,91 @@ export default function PokerTable() {
   const later = useCallback((ms, fn) => { timers.current.push(setTimeout(fn, ms)); }, []);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
-  // deal and turn up the hole cards on every new hand, then the dealer goes on to the flop by itself (the three
-  // projects), so the felt is never just two cards; the visitor deals the turn and the river
+  // each hand: four cards dealt face down, one at a time; Tri's turn up, then yours
   useEffect(() => {
-    if (!live) return;
-    later(1000, () => setUp((u) => ({ ...u, biogen: true, northeastern: true })));
-    later(2400, () => setStreet((s) => (s === 0 ? 1 : s)));
-  }, [round, live, later]);
+    if (!live || !deal) return;
+    setBusy(true);
+    later(1250, () => setUp((u) => ({ ...u, [TRI[0]]: true, [TRI[1]]: true })));
+    later(1800, () => setUp((u) => ({ ...u, [deal.you[0]]: true, [deal.you[1]]: true })));
+    later(2700, () => setBusy(false));
+  }, [live, deal, later]);
 
-  // each street: deal its cards. The flop lands as a pile, turns over as one, then spreads; the turn and the
-  // river turn over where they land.
+  // each street: the flop lands as a pile, turns over as one and spreads; the turn and the river turn over
+  // where they land. The buttons wait until the cards are still.
   useEffect(() => {
-    if (street === 0 || street === 4) return;
-    const from = SHOWN[street - 1], to = SHOWN[street];
+    if (!deal || street === 0) return;
+    if (street === 4) { later(1500, () => setBusy(false)); return; }
+    const b = deal.board;
     if (street === 1) {
-      later(900, () => setUp((u) => ({ ...u, ...Object.fromEntries(BOARD.slice(0, 3).map((c) => [c.id, true])) })));
-      later(1650, () => setSpread(true));
-      later(3000, () => setIdle(true));
+      later(900, () => setUp((u) => ({ ...u, [b[0]]: true, [b[1]]: true, [b[2]]: true })));
+      later(1850, () => setSpread(true));
+      later(2700, () => setBusy(false));
       return;
     }
-    for (let i = from; i < to; i++) later(720, () => setUp((u) => ({ ...u, [BOARD[i].id]: true })));
-    later(2300, () => setIdle(true));
-  }, [street, later]);
+    const c = b[SHOWN[street] - 1];
+    later(750, () => setUp((u) => ({ ...u, [c]: true })));
+    later(1800, () => setBusy(false));
+  }, [street, deal, later]);
 
   // cards already on the board keep their place; only newly dealt ones animate in, staggered
   useEffect(() => { dealt.current = SHOWN[street]; }, [street]);
+  useEffect(() => { const el = logRef.current; if (el) el.scrollTop = el.scrollHeight; }, [street, busy]);
 
-  // keep the newest line of the hand history in view
-  useEffect(() => { const el = logRef.current; if (el) el.scrollTop = el.scrollHeight; }, [street]);
+  // the odds on this street (computed once per street, after a frame, so the deal never stutters)
+  const key = `${hand}-${street}`;
+  useEffect(() => {
+    if (!deal || odds[key]) return undefined;
+    const t = setTimeout(() => {
+      setOdds((o) => ({ ...o, [key]: calcOdds(deal.you, TRI, deal.board.slice(0, SHOWN[street]), 15000) }));
+    }, 40);
+    return () => clearTimeout(t);
+  }, [deal, key, street, odds]);
+
+  const result = useMemo(() => (deal ? settle(deal) : null), [deal]);
 
   const act = () => {
-    setIdle(false);
-    if (street < 4) { setStreet(street + 1); return; }
-    window.open(`${basePath}${CONTACT.resume}`, '_blank', 'noreferrer');
+    if (busy || phase !== 'play' || !deal) return;
+    if (street === 4) { reshuffle(); return; }
+    setBusy(true);
+    if (street === 3) setScore((s) => ({ ...s, [result.winner]: s[result.winner] + 1 }));
+    setStreet(street + 1);
   };
-  const showdown = () => {
-    setIdle(false);
-    setUp(Object.fromEntries([...HOLE, ...BOARD].map((c) => [c.id, true])));
+  const skip = () => {
+    if (busy || phase !== 'play' || !deal || street >= 3) return;
+    setBusy(true);
+    setUp(Object.fromEntries([...TRI, ...deal.you, ...deal.board].map((c) => [c, true])));
     setSpread(true);
+    setScore((s) => ({ ...s, [result.winner]: s[result.winner] + 1 }));
     setStreet(4);
-    // the skip button leaves with this street; keep keyboard focus on the table's main action
-    requestAnimationFrame(() => actionRef.current?.focus());
   };
-  const reshuffle = () => {
+  function reshuffle() {
     if (phase !== 'play') return;
     timers.current.forEach(clearTimeout);
     timers.current = [];
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setOpen(null); setIdle(false); setTossed([]); setJoker(0);
+    setBusy(true); setJoker(0); setTossed([]);
     setPhase('gather');
-    later(still ? 0 : 750, () => setPhase('shuffle'));
-    later(still ? 10 : 1700, () => {
+    later(still ? 0 : 800, () => setPhase('shuffle'));
+    later(still ? 10 : 1750, () => {
       dealt.current = 0;
-      setUp({}); setStreet(0); setSpread(false); setPhase('play'); setRound((r) => r + 1);
+      setUp({}); setStreet(0); setSpread(false); setOdds({});
+      setHand((h) => h + 1); setDeal(newDeal()); setPhase('play');
     });
-  };
+  }
   // the deck hides a joker: cut it and the joker turns up on top, then goes back
   const cutDeck = () => {
     if (phase !== 'play') return;
     setJoker((j) => j + 1);
     later(2600, () => setJoker(0));
   };
-  const openCard = useCallback((card, el) => { opener.current = el; setOpen(card); }, []);
-  const closeCard = useCallback(() => { setOpen(null); requestAnimationFrame(() => opener.current?.focus()); }, []);
 
-  // a click on bare felt tosses a chip that lands where you clicked. offsetX/offsetY are in the felt's own
-  // (untilted) coordinates, so the chip lands under the cursor however the table leans.
+  // a click on bare felt tosses a chip that lands where you clicked (offsetX/Y are in the felt's own, untilted
+  // coordinates, so the chip lands under the cursor however the table leans)
   const toss = (e) => {
     if (e.target !== e.currentTarget) return;
     const el = e.currentTarget;
     const w = el.offsetWidth, h = el.offsetHeight;
     const px = e.nativeEvent.offsetX, py = e.nativeEvent.offsetY;
-    // inside the cloth: near enough the table's long axis (it runs across a wide table, down a tall one)
     const rad = Math.min(w, h) / 2;
     const cx = Math.min(Math.max(px, rad), w - rad), cy = Math.min(Math.max(py, rad), h - rad);
     if (Math.hypot(px - cx, py - cy) > rad * 0.92) return;
@@ -227,55 +250,81 @@ export default function PokerTable() {
   };
 
   const L = tall ? LAYOUT.tall : LAYOUT.wide;
-  const potCount = [2, 4, 5, 7, 8][street];
   const home = phase !== 'play';
   const done = street === 4 && !home;
-  // the log's first line names the hand; each reshuffle deals the next one, and says what the visitor sees
-  const history = HISTORY.map((block, s) => (s > 0 ? block : [
-    [block[0][0].replace('#2027', `#${2027 + round}`)],
-    ...(round ? [['Reshuffled. Same two cards again: this deck is stacked.']] : []),
-    ...block.slice(1),
-  ]));
+  const shown = deal ? deal.board.slice(0, SHOWN[street]) : [];
+  const o = odds[key];
+  const showOdds = o && !busy && !home;
+  const potCount = [2, 4, 5, 7, 8][street];
   const burned = Math.min(street, 3);
-  const placeOf = (id, normal) => {
-    if (!done) return normal;
-    const i = ROYAL_ORDER.indexOf(id);
-    return i >= 0 ? L.row[i] : L.aside[id] ?? normal;
-  };
-  // until the flop is spread, its three cards sit in one pile on the first spot
+  // at showdown the winner's five cards are lit and the rest dimmed (a split lights both hands' five)
+  const lit = useMemo(() => {
+    if (!done || !result) return null;
+    const five = result.winner === 'tri' ? result.tri.five : result.winner === 'you' ? result.you.five : [...result.you.five, ...result.tri.five];
+    return new Set(five);
+  }, [done, result]);
   const boardSpot = (i) => (i < 3 && !spread ? [L.board[0][0] + i * 0.25, L.board[0][1] - i * 0.35] : L.board[i]);
-  const equity = EQUITY[street];
+
+  // what each seat holds right now, in words
+  const made = (hole) => (shown.length ? handName(evaluate([...hole, ...shown])) : startingHand(hole));
+  const pctOf = (x) => `${Math.round(x * 100)}%`;
+
+  // the hand history, written as the hand is dealt
+  const history = useMemo(() => {
+    if (!deal) return [];
+    const b = deal.board;
+    const blocks = [
+      [[`Hand #${hand} · Heads-up hold'em · Boston, MA`], ['Tri holds', cards(TRI)], ['Dealt to you', cards(deal.you)]],
+      [['*** FLOP ***', cards(b.slice(0, 3))]],
+      [['*** TURN ***', cards([b[3]])]],
+      [['*** RIVER ***', cards([b[4]])]],
+    ];
+    if (result) {
+      blocks.push([
+        ['*** SHOWDOWN ***'],
+        ['Tri shows', cards(TRI), handName(result.tri)],
+        ['You show', cards(deal.you), handName(result.you)],
+        [result.winner === 'you' ? 'You win the pot.' : result.winner === 'tri' ? 'Tri wins the pot.' : 'Split pot.'],
+      ]);
+    }
+    return blocks.slice(0, street + 1);
+  }, [deal, hand, street, result]);
+
+  const winText = result && (result.winner === 'you' ? 'You win' : result.winner === 'tri' ? 'Tri wins' : 'Split pot');
+  const hint = home ? 'Every card goes back in the deck.'
+    : done ? `${handName(result.winner === 'tri' ? result.tri : result.you)[0].toUpperCase()}${handName(result.winner === 'tri' ? result.tri : result.you).slice(1)}${result.winner === 'split' ? ' each.' : ` beats ${handName(result.winner === 'tri' ? result.you : result.tri)}.`}`
+      : street === 0 ? 'Tri holds A♠ K♠ every hand. You get two random cards.'
+        : 'The odds are worked out exactly from every card still to come.';
+  const played = score.you + score.tri + score.split;
+  const tableCards = deal ? [...TRI, ...deal.you, ...deal.board] : [];
 
   return (
-    <section ref={roomRef} className={`pk-room${tall ? ' is-tall' : ''}`} aria-label="The hand">
+    <section ref={roomRef} className={`pk-room${tall ? ' is-tall' : ''}`} aria-label="A hand against Tri">
+      {deal && <CardDefs cards={tableCards} />}
       <div className="pk-stage" ref={stageRef}>
         <div className="pk-table">
           <div className={`pk-felt${done ? ' is-showdown' : ''}`} onClick={toss}>
             <div className="pk-lamp" aria-hidden="true" />
-            <p className="pk-print" aria-hidden="true">TRI HUYNH · SEAT 1 · NO LIMIT HOLD&apos;EM</p>
 
             <button type="button" className={`pk-deck${phase === 'shuffle' ? ' is-shuffling' : ''}`} style={pct(L.deck)} onClick={cutDeck} aria-label="Cut the deck">
               <span /><span /><span />
             </button>
+            <span className="pk-dealer" style={pct(L.dealer)} aria-hidden="true">D</span>
             <AnimatePresence>
               {joker > 0 && (
                 <motion.img key={`joker${joker}`} className="pk-joker" src={`${basePath}/images/joker.svg`} alt="A joker" draggable="false"
                   style={{ ...pct(L.deck), x: '-50%', y: '-50%' }}
                   initial={{ rotate: -14, scale: 0.8, opacity: 0 }}
-                  animate={{ left: `${L.deck[0] + (tall ? 16 : 9)}%`, top: `${L.deck[1] + (tall ? 8 : -2)}%`, rotate: [-14, 16, 8], scale: 1.3, opacity: 1 }}
+                  animate={{ left: `${L.deck[0] + (tall ? 10 : 6)}%`, top: `${L.deck[1] + (tall ? 6 : -14)}%`, rotate: [-14, 16, 8], scale: 1.3, opacity: 1 }}
                   exit={{ ...pct(L.deck), rotate: -14, scale: 0.8, opacity: 0, transition: { duration: 0.3 } }}
                   transition={{ type: 'spring', stiffness: 220, damping: 14 }} />
               )}
             </AnimatePresence>
-            <span className="pk-dealer" style={{ left: `${L.deck[0] + (tall ? 15 : 8.5)}%`, top: `${L.deck[1] + (tall ? 0 : 2)}%` }} aria-hidden="true">D</span>
 
             {ready && live && Array.from({ length: burned }, (_, i) => (
-              <motion.span key={`burn${round}-${i}`} className="pk-burn" aria-hidden="true"
-                style={{ x: '-50%', y: '-50%' }}
+              <motion.span key={`burn${hand}-${i}`} className="pk-burn" aria-hidden="true" style={{ x: '-50%', y: '-50%' }}
                 initial={{ ...pct(L.deck), rotate: -14, opacity: 0 }}
-                animate={home
-                  ? { ...pct(L.deck), rotate: -14, opacity: 1 }
-                  : { left: `${L.muck[0] + i * 0.6}%`, top: `${L.muck[1] - i * 0.8}%`, rotate: [-14, 8, -5, 11][i], opacity: street === 4 ? 0 : 1 }}
+                animate={home ? { ...pct(L.deck), rotate: -14, opacity: 1 } : { left: `${L.muck[0] + i * 0.6}%`, top: `${L.muck[1] - i * 0.8}%`, rotate: [-14, 8, -5, 11][i], opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 160, damping: 20, opacity: { duration: 0.2 } }}>
                 <CardBack />
               </motion.span>
@@ -289,71 +338,77 @@ export default function PokerTable() {
               </motion.span>
             ))}
 
-            <motion.div key={`pot${round}`} className="pk-pot" style={{ ...pct(L.pot), x: '-50%', y: '-50%' }} animate={done ? { left: `${L.potEnd[0]}%`, top: `${L.potEnd[1]}%`, scale: tall ? 0.7 : 0.9 } : pct(L.pot)} transition={{ duration: 0.9, ease: 'easeInOut', delay: 0.4 }}>
+            <motion.div key={`pot${hand}`} className="pk-pot" style={{ ...pct(L.pot), x: '-50%', y: '-50%' }}
+              animate={done ? { ...pct(L.potWin[result.winner]), scale: 0.95 } : pct(L.pot)} transition={{ duration: 0.9, ease: 'easeInOut', delay: 0.5 }}>
               <div className="pk-pot-chips">
-                <ChipStack color="paper" count={Math.ceil(potCount / 2)} width={34} />
-                <ChipStack color="red" count={potCount} width={34} />
-                <ChipStack color="ink" count={Math.max(1, potCount - 2)} width={34} />
+                <ChipStack color="paper" count={Math.ceil(potCount / 2)} width={30} />
+                <ChipStack color="red" count={potCount} width={30} />
+                <ChipStack color="ink" count={Math.max(1, potCount - 2)} width={30} />
               </div>
             </motion.div>
 
-            {ready && live && (
-              <div key={`r${round}`} className="pk-cards">
-                {HOLE.map((c, i) => (
-                  <DealtCard key={c.id} card={c} at={placeOf(c.id, L.holes[i])} from={L.deck} tilt={done ? 0 : L.holeTilt[i]}
-                    delay={home ? 0.05 * i : done ? 0.05 * i : 0.15 + i * 0.2} home={home}
-                    faceUp={!home && !!up[c.id]} glow={done} onOpen={openCard} compact={tall} peek={street === 0 && i === 1 && !home} />
-                ))}
-                {BOARD.slice(0, SHOWN[street]).map((c, i) => (
-                  <DealtCard key={c.id} card={c} at={placeOf(c.id, boardSpot(i))} from={L.deck} tilt={done ? 0 : L.tilt[i]} home={home}
-                    delay={home ? 0.05 * (i + 2) : done ? 0.05 * (i + 2) : (i < 3 && spread ? i * 0.07 : 0.3 + Math.max(0, i - dealt.current) * 0.13)}
-                    z={3 + i} faceUp={!home && !!up[c.id]} glow={done && ROYAL.has(c.id)} out={done && !ROYAL.has(c.id)} onOpen={openCard} compact={tall} />
+            {ready && live && deal && (
+              <div key={`h${hand}`} className="pk-cards">
+                {[0, 1].flatMap((i) => [
+                  <DealtCard key={`y${deal.you[i]}`} c={deal.you[i]} at={L.you[i]} from={L.deck} tilt={done ? 0 : L.holeTilt[i]} home={home}
+                    delay={home ? 0.04 * i : 0.1 + i * 0.4} up={!!up[deal.you[i]]} win={lit?.has(deal.you[i])} dim={lit && !lit.has(deal.you[i])} />,
+                  <DealtCard key={`t${TRI[i]}`} c={TRI[i]} at={L.tri[i]} from={L.deck} tilt={done ? 0 : L.holeTilt[i]} home={home}
+                    delay={home ? 0.04 * i + 0.08 : 0.3 + i * 0.4} up={!!up[TRI[i]]} win={lit?.has(TRI[i])} dim={lit && !lit.has(TRI[i])} />,
+                ])}
+                {shown.map((c, i) => (
+                  <DealtCard key={`b${c}`} c={c} at={boardSpot(i)} from={L.deck} tilt={done ? 0 : L.tilt[i]} home={home}
+                    delay={home ? 0.04 * (i + 2) : (i < 3 && spread ? i * 0.07 : 0.3 + Math.max(0, i - dealt.current) * 0.13)}
+                    z={3 + i} up={!!up[c]} win={lit?.has(c)} dim={lit && !lit.has(c)} />
                 ))}
               </div>
             )}
 
-            <AnimatePresence>
-              {done && (
-                <div className="pk-showdown-pos">
-                  <motion.div className="pk-showdown" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.7, duration: 0.5, ease: 'easeOut' } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
-                    <span className="pk-showdown-k">Showdown</span>
-                    <strong>Royal flush</strong>
-                  </motion.div>
-                </div>
-              )}
-            </AnimatePresence>
+            {/* the seats, broadcast style: who, their odds, what they hold */}
+            {ready && live && deal && !home && ['tri', 'you'].map((seat) => (
+              <div key={seat} className={`pk-tag${done && result.winner === seat ? ' is-win' : ''}`} style={pct(L.tag[seat])}>
+                <b>{seat === 'tri' ? 'Tri' : 'You'}</b>
+                <span className="pk-tag-odds">{done ? (result.winner === seat ? 'wins' : result.winner === 'split' ? 'split' : '') : showOdds ? pctOf(seat === 'tri' ? o.b : o.a) : '…'}</span>
+                {(up[seat === 'tri' ? TRI[0] : deal.you[0]] || done) && <em>{made(seat === 'tri' ? TRI : deal.you)}</em>}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="pk-bar">
         <div className="pk-log" ref={logRef} aria-live="polite" aria-label="Hand history">
-          {history.slice(0, street + 1).map((block, s) => block.map((line, j) => (
-            <motion.p key={`${round}-${s}-${j}`} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: (s === street ? 0.35 : 0) + j * 0.45, duration: 0.3 }}>
+          {history.map((block, s) => block.map((line, j) => (
+            <motion.p key={`${hand}-${s}-${j}`} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: (s === street ? 0.35 : 0) + j * 0.4, duration: 0.3 }}>
               <LogLine line={line} />
             </motion.p>
           )))}
         </div>
         <div className="pk-panel">
           <div className="pk-street">
-            <span className="pk-street-k">{home ? 'Shuffling' : STREET_NAME[street]}</span>
-            <span className="pk-street-hint">{home ? 'Every card goes back in the deck.' : done ? 'Every card opens. The two off-suit cards hold the side projects.' : touch ? 'Tap any face-up card to read it.' : 'Hover to pick a card up, click to read it.'}</span>
+            <span className="pk-street-k">{home ? 'Shuffling' : done ? winText : STREET[street]}</span>
+            <span className="pk-street-hint">{hint}</span>
           </div>
-          <div className="pk-equity" role="img" aria-label={`Equity against one random hand: ${equity}%`}>
-            <span className="pk-equity-k">Equity vs. one random hand</span>
-            <span className="pk-meter"><i style={{ width: `${equity}%` }} /></span>
-            <b>{equity}%{equity === 100 ? <em> the nuts</em> : null}</b>
+          <div className="pk-odds" role="img" aria-label={showOdds ? `Odds: you ${pctOf(o.a)}, Tri ${pctOf(o.b)}, tie ${pctOf(o.tie)}` : 'Working out the odds'}>
+            <span className="pk-odds-bar">
+              <i className="you" style={{ width: showOdds ? `${o.a * 100}%` : '50%' }} />
+              <i className="tie" style={{ width: showOdds ? `${o.tie * 100}%` : '0%' }} />
+              <i className="tri" style={{ width: showOdds ? `${o.b * 100}%` : '50%' }} />
+            </span>
+            <span className="pk-odds-k">
+              <span>You {showOdds ? pctOf(o.a) : '…'}</span>
+              {showOdds && o.tie >= 0.005 && <span>Tie {pctOf(o.tie)}</span>}
+              <span>Tri {showOdds ? pctOf(o.b) : '…'}</span>
+            </span>
           </div>
           <div className="pk-actions">
-            <button className="pk-btn ghost" onClick={reshuffle} disabled={home}>Reshuffle</button>
-            {street < 3 && <button className="pk-btn ghost" onClick={showdown} disabled={home}>Skip to showdown</button>}
-            <button ref={actionRef} className={`pk-btn${idle ? ' is-idle' : ''}`} onClick={act} disabled={home}>{ACTION[street]}</button>
+            {street < 4 && <button className="pk-btn ghost" onClick={reshuffle} disabled={home}>Reshuffle</button>}
+            {street < 3 && <button className="pk-btn ghost" onClick={skip} disabled={busy || home}>Skip to showdown</button>}
+            <button className="pk-btn" onClick={act} disabled={busy || home}>{ACTION[street]}</button>
           </div>
+          {played > 0 && <p className="pk-score">Hands won: you {score.you}, Tri {score.tri}{score.split ? `, split ${score.split}` : ''}</p>}
         </div>
       </div>
-
-      <HandDetail card={open} onClose={closeCard} />
     </section>
   );
 }

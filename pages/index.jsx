@@ -144,8 +144,8 @@ export default function Home() {
 
           <section id="hand" className="pk-section pk-hand-band" aria-labelledby="pk-hand-h">
             <Street name="Your deal" />
-            <h2 id="pk-hand-h">Play the hand</h2>
-            <p className="pk-lede">The same work, dealt as one hand of hold&apos;em: the co-op and the school in the hole, the three projects on the flop, side projects on the turn and the river. Deal the rest of it and open any face-up card.</p>
+            <h2 id="pk-hand-h">Play a hand</h2>
+            <p className="pk-lede">Heads-up against me. I hold A♠ K♠ every hand (my table, my rules); you get two random cards. Deal the board and watch the odds move, worked out from every card still to come.</p>
             <PokerTable />
           </section>
 

@@ -36,7 +36,7 @@ export default function Document() {
         />
         {/* the homepage table: display and body faces (labels use JetBrains Mono, loaded above) */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Libre+Caslon+Text:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
       </Head>

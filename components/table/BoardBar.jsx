@@ -15,7 +15,7 @@ function readout(seen) {
   const n = ['cruxpack', 'predictions', 'gittimeline'].filter((id) => seen.has(id)).length;
   if (n === 3) return 'Royal flush';
   if (n === 2) return 'Royal flush draw';
-  if (n === 1) return 'Ace high, three to a royal';
+  if (n === 1) return 'Three to a royal';
   return 'Ace-king suited';
 }
 
