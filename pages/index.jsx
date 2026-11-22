@@ -157,8 +157,9 @@ export default function Home() {
                 <div className="pk-hole-top">
                   <span className="pk-hole-mini"><PlayingCard card={coop} faceUp still /></span>
                   <div>
+                    <span className="pk-plate"><img src={`${basePath}${coop.logo}`} alt="Biogen" /></span>
                     <p className="pk-when">Jan – Jun 2026 · Cambridge, MA</p>
-                    <h3>AI Engineer Co-op · Biogen</h3>
+                    <h3>AI Engineer Co-op</h3>
                   </div>
                 </div>
                 <p>{coop.detail.brief}</p>
@@ -168,11 +169,12 @@ export default function Home() {
                 <div className="pk-hole-top">
                   <span className="pk-hole-mini"><PlayingCard card={school} faceUp still /></span>
                   <div>
+                    <span className="pk-plate"><img src={`${basePath}${school.logo}`} alt={PROFILE.school} /></span>
                     <p className="pk-when">Graduating May 2027 · Boston, MA</p>
-                    <h3>{PROFILE.school}</h3>
+                    <h3>B.S. Computer Science</h3>
                   </div>
                 </div>
-                <p>{PROFILE.degree} · {PROFILE.standing}.</p>
+                <p>Concentration in AI · {PROFILE.standing}.</p>
                 <p>Courses include {PROFILE.courses.join(', ')}.</p>
               </article>
             </div>

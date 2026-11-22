@@ -27,6 +27,7 @@ export const HOLE = [
   {
     id: 'biogen', rank: 'A', suit: 'spade', art: 'agent',
     title: 'Biogen',
+    logo: '/images/biogen.svg',
     sub: 'AI Engineer Co-op',
     detail: {
       kicker: 'Hole card · A♠ · AI Engineer Co-op',
@@ -41,6 +42,7 @@ export const HOLE = [
   {
     id: 'northeastern', rank: 'K', suit: 'spade', art: 'cap',
     title: 'Northeastern',
+    logo: '/images/northeastern.svg',
     sub: 'B.S. CS · May 2027',
     detail: {
       kicker: 'Hole card · K♠ · Class of 2027',

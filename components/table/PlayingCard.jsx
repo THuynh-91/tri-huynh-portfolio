@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { CardBack, SuitIcon } from './CardArt';
 
 // One playing card: an oxblood back, and a cream face printed like a real card: corner indices, a thin inner
@@ -8,6 +9,7 @@ export default function PlayingCard({ card, faceUp, glow, onOpen, compact, still
   const red = card.suit === 'heart' || card.suit === 'diamond';
   const label = faceUp ? `${card.rank} of ${card.suit}s: ${card.title}. Open details.` : 'Face-down card';
   const Tag = still ? 'span' : 'button';
+  const { basePath } = useRouter();
   return (
     <Tag
       type={still ? undefined : 'button'}
@@ -23,7 +25,9 @@ export default function PlayingCard({ card, faceUp, glow, onOpen, compact, still
           <span className="pk-corner tl"><b>{card.rank}</b><SuitIcon suit={card.suit} size={12} /></span>
           <span className="pk-corner br"><b>{card.rank}</b><SuitIcon suit={card.suit} size={12} /></span>
           <span className="pk-pip"><SuitIcon suit={card.suit} size={100} /></span>
-          <span className="pk-title">{card.title}</span>
+          {card.logo
+            ? <img className="pk-logo" src={`${basePath}${card.logo}`} alt={card.title} draggable="false" />
+            : <span className="pk-title">{card.title}</span>}
           {card.sub && <span className="pk-sub">{card.sub}</span>}
           {hero && <span className="pk-glare" />}
         </span>

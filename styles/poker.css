@@ -244,6 +244,9 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-hole-top { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
 .pk-hole-mini { flex: none; width: 66px; transform: rotate(-4deg); filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .5)); }
 .pk-hole-card:nth-child(2) .pk-hole-mini { transform: rotate(4deg); }
+/* the employer's and the school's logos, on a card-stock plate in their own colours */
+.pk-plate { display: inline-flex; align-items: center; height: 34px; padding: 6px 12px; margin-bottom: 8px; border-radius: 5px; background: var(--card-face); box-shadow: 0 4px 10px rgba(0, 0, 0, .35); }
+.pk-plate img { display: block; height: 100%; width: auto; }
 .pk-hole-card h3 { margin: 2px 0 0; font-size: 22px; line-height: 1.2; }
 .pk-hole-card p { margin: 0 0 8px; }
 .pk-when { margin: 0; font: 500 14px/1.6 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif; color: var(--pk-muted); }
@@ -350,6 +353,9 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-corner svg { width: 10cqw !important; height: 10cqw !important; }
 .pk-corner.tl { top: 3cqw; left: 3.5cqw; }
 .pk-corner.br { bottom: 3cqw; right: 3.5cqw; transform: rotate(180deg); }
+/* a hole card printed with its logo in place of the typed name */
+.pk-logo { display: block; width: 76cqw; max-height: 22cqw; height: auto; object-fit: contain; margin: 0 auto; }
+.pk-face:has(.pk-logo) .pk-sub { margin-top: 3.4cqw; }
 /* one large pip, printed; the ace's is the big ornamental one */
 .pk-pip { display: block; width: 34cqw; margin: 2cqw auto 9cqw; filter: drop-shadow(0 .6cqw 0 rgba(23, 21, 15, .12)); }
 .pk-pip svg { width: 100% !important; height: auto !important; }
