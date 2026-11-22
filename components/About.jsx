@@ -50,8 +50,8 @@ export default function About() {
                 automation across business units.
               </p>
               <p>
-                On my own time I've shipped an ML-driven Rock-Paper-Scissors game that drew{' '}
-                <span className="text-accent">1,000+ players</span>, a RAG study assistant
+                On my own time I've shipped an ML-driven Rock-Paper-Scissors game that learns how
+                you play, a RAG study assistant
                 grounded in your own notes, and an explainable Spotify recommender built
                 on vector search. I like the full arc: model, backend, and the product on top.
               </p>

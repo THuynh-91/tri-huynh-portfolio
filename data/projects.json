@@ -35,12 +35,12 @@
         "label": "claim accuracy"
       },
       {
-        "value": "5 of 5",
-        "label": "bad structures caught"
+        "value": "770",
+        "label": "claims audited"
       },
       {
-        "value": "100+",
-        "label": "study sets / day"
+        "value": "20.5→3.9 MB",
+        "label": "PDF export"
       }
     ]
   },
@@ -63,8 +63,8 @@
         "label": "before the AP call"
       },
       {
-        "value": "<1 ms",
-        "label": "p95 to order"
+        "value": "0.71-0.87",
+        "label": "logit slope vs Kalshi"
       },
       {
         "value": "3.9%",
@@ -73,7 +73,7 @@
     ],
     "impact": [
       "Working paper on SSRN: Kalshi priced the winner at 0.97 a median 108 minutes before the AP called the race",
-      "Sub-millisecond signal-to-order latency (p95) on live feeds from three venues, with risk caps, live monitoring and a kill switch",
+      "Real-time feeds from three venues, with risk caps, live monitoring and a kill switch",
       "Optimized by Monte Carlo simulation for the probability of finishing first, not expected profit",
       "Measured play-money price compression against Kalshi by logistic regression (slope 0.71-0.87) and derived a 3.9% ceiling on finishing first from 10x behind without an edge",
       "Fixed all 14 defects an independent AI reviewer found, then verified with live orders on the Cup's exchange"
@@ -151,8 +151,8 @@
         "label": "p95 frame time"
       },
       {
-        "value": "80+",
-        "label": "users"
+        "value": "1.48M",
+        "label": "Linux commits replayed"
       }
     ],
     "impact": [
@@ -268,7 +268,7 @@
       "Tailwind CSS"
     ],
     "impact": [
-      "Launched publicly and reached 1,000+ unique visitors",
+      "Launched publicly as a live web app",
       "Deep learning blended with behavioral heuristics and streak detection",
       "Production FastAPI backend served behind a Vercel frontend",
       "Docker Compose for reproducible environments"
