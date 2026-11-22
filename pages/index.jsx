@@ -114,7 +114,7 @@ export default function Home() {
               <p className="pk-role">{PROFILE.role}</p>
               <dl className="pk-facts">
                 <div><dt>school</dt><dd><b>{PROFILE.school}</b><br />{PROFILE.degree}</dd></div>
-                <div><dt>graduating</dt><dd><b>{PROFILE.grad}</b> · {PROFILE.standing}</dd></div>
+                <div><dt>graduating</dt><dd><b>{PROFILE.grad}</b></dd></div>
                 <div><dt>most recently</dt><dd>AI Engineer Co-op at <b>Biogen</b>, January to June 2026</dd></div>
                 <div><dt>looking for</dt><dd>{PROFILE.seeking}</dd></div>
                 <div><dt>based in</dt><dd>{PROFILE.place}</dd></div>
@@ -162,8 +162,7 @@ export default function Home() {
                     <h3>B.S. Computer Science</h3>
                   </div>
                 </div>
-                <p>Concentration in AI · {PROFILE.standing}.</p>
-                <p>Courses include {PROFILE.courses.join(', ')}.</p>
+                <p>Concentration in AI. Courses include {PROFILE.courses.join(', ')}.</p>
               </article>
               <article className="pk-hole-card">
                 <div className="pk-hole-top">
