@@ -162,7 +162,12 @@ export default function Home() {
                     <h3>B.S. Computer Science</h3>
                   </div>
                 </div>
-                <p>Concentration in AI. Courses include {PROFILE.courses.join(', ')}.</p>
+                <p>{PROFILE.college}, concentration in AI.</p>
+                <dl className="pk-courses">
+                  {PROFILE.courses.map(([area, list]) => (
+                    <div key={area}><dt>{area}</dt><dd>{list.flatMap((c, i) => [i ? ' ' : null, <span key={c}>{c}</span>])}</dd></div>
+                  ))}
+                </dl>
               </article>
               <article className="pk-hole-card">
                 <div className="pk-hole-top">

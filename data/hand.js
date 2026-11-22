@@ -1,4 +1,4 @@
-// The hand the homepage deals. Hole cards: the co-op (A♠) and the school (K♠). Board: the three featured
+// The hand the homepage deals. Hole cards: the school (A♠) and the co-op (K♠). Board: the three featured
 // projects (Q♠ J♠ 10♠), then two off-suit cards for the side projects. The five spades make a royal flush,
 // so every card in the winning hand is real work. Each card says what the thing is, how it works, what it
 // is built with and where to see it; the resume's achievement bullets stay on the resume.
@@ -11,7 +11,13 @@ export const PROFILE = {
   grad: 'May 2027',
   place: 'Boston, MA · open to relocating · U.S. citizen',
   seeking: 'Full-time roles from May 2027',
-  courses: ['Engineering LLM-Integrated Systems', 'Machine Learning', 'Distributed Systems', 'Algorithms & Data'],
+  college: 'Khoury College of Computer Sciences',
+  // every course the resume's versions list, by area
+  courses: [
+    ['AI & data', ['Engineering LLM-Integrated Systems', 'Machine Learning', 'Foundations of Data Science']],
+    ['Systems', ['Distributed Systems', 'Computer Systems']],
+    ['Foundations', ['Algorithms & Data', 'Object-Oriented Design']],
+  ],
 };
 
 // Tools the projects on this page actually show come first in each group.
@@ -31,8 +37,8 @@ export const HOLE = [
     detail: {
       kicker: 'Hole card · A♠ · Class of 2027',
       title: 'Northeastern University',
-      what: 'B.S. in Computer Science with a concentration in AI, graduating in May 2027.',
-      how: 'Courses include Engineering LLM-Integrated Systems, Machine Learning, Distributed Systems, and Algorithms & Data.',
+      what: 'B.S. in Computer Science at the Khoury College of Computer Sciences, with a concentration in AI, graduating in May 2027.',
+      how: 'Courses include Engineering LLM-Integrated Systems, Machine Learning, Foundations of Data Science, Distributed Systems, Computer Systems, Algorithms & Data, and Object-Oriented Design.',
       stack: [],
       links: [],
     },
