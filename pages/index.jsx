@@ -124,6 +124,19 @@ export default function Home() {
             <HeroHand onOpen={openHero} />
           </section>
 
+          <section id="hand" className="pk-section pk-hand-band" aria-labelledby="pk-hand-h">
+            <Street name="Your deal" />
+            <h2 id="pk-hand-h">Play a hand</h2>
+            <p className="pk-lede">Heads-up against me. I hold A♠ K♠ every hand (my table, my rules); you get two random cards. Deal the board and watch the odds move, worked out from every card still to come.</p>
+            <PokerTable />
+          </section>
+
+          <section id="projects" className="pk-section" aria-labelledby="pk-projects-h">
+            <Street name="The flop" cards="Q♠ J♠ 10♠" />
+            <h2 id="pk-projects-h">Projects</h2>
+            {featured.map((c, i) => <Project key={c.id} card={c} basePath={basePath} flip={i === 1} />)}
+          </section>
+
           <section className="pk-stack" aria-labelledby="pk-stack-h">
             <h2 id="pk-stack-h">Tech stack</h2>
             <div className="pk-stack-grid">
@@ -134,19 +147,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          </section>
-
-          <section id="projects" className="pk-section" aria-labelledby="pk-projects-h">
-            <Street name="The flop" cards="Q♠ J♠ 10♠" />
-            <h2 id="pk-projects-h">Projects</h2>
-            {featured.map((c, i) => <Project key={c.id} card={c} basePath={basePath} flip={i === 1} />)}
-          </section>
-
-          <section id="hand" className="pk-section pk-hand-band" aria-labelledby="pk-hand-h">
-            <Street name="Your deal" />
-            <h2 id="pk-hand-h">Play a hand</h2>
-            <p className="pk-lede">Heads-up against me. I hold A♠ K♠ every hand (my table, my rules); you get two random cards. Deal the board and watch the odds move, worked out from every card still to come.</p>
-            <PokerTable />
           </section>
 
           <section id="experience" className="pk-section" aria-labelledby="pk-exp-h">

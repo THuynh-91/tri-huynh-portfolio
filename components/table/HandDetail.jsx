@@ -7,6 +7,7 @@ import { SIDE } from '../../data/hand';
 import { InkChart } from '../ink/Drawings';
 import { SuitIcon } from './CardArt';
 import CruxScene from './CruxScene';
+import CupChart from './CupChart';
 
 // Demos that live in this site (public/demos) rather than at an outside URL.
 const LOCAL_DEMOS = { 12: '/demos/pendulum/index.html', 14: '/demos/roulette/index.html' };
@@ -58,10 +59,11 @@ export function ProjectMedia({ media, basePath }) {
     return () => io.disconnect();
   }, []);
   if (!media) return null;
+  if (media.kind === 'cup') return <CupChart basePath={basePath} />;
   if (media.kind === 'cruxpack') {
     return (
       <figure className="pk-media is-cruxpack" aria-label={media.alt}>
-        <CruxScene cards={media.cards} file={media.file} basePath={basePath} />
+        <CruxScene media={media} basePath={basePath} />
       </figure>
     );
   }

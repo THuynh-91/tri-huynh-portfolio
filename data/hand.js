@@ -62,21 +62,23 @@ export const BOARD = [
     detail: {
       kicker: 'The flop · Q♠',
       title: 'CruxPack',
-      what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every card and note links back to the slide it came from.',
+      what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds source-cited notes, flashcards, practice problems and a chat that answers from your own slides.',
       how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
-      // Real captures of cruxpack.io's public sample deck (Lec 04, The Action Potential): each card's question
-      // and answer face, and the source slide it cites, as cruxpack.io's own "Preview source slide" shows it.
-      // The site says this deck is hand-checked, so the page never calls it generated output. Played here as
-      // it plays there: turn a card, step through, open its source.
+      // Real captures of a pack made with CruxPack and shared on cruxpack.io (Cardiac Physiology, 138 cards): six
+      // cards' question and answer faces as the share page shows them, and the textbook page the first one cites
+      // (OpenStax, CC BY 4.0), as its "Verify against source" preview shows it. Played here as it plays there.
       media: {
         kind: 'cruxpack',
-        alt: 'Three cards from the sample deck on cruxpack.io, to turn over and step through; each opens the lecture slide it cites.',
-        file: 'Lec 04 — The Action Potential.pdf',
-        cards: [3, 5, 7].map((p) => ({
-          page: p,
-          q: `/images/cruxpack/card-p${p}-q.webp`,
-          a: `/images/cruxpack/card-p${p}-a.webp`,
-          slide: `/images/cruxpack/slide-p${p}.webp`,
+        alt: 'Six cards from a shared CruxPack pack on cardiac physiology, to turn over and step through; the first opens the textbook page it cites.',
+        title: 'Cardiac Physiology',
+        total: 138,
+        share: 'https://cruxpack.io/share/iE-NsQXjObutBAYTYtmbCc6Oec6MW1ZdKsTBBFzSLNA',
+        cards: [1, 2, 3, 4, 5, 6].map((n) => ({
+          n,
+          q: `/images/cruxpack/cardio-${n}-q.webp`,
+          a: `/images/cruxpack/cardio-${n}-a.webp`,
+          ratio: n === 1 ? 1000 / 757 : 1000 / 378,
+          ...(n === 1 ? { source: { page: 4, img: '/images/cruxpack/cardio-src-p4.webp', file: '19-4 Cardiac Physiology.pdf', credit: 'OpenStax, Anatomy and Physiology, CC BY 4.0' } } : {}),
         })),
       },
       stack: ['TypeScript', 'Next.js', 'SQLite', 'Gemini', 'Stripe', 'Fly.io'],
@@ -93,7 +95,8 @@ export const BOARD = [
       title: 'Predictions Cup trading system',
       what: "Susquehanna ran a play-money prediction market on the 2026 US midterms. I designed a system to trade it live and directed AI coding agents to build it, then wrote a working paper on what the data showed: the contest's prices were squeezed toward 50% compared with Kalshi's real-money prices.",
       how: 'Python with asyncio streams prices from three venues over WebSockets and compares the contest with real-money markets. Trades are planned with a Monte Carlo simulation of the whole contest, scored on the chance of finishing first rather than on profit, behind risk caps and a kill switch.',
-      media: { kind: 'chart', caption: 'From the paper: contest prices against Kalshi prices' },
+      // the prices the system recorded, every race, hour by hour (public/data/cup-vs-kalshi.json)
+      media: { kind: 'cup' },
       stack: ['Python', 'asyncio', 'WebSockets', 'NumPy'],
       links: [{ label: 'Read the paper (SSRN)', href: 'https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7682417' }],
     },

@@ -25,13 +25,15 @@ const LAYOUT = {
     tri: [[44.7, 21], [55.3, 21]], you: [[44.7, 79], [55.3, 79]],
     board: [[28, 50], [39, 50], [50, 50], [61, 50], [72, 50]],
     tag: { tri: [38.6, 21], you: [38.6, 79] },
+    act: [76, 79],
     tilt: [-1.5, 1, -0.6, 1.4, -1], holeTilt: [-4, 4],
   },
   tall: {
-    deck: [12, 23], muck: [88, 23], dealer: [12, 34], pot: [86, 76], potWin: { you: [86, 86], tri: [86, 13], split: [86, 76] },
+    deck: [12, 23], muck: [88, 23], dealer: [26, 29], pot: [88, 50], potWin: { you: [86, 86], tri: [86, 13], split: [88, 50] },
     tri: [[40, 13.5], [60, 13.5]], you: [[40, 86.5], [60, 86.5]],
     board: [[21, 40], [50, 40], [79, 40], [35, 60], [65, 60]],
     tag: { tri: [28.5, 13.5], you: [28.5, 86.5] },
+    act: [50, 73.2],
     tilt: [-2, 1, -1, 1.5, -1.5], holeTilt: [-5, 5],
   },
 };
@@ -131,7 +133,7 @@ export default function PokerTable() {
     return () => io.disconnect();
   }, [ready]);
 
-  // the lamp follows the cursor, and the table leans a little with it (mouse only, never on touch)
+  // the lamp follows the cursor (mouse only); the table itself never moves
   useEffect(() => {
     const el = stageRef.current;
     if (!el || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
@@ -145,11 +147,9 @@ export default function PokerTable() {
       const y = Math.min(1, Math.max(0, (last.clientY - r.top) / r.height));
       el.style.setProperty('--lx', `${(x * 100).toFixed(1)}%`);
       el.style.setProperty('--ly', `${(y * 100).toFixed(1)}%`);
-      el.style.setProperty('--ry', `${((x - 0.5) * 5).toFixed(2)}deg`);
-      el.style.setProperty('--rxd', `${((0.5 - y) * 3).toFixed(2)}deg`);
     };
     const move = (e) => { last = e; if (!raf) raf = requestAnimationFrame(apply); };
-    const leave = () => { last = null; ['--ry', '--rxd', '--lx', '--ly'].forEach((p) => el.style.removeProperty(p)); };
+    const leave = () => { last = null; ['--lx', '--ly'].forEach((p) => el.style.removeProperty(p)); };
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', leave);
     return () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerleave', leave); cancelAnimationFrame(raf); };
@@ -223,18 +223,14 @@ export default function PokerTable() {
     setBusy(true); setJoker(0); setTossed([]);
     setPhase('gather');
     later(still ? 0 : 800, () => setPhase('shuffle'));
+    // one shuffle in five, the joker falls out of the riffle (it is not in this game, so it goes back)
+    if (!still && Math.random() < 0.2) { later(1000, () => setJoker((j) => j + 1)); later(2900, () => setJoker(0)); }
     later(still ? 10 : 1750, () => {
       dealt.current = 0;
       setUp({}); setStreet(0); setSpread(false); setOdds({});
       setHand((h) => h + 1); setDeal(newDeal()); setPhase('play');
     });
   }
-  // the deck hides a joker: cut it and the joker turns up on top, then goes back
-  const cutDeck = () => {
-    if (phase !== 'play') return;
-    setJoker((j) => j + 1);
-    later(2600, () => setJoker(0));
-  };
 
   // a click on bare felt tosses a chip that lands where you clicked (offsetX/Y are in the felt's own, untilted
   // coordinates, so the chip lands under the cursor however the table leans)
@@ -293,7 +289,7 @@ export default function PokerTable() {
   const winText = result && (result.winner === 'you' ? 'You win' : result.winner === 'tri' ? 'Tri wins' : 'Split pot');
   const hint = home ? 'Every card goes back in the deck.'
     : done ? `${handName(result.winner === 'tri' ? result.tri : result.you)[0].toUpperCase()}${handName(result.winner === 'tri' ? result.tri : result.you).slice(1)}${result.winner === 'split' ? ' each.' : ` beats ${handName(result.winner === 'tri' ? result.you : result.tri)}.`}`
-      : street === 0 ? 'Tri holds A♠ K♠ every hand. You get two random cards.'
+      : street === 0 ? 'Tri holds A♠ K♠ every hand. You get two random cards. Click the deck to shuffle.'
         : 'The odds are worked out exactly from every card still to come.';
   const played = score.you + score.tri + score.split;
   const tableCards = deal ? [...TRI, ...deal.you, ...deal.board] : [];
@@ -306,8 +302,9 @@ export default function PokerTable() {
           <div className={`pk-felt${done ? ' is-showdown' : ''}`} onClick={toss}>
             <div className="pk-lamp" aria-hidden="true" />
 
-            <button type="button" className={`pk-deck${phase === 'shuffle' ? ' is-shuffling' : ''}`} style={pct(L.deck)} onClick={cutDeck} aria-label="Cut the deck">
+            <button type="button" className={`pk-deck${phase === 'shuffle' ? ' is-shuffling' : ''}`} style={pct(L.deck)} onClick={reshuffle} disabled={home} aria-label="Shuffle and deal a new hand">
               <span /><span /><span />
+              <em className="pk-deck-k" aria-hidden="true">Shuffle</em>
             </button>
             <span className="pk-dealer" style={pct(L.dealer)} aria-hidden="true">D</span>
             <AnimatePresence>
@@ -363,11 +360,19 @@ export default function PokerTable() {
               </div>
             )}
 
+            {/* the dealer's actions, on the felt by your seat */}
+            {ready && live && deal && (
+              <div className="pk-felt-act" style={pct(L.act)}>
+                <button type="button" className="pk-chipbtn" onClick={act} disabled={busy || home}>{ACTION[street]}</button>
+                {street < 3 && <button type="button" className="pk-chipbtn is-small" onClick={skip} disabled={busy || home}>Skip to showdown</button>}
+              </div>
+            )}
+
             {/* the seats, broadcast style: who, their odds, what they hold */}
             {ready && live && deal && !home && ['tri', 'you'].map((seat) => (
               <div key={seat} className={`pk-tag${done && result.winner === seat ? ' is-win' : ''}`} style={pct(L.tag[seat])}>
                 <b>{seat === 'tri' ? 'Tri' : 'You'}</b>
-                <span className="pk-tag-odds">{done ? (result.winner === seat ? 'wins' : result.winner === 'split' ? 'split' : '') : showOdds ? pctOf(seat === 'tri' ? o.b : o.a) : '…'}</span>
+                <span className="pk-tag-odds">{done ? (result.winner === seat ? 'Winner' : result.winner === 'split' ? 'Split' : '–') : showOdds ? pctOf(seat === 'tri' ? o.b : o.a) : '…'}</span>
                 {(up[seat === 'tri' ? TRI[0] : deal.you[0]] || done) && <em>{made(seat === 'tri' ? TRI : deal.you)}</em>}
               </div>
             ))}
@@ -400,11 +405,6 @@ export default function PokerTable() {
               {showOdds && o.tie >= 0.005 && <span>Tie {pctOf(o.tie)}</span>}
               <span>Tri {showOdds ? pctOf(o.b) : '…'}</span>
             </span>
-          </div>
-          <div className="pk-actions">
-            {street < 4 && <button className="pk-btn ghost" onClick={reshuffle} disabled={home}>Reshuffle</button>}
-            {street < 3 && <button className="pk-btn ghost" onClick={skip} disabled={busy || home}>Skip to showdown</button>}
-            <button className="pk-btn" onClick={act} disabled={busy || home}>{ACTION[street]}</button>
           </div>
           {played > 0 && <p className="pk-score">Hands won: you {score.you}, Tri {score.tri}{score.split ? `, split ${score.split}` : ''}</p>}
         </div>
