@@ -25,31 +25,31 @@ export const STACK = [
 
 export const HOLE = [
   {
-    id: 'biogen', rank: 'A', suit: 'spade', art: 'agent',
+    id: 'northeastern', rank: 'A', suit: 'spade', art: 'cap',
+    title: 'Northeastern',
+    logo: '/images/northeastern.svg',
+    sub: 'B.S. CS · May 2027',
+    detail: {
+      kicker: 'Hole card · A♠ · Class of 2027',
+      title: 'Northeastern University',
+      what: 'B.S. in Computer Science with a concentration in AI, graduating in May 2027. GPA 3.7, Dean’s List.',
+      how: 'Courses include Engineering LLM-Integrated Systems, Machine Learning, Distributed Systems, and Algorithms & Data.',
+      stack: [],
+      links: [],
+    },
+  },
+  {
+    id: 'biogen', rank: 'K', suit: 'spade', art: 'agent',
     title: 'Biogen',
     logo: '/images/biogen.svg',
     sub: 'AI Engineer Co-op',
     detail: {
-      kicker: 'Hole card · A♠ · AI Engineer Co-op',
+      kicker: 'Hole card · K♠ · AI Engineer Co-op',
       title: 'Biogen · AI Engineer Co-op',
       what: "January to June 2026 in Cambridge, MA. I built the core of Biogen's production AI agent, which business teams use from Microsoft Teams to run workflows on request, and I built and owned the intake system teams across the company use to request AI work.",
       how: 'Python and the Claude SDK, with tools connected over MCP, on Azure with a Databricks sandbox and LangSmith tracing. The intake runs on SharePoint, Power BI and Smartsheet.',
       brief: "I built the core of Biogen's production AI agent (Python, Claude SDK, MCP on Azure), which business teams use from Microsoft Teams to run workflows on request. I also built and owned the intake system teams across the company use to request AI work, with its data pipeline and Power BI dashboard.",
       stack: ['Python', 'Claude SDK', 'MCP', 'Azure', 'Databricks', 'LangSmith', 'Power BI'],
-      links: [],
-    },
-  },
-  {
-    id: 'northeastern', rank: 'K', suit: 'spade', art: 'cap',
-    title: 'Northeastern',
-    logo: '/images/northeastern.svg',
-    sub: 'B.S. CS · May 2027',
-    detail: {
-      kicker: 'Hole card · K♠ · Class of 2027',
-      title: 'Northeastern University',
-      what: 'B.S. in Computer Science with a concentration in AI, graduating in May 2027. GPA 3.7, Dean’s List.',
-      how: 'Courses include Engineering LLM-Integrated Systems, Machine Learning, Distributed Systems, and Algorithms & Data.',
-      stack: [],
       links: [],
     },
   },

@@ -74,7 +74,8 @@ function Project({ card, basePath, flip, stage }) {
 export default function Home() {
   const { basePath } = useRouter();
   const featured = BOARD.filter((c) => c.street === 'flop');
-  const [coop, school] = HOLE;
+  const coop = HOLE.find((c) => c.id === 'biogen');
+  const school = HOLE.find((c) => c.id === 'northeastern');
   const [heroOpen, setHeroOpen] = useState(null);
   const heroOpener = useRef(null);
   const openHero = useCallback((card, el) => { heroOpener.current = el; setHeroOpen(card); }, []);
