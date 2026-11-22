@@ -378,7 +378,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 @property --lift { syntax: '<length>'; inherits: true; initial-value: 0px; }
 .bc { position: relative; display: block; width: 100%; aspect-ratio: 5 / 7; transform-style: preserve-3d; --turn: 0deg; --bend: 0deg; --lift: 0px; transition: --turn .5s cubic-bezier(.4, 0, .2, 1), transform .4s cubic-bezier(.2, .8, .2, 1); }
 /* turning up: the near edge comes off the felt first, the card curls as it goes over, then lies flat */
-.bc.is-up { --turn: -180deg; transition: transform .4s cubic-bezier(.2, .8, .2, 1); animation: bc-turn .55s cubic-bezier(.38, .05, .3, 1) backwards; }
+.bc.is-up { --turn: -180deg; transition: transform .4s cubic-bezier(.2, .8, .2, 1); animation: bc-turn .41s cubic-bezier(.38, .05, .3, 1) backwards; }
 @keyframes bc-turn {
   0% { --turn: 0deg; --bend: 0deg; --lift: 0cqw; }
   18% { --turn: -14deg; --bend: -11deg; --lift: 10cqw; }
@@ -392,7 +392,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .bc-b, .bc-f { position: absolute; top: 0; left: 0; display: block; width: calc(100% + .8px); height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 .bc-f { transform: rotateY(180deg); }
 .bc-shade { position: absolute; inset: 3% 1% -2.5% 4%; border-radius: 9% / 6.5%; background: rgba(0, 0, 0, .55); filter: blur(4px); }
-.bc.is-up .bc-shade { animation: bc-shade .55s cubic-bezier(.38, .05, .3, 1); }
+.bc.is-up .bc-shade { animation: bc-shade .41s cubic-bezier(.38, .05, .3, 1); }
 @keyframes bc-shade { 0%, 100% { opacity: 1; translate: 0 0; scale: 1; } 48% { opacity: .45; translate: 8% 12%; scale: .9; } }
 /* showdown: the five cards that win are raised and ringed, the rest dimmed */
 .bc.is-win { transform: translateZ(8px) translateY(-5%); }
