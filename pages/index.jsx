@@ -155,18 +155,6 @@ export default function Home() {
             <div className="pk-hole">
               <article className="pk-hole-card">
                 <div className="pk-hole-top">
-                  <span className="pk-hole-mini"><PlayingCard card={coop} faceUp still /></span>
-                  <div>
-                    <span className="pk-plate"><img src={`${basePath}${coop.logo}`} alt="Biogen" /></span>
-                    <p className="pk-when">Jan – Jun 2026 · Cambridge, MA</p>
-                    <h3>AI Engineer Co-op</h3>
-                  </div>
-                </div>
-                <p>{coop.detail.brief}</p>
-                <p className="pk-stackline">{coop.detail.stack.join(' · ')}</p>
-              </article>
-              <article className="pk-hole-card">
-                <div className="pk-hole-top">
                   <span className="pk-hole-mini"><PlayingCard card={school} faceUp still /></span>
                   <div>
                     <span className="pk-plate"><img src={`${basePath}${school.logo}`} alt={PROFILE.school} /></span>
@@ -176,6 +164,18 @@ export default function Home() {
                 </div>
                 <p>Concentration in AI · {PROFILE.standing}.</p>
                 <p>Courses include {PROFILE.courses.join(', ')}.</p>
+              </article>
+              <article className="pk-hole-card">
+                <div className="pk-hole-top">
+                  <span className="pk-hole-mini"><PlayingCard card={coop} faceUp still /></span>
+                  <div>
+                    <span className="pk-plate"><img src={`${basePath}${coop.logo}`} alt="Biogen" /></span>
+                    <p className="pk-when">Jan – Jun 2026 · Cambridge, MA</p>
+                    <h3>AI Engineer Co-op</h3>
+                  </div>
+                </div>
+                <p>{coop.detail.brief}</p>
+                <p className="pk-stackline">{coop.detail.stack.join(' · ')}</p>
               </article>
             </div>
             <p className="pk-also">Also: server, then trainer, at Gyu-Kaku in Boston (May 2023 – Jan 2026), 20–30 hours a week alongside full-time study.</p>
