@@ -106,8 +106,8 @@ body:has(.pk-page) { background: var(--pk-bg); }
 
 /* ---- hero --------------------------------------------------------------------------------- */
 .pk-hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 36px; align-items: center; padding: 60px 0 52px; }
-.pk-hero h1 { margin: 0; font-size: clamp(56px, 8.6vw, 116px); line-height: .92; letter-spacing: -0.01em; color: var(--pk-text); }
-.pk-role { margin: 22px 0 0; font: 500 clamp(19px, 2vw, 24px)/1.35 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif; color: var(--pk-text); }
+.pk-hero h1 { margin: 0; padding-bottom: .2em; font-size: clamp(56px, 8.6vw, 116px); line-height: .92; letter-spacing: -0.01em; color: var(--pk-text); }
+.pk-role { margin: 12px 0 0; font: 500 clamp(19px, 2vw, 24px)/1.35 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif; color: var(--pk-text); }
 .pk-facts { margin: 28px 0 28px; display: grid; }
 .pk-facts div { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 14px; align-items: baseline; border-top: 1px solid var(--pk-line); padding: 10px 0; }
 .pk-facts div:last-child { border-bottom: 1px solid var(--pk-line); }
