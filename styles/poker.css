@@ -515,7 +515,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 :root:has(.pk-page) .site-term-btn { background-color: var(--pk-raised) !important; color: var(--pk-text) !important; border: 1px solid var(--pk-line); }
 
 /* ---- easter egg: a 67 does the six-seven (the 6 and the 7 go up and down in turn) ------------- */
-.pk-67 { display: inline-flex; cursor: default; }
+.pk-67 { display: inline; cursor: default; white-space: nowrap; }
 .pk-67 i { display: inline-block; font-style: normal; }
 .pk-67.is-go i { color: var(--pk-accent); }
 .pk-67.is-go i:first-child { animation: pk-six 1.35s ease-in-out; }
