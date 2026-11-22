@@ -7,11 +7,10 @@ import HandDetail, { SideList, ProjectMedia } from '../components/table/HandDeta
 import HeroHand from '../components/table/HeroHand';
 import BoardBar from '../components/table/BoardBar';
 import { SuitIcon } from '../components/table/CardArt';
-import FloatingTerminalButton from '../components/FloatingTerminalButton';
 import { HOLE, BOARD, CONTACT, PROFILE, STACK } from '../data/hand';
 
 const URL = 'https://thuynh-91.github.io/tri-huynh-portfolio/';
-const DESC = 'Tri Huynh: computer science at Northeastern University, graduating May 2027. Software, machine learning and trading systems; looking for full-time roles in software, ML, data science and quant.';
+const DESC = 'Tri Huynh: computer science at Northeastern University, graduating May 2027. Software, machine learning and trading systems. Open to full-time roles from May 2027.';
 const RED = /[♦♥]/;
 
 function Links({ basePath }) {
@@ -208,7 +207,6 @@ export default function Home() {
         <HandDetail card={heroOpen} onClose={closeHero} />
       </div>
 
-      <FloatingTerminalButton />
     </>
   );
 }

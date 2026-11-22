@@ -11,7 +11,7 @@ export const PROFILE = {
   grad: 'May 2027',
   standing: 'GPA 3.7 · Dean’s List',
   place: 'Boston, MA · open to relocating · U.S. citizen',
-  seeking: 'Full-time roles from May 2027 in software engineering, machine learning, data science and quant',
+  seeking: 'Full-time roles from May 2027',
   courses: ['Engineering LLM-Integrated Systems', 'Machine Learning', 'Distributed Systems', 'Algorithms & Data'],
 };
 

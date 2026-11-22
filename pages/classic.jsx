@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar';
 import ScrollProgress from '../components/ScrollProgress';
 import Backdrop from '../components/Backdrop';
 import ParticleBackground from '../components/ParticleBackground';
-import FloatingTerminalButton from '../components/FloatingTerminalButton';
 import EggHunt from '../components/EggHunt';
 import BackToTop from '../components/BackToTop';
 import SmoothScroll from '../components/SmoothScroll';
@@ -49,7 +48,6 @@ export default function Classic() {
       <ScrollProgress />
 
       {/* Easter eggs & interactive features */}
-      <FloatingTerminalButton />
       <EggHunt />
       <BackToTop />
       <SpotifyPlayer />

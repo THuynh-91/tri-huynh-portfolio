@@ -1,30 +1,36 @@
 # Tri Huynh — Portfolio
 
-An editorial, interactive personal portfolio built with Next.js 15, React 19, Tailwind CSS, and Framer Motion. Light, airy design with an electric indigo/violet accent, an interactive particle field, bento layouts, and tactile micro-interactions.
+A personal site built as a dark card room: the work is dealt as a hand of hold'em, and the centrepiece is a
+real heads-up hand you can play. Next.js 15, React 19 and Framer Motion, exported statically to GitHub Pages.
 
 **Live:** https://thuynh-91.github.io/tri-huynh-portfolio/
 
-## Design
+## What's on the page
 
-- **Light-first theme** with a full dark mode (CSS-variable token system, no `!important` hacks)
-- **Indigo → violet accent** with gradient accent words and mono labels
-- **Animated particle field** that links particles to each other and to your cursor, over soft ambient glows
-- **Bento layouts** for About and Skills
-- **Tactile interactions:** custom pointer-tracking cursor, magnetic buttons, 3D tilt project cards with cursor-following glow, infinite tech marquee, spring-physics scroll reveals, animated counters
-- **Easter eggs:** a hidden 3-spark egg hunt, an in-browser terminal (`help` to start), and the Konami code
+- **The opening:** school, graduation, most recent role and what I'm looking for, with my two hole cards
+  (A♠ Northeastern, K♠ Biogen).
+- **Play a hand:** heads-up against me. I hold A♠ K♠ every hand; you get two random cards and deal the
+  board. Each seat's chance of winning is worked out on every street (exact from the flop on, a
+  15,000-board sample before it) and shown broadcast style. Cards bend as they turn over; at showdown the
+  winning five are lit and the score is kept. Click the deck to shuffle.
+- **Projects:** CruxPack, with real cards from a shared pack to flip and their cited source page; the
+  Predictions Cup trading system, with the price feed it recorded (every race, contest price against
+  Kalshi's, hour by hour); GitTimeline, with a recording of Linux's history playing.
+- **Tech stack, experience, more projects, contact.**
+- A top bar that turns over a card for each section as you read.
 
-## Tech Stack
+## Tech stack
 
-| Layer       | Tools                                   |
-| ----------- | --------------------------------------- |
-| Framework   | Next.js 15 (static export)              |
-| UI          | React 19                                |
-| Styling     | Tailwind CSS 3.4 + CSS variables        |
-| Animation   | Framer Motion 11                        |
-| Fonts       | Space Grotesk · Inter · JetBrains Mono  |
-| Deployment  | GitHub Pages                            |
+| Layer       | Tools                                                     |
+| ----------- | --------------------------------------------------------- |
+| Framework   | Next.js 15 (static export)                                |
+| UI          | React 19                                                  |
+| Animation   | Framer Motion 11, CSS 3D (registered custom properties)   |
+| Poker       | `lib/holdem.js`: deck, 7-card evaluator, exact/sampled odds |
+| Fonts       | Dela Gothic One · Zen Kaku Gothic New · Libre Caslon Text |
+| Deployment  | GitHub Pages                                              |
 
-## Getting Started
+## Getting started
 
 ```bash
 npm install
@@ -32,31 +38,25 @@ npm run dev      # http://localhost:3000
 npm run build    # static export to ./out
 ```
 
-## Editing Content
+## Editing content
 
-All content is data-driven:
-
-- **Projects** — `data/projects.json` (title, tagline, tech, impact, links, `tag`, `year`, `featured`)
-- **Skills** — `data/skills.json`
-- **Experience** — `data/experience.json`
+- **The hand, profile, stack and contact** — `data/hand.js`
+- **Project details and side projects** — `data/projects.json`
+- **The trading system's price feed** — `public/data/cup-vs-kalshi.json`
 - **Resume** — `public/Resume_Tri_Huynh.pdf`
-- **Now-playing songs** — `public/songs.md`
 
-## Theming
-
-Design tokens live in `styles/globals.css` (`:root` is the default light theme; `.dark` overrides it). Change `--accent` / `--accent-2` to reskin the whole site, including the particle colour (`--particle`). Tailwind maps these to semantic colors (`bg-ink`, `bg-surface`, `text-fg`, `text-muted`, `text-accent`, `border-line`) in `tailwind.config.js`.
-
-## Project Structure
+## Project structure
 
 ```
-components/      # sections + interaction primitives (CustomCursor, Magnetic, Marquee, Reveal, ...)
-pages/           # _app, _document, index
-data/            # projects / skills / experience JSON
-public/          # images, resume, favicon, songs.md
-styles/          # globals.css (design tokens + utilities)
+components/table/  # the table, cards (BendCard, PlayingCard), CruxPack deck, price chart, top bar
+lib/               # holdem.js
+pages/             # _app, _document, index (the site), classic (the previous design)
+data/              # hand.js, projects.json
+public/            # images, card captures, price feed, resume, favicon
+styles/            # poker.css (the site), globals.css
 ```
 
 ## Author
 
-**Tri Huynh** — CS @ Northeastern (Khoury), AI & Backend Engineer, AWS Certified Cloud Practitioner
+**Tri Huynh** — Computer Science at Northeastern (Khoury), graduating May 2027
 [GitHub](https://github.com/THuynh-91) · [LinkedIn](https://www.linkedin.com/in/tri-huynh-ai) · triqhuynh91@gmail.com

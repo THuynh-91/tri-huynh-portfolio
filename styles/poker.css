@@ -37,7 +37,7 @@
   --paper: #efe8d6;
   --ink: #17150f;
   --red: #b3261e;
-  /* every token the site-wide widgets (terminal, egg hunt) read, so none keeps another theme's value */
+  /* every token the site-wide widgets read, so none keeps another theme's value */
   --bg: #131211;
   --surface: #1d1b19;
   --surface-2: #26231f;
@@ -512,7 +512,6 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .ink-chart .k27 { background: var(--paper); }
 
 /* ---- the site-wide widgets on this page --------------------------------------------------- */
-:root:has(.pk-page) .site-term-btn { background-color: var(--pk-raised) !important; color: var(--pk-text) !important; border: 1px solid var(--pk-line); }
 
 /* ---- easter egg: a 67 does the six-seven (the 6 and the 7 go up and down in turn) ------------- */
 .pk-67 { display: inline; cursor: default; white-space: nowrap; }
@@ -586,7 +585,6 @@ body:has(.pk-page) { background: var(--pk-bg); }
   .pk-project.is-flip .pk-media { order: 0; }
   .pk-sheet { padding: 20px 18px 20px; }
   .pk-sheet h2 { font-size: 26px; }
-  :root:has(.pk-page) .site-term-btn { display: none; }
   .pk-side { grid-template-columns: 1fr; }
   .cx-deck { padding: 12px 12px 12px; gap: 12px; }
   .cx-nav { padding: 8px 12px; }
