@@ -27,6 +27,7 @@ export const HOLE = [
   {
     id: 'biogen', rank: 'A', suit: 'spade', art: 'agent',
     title: 'Biogen',
+    sub: 'AI Engineer Co-op',
     detail: {
       kicker: 'Hole card · A♠ · AI Engineer Co-op',
       title: 'Biogen · AI Engineer Co-op',
@@ -40,6 +41,7 @@ export const HOLE = [
   {
     id: 'northeastern', rank: 'K', suit: 'spade', art: 'cap',
     title: 'Northeastern',
+    sub: 'B.S. CS · May 2027',
     detail: {
       kicker: 'Hole card · K♠ · Class of 2027',
       title: 'Northeastern University',
@@ -55,13 +57,27 @@ export const BOARD = [
   {
     id: 'cruxpack', street: 'flop', rank: 'Q', suit: 'spade', art: 'pages',
     title: 'CruxPack',
+    sub: 'cruxpack.io',
     line: 'Lecture PDF in, study pack out',
     detail: {
       kicker: 'The flop · Q♠',
       title: 'CruxPack',
       what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every card and note links back to the slide it came from.',
       how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
-      media: { kind: 'image', src: '/images/shots/cruxpack-card.png', alt: "A CruxPack flashcard from its sample deck, with a link to the lecture page it came from (Lec 04, p. 3)" },
+      // Real captures of cruxpack.io's public sample deck (Lec 04, The Action Potential): each card's question
+      // and answer face, and the source slide it cites, as cruxpack.io's own "Preview source slide" shows it.
+      // The site says this deck is hand-checked, so the page never calls it generated output.
+      media: {
+        kind: 'cruxpack',
+        alt: "Cards from the sample deck on cruxpack.io. Each turns over to its answer, and the slide it cites opens beside it: page 3 (the resting membrane potential), page 5 (depolarization) and page 7 (repolarization).",
+        caption: 'The sample deck on cruxpack.io: every card cites the slide it came from.',
+        cards: [3, 5, 7].map((p) => ({
+          page: p,
+          q: `/images/cruxpack/card-p${p}-q.webp`,
+          a: `/images/cruxpack/card-p${p}-a.webp`,
+          slide: `/images/cruxpack/slide-p${p}.webp`,
+        })),
+      },
       stack: ['TypeScript', 'Next.js', 'SQLite', 'Gemini', 'Stripe', 'Fly.io'],
       links: [{ label: 'Try cruxpack.io', href: 'https://cruxpack.io' }],
     },
@@ -69,6 +85,7 @@ export const BOARD = [
   {
     id: 'predictions', street: 'flop', rank: 'J', suit: 'spade', art: 'chart',
     title: 'Predictions Cup',
+    sub: 'Trading system, paper',
     line: 'Live trading system and paper',
     detail: {
       kicker: 'The flop · J♠',
@@ -83,13 +100,14 @@ export const BOARD = [
   {
     id: 'gittimeline', street: 'flop', rank: '10', suit: 'spade', art: 'commits',
     title: 'GitTimeline',
+    sub: 'Git history, played',
     line: "A repo's history, played back",
     detail: {
       kicker: 'The flop · 10♠',
       title: 'GitTimeline',
       what: "Paste a public GitHub repository and its commit history plays like a performance: branches split off and merge back while contributors move along their work. Big projects, Linux's full history included, are pre-built, so they play instantly with no GitHub token.",
       how: 'TypeScript and Preact. A Web Worker turns the commit graph into lanes and a timeline, and Canvas2D draws every frame; the renderer was profiled until Linux played smoothly. Playwright tests check real playback in a browser.',
-      media: { kind: 'video', src: '/media/gittimeline-linux.mp4', poster: '/images/shots/gittimeline-linux.jpg', alt: "GitTimeline playing the Linux kernel's history" },
+      media: { kind: 'video', src: '/media/gittimeline-linux.mp4', poster: '/images/shots/gittimeline-linux.jpg', alt: "GitTimeline replaying the Linux kernel's history in early 2021: branches running in and merging into the main line" },
       stack: ['TypeScript', 'Preact', 'Canvas2D', 'Web Workers', 'Playwright'],
       links: [
         { label: 'Open GitTimeline', href: 'https://thuynh-91.github.io/gittimeline/' },
@@ -100,6 +118,7 @@ export const BOARD = [
   {
     id: 'games', street: 'turn', rank: '6', suit: 'diamond', art: 'wheel',
     title: 'Games',
+    sub: 'Play them here',
     line: 'Casino, roulette, physics',
     detail: {
       kicker: 'The turn · 6♦',
@@ -113,6 +132,7 @@ export const BOARD = [
   {
     id: 'builds', street: 'river', rank: '3', suit: 'club', art: 'chip',
     title: 'More builds',
+    sub: 'AI tools, models',
     line: 'AI tools and models',
     detail: {
       kicker: 'The river · 3♣',
@@ -124,6 +144,31 @@ export const BOARD = [
     },
   },
 ];
+
+// The hand history the table writes as it is dealt, one block per street, in the plain style of an online
+// poker client's log. Each line: [action, cards (optional), what the cards are (optional)].
+export const HISTORY = [
+  [
+    ["Hand #2027 · No-limit hold'em · Boston, MA"],
+    ['Dealt to Tri', 'A♠ K♠', 'the Biogen co-op, Northeastern'],
+  ],
+  [
+    ['*** FLOP ***', 'Q♠ J♠ 10♠', 'CruxPack, Predictions Cup, GitTimeline'],
+    ['Tri flops a royal flush: the nuts.'],
+  ],
+  [['*** TURN ***', '6♦', 'games']],
+  [['*** RIVER ***', '3♣', 'more builds']],
+  [
+    ['*** SHOWDOWN ***'],
+    ['Tri shows', 'A♠ K♠ Q♠ J♠ 10♠', 'a royal flush'],
+    ['Tri wins the pot.'],
+  ],
+];
+
+// All-in equity against one random hand. A♠K♠ before the flop: 67% (a 2-million-deal simulation gave 67.2%;
+// published tables give 67.0%). From the flop on it is 100%: a royal flush can't be beaten or tied, because
+// the only other royal flush would need the A♠ and K♠ that Tri holds.
+export const EQUITY = [67, 100, 100, 100, 100];
 
 // Side projects shown on the page (the strongest, with something to open). Ids from data/projects.json.
 export const SIDE = {

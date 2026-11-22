@@ -1,13 +1,15 @@
 /* ------------------------------------------------------------------------------------------ */
 /*  Tri's table: a dark card room. The cream cards are the brightest things on the page; the   */
-/*  table is oxblood leather and dark felt; one vermilion accent. Drawn, inky detail only on   */
-/*  the cards and the table. Every selector is prefixed pk- (ink- for the shared chart and     */
-/*  focus lines), so the classic page is untouched. One deliberate dark look.                  */
+/*  table is oxblood leather, a walnut racetrack and dark felt under one lamp; one vermilion    */
+/*  accent. Mono type for everything a machine would print (labels, the hand history, the      */
+/*  range chart). Every selector is prefixed pk- (cx- for the CruxPack scene, ink- for the     */
+/*  shared chart), so the classic page is untouched.                                           */
 /*  Contrast (WCAG AA): text #ECE5D6 on #131211 14.9:1; muted #A29A8C 6.7:1; vermilion        */
 /*  #E8553E 5.2:1; card ink #17150F on #EFE8D6 14.9:1; card red #B3261E 5.4:1.               */
 /* ------------------------------------------------------------------------------------------ */
 :root:has(.pk-page) {
   --pk-bg: #131211;
+  --pk-room: #0c0b0a;
   --pk-surface: #1d1b19;
   --pk-raised: #26231f;
   --pk-line: #3a3631;
@@ -16,7 +18,8 @@
   --pk-accent: #e8553e;
   --pk-rail: #6e1b24;
   --pk-rail-deep: #4a1219;
-  --pk-felt: #191c1b;
+  --pk-felt: #1a1d1c;
+  --pk-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
   /* the cards */
   --card-face: #efe8d6;
   --card-ink: #17150f;
@@ -49,7 +52,7 @@
   color-scheme: dark;
 }
 body:has(.pk-page) { background: var(--pk-bg); }
-.pk-page { background: var(--pk-bg); color: var(--pk-text); font: 500 16.5px/1.65 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif; }
+.pk-page { background: var(--pk-bg); color: var(--pk-text); font: 500 16.5px/1.65 'Zen Kaku Gothic New', 'Hiragino Sans', system-ui, sans-serif; overflow-x: clip; }
 .pk-page main { max-width: 1180px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
 .pk-page a { color: inherit; }
 .pk-page p a { text-decoration-color: var(--pk-accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
@@ -61,33 +64,86 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-skip { position: absolute; left: -9999px; top: 8px; z-index: 50; background: var(--pk-accent); color: var(--pk-bg); padding: 6px 12px; font-weight: 700; }
 .pk-skip:focus { left: 12px; }
 
-/* ---- top bar ------------------------------------------------------------------------------ */
+/* ---- the room's air: two lamp glows and drifting motes, fixed behind everything ------------ */
+.pk-air { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.pk-air-glow { position: absolute; border-radius: 50%; }
+.pk-air-glow.a { width: 70vmax; height: 70vmax; left: -22vmax; top: -30vmax; background: radial-gradient(circle, rgba(255, 178, 102, .085), rgba(255, 178, 102, .03) 40%, transparent 70%); }
+.pk-air-glow.b { width: 64vmax; height: 64vmax; right: -24vmax; top: 30vh; background: radial-gradient(circle, rgba(150, 32, 44, .16), rgba(150, 32, 44, .05) 42%, transparent 70%); }
+.pk-air-motes { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pk-page main, .pk-page .pk-foot { position: relative; z-index: 1; }
+
+/* ---- top bar: the name, the hand dealt so far, the links ---------------------------------- */
 .pk-top {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
-  display: flex; justify-content: space-between; align-items: center; gap: 8px 20px; flex-wrap: wrap;
-  background: rgba(19, 18, 17, .92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--pk-line);
-  padding: 12px max(20px, env(safe-area-inset-right, 0px)) 12px max(20px, env(safe-area-inset-left, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px 20px;
+  background: rgba(17, 16, 15, .72); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border-bottom: 1px solid rgba(236, 229, 214, .09); box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  padding: 9px max(20px, env(safe-area-inset-right, 0px)) 9px max(20px, env(safe-area-inset-left, 0px));
 }
-.pk-mark { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; text-decoration: none; }
-.pk-top nav { display: flex; flex-wrap: wrap; gap: 4px 22px; }
-.pk-top nav a { font-weight: 500; font-size: 15px; color: var(--pk-muted); text-decoration: none; }
-.pk-top nav a:hover { color: var(--pk-text); }
-.pk-page section[id] { scroll-margin-top: 72px; }
+.pk-mark { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; text-decoration: none; justify-self: start; }
+.pk-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 22px; }
+.pk-nav a { font-weight: 500; font-size: 15px; color: var(--pk-muted); text-decoration: none; }
+.pk-nav a:hover { color: var(--pk-text); }
+.pk-page section[id], .pk-page article[id] { scroll-margin-top: 80px; }
+.pk-board { display: flex; align-items: center; gap: 14px; }
+.pk-board ol { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.pk-board li.is-gap { margin-left: 10px; }
+.pk-mini { display: block; width: 24px; height: 34px; perspective: 300px; text-decoration: none; border-radius: 3px; }
+.pk-mini-in { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.3, .7, .2, 1), translate .25s; }
+.pk-mini.is-up .pk-mini-in { transform: rotateY(180deg); }
+.pk-mini-back, .pk-mini-face { position: absolute; inset: 0; border-radius: 3px; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.pk-mini-back { background: repeating-linear-gradient(45deg, var(--back) 0 3px, #4a1219 3px 5px); box-shadow: inset 0 0 0 1.5px rgba(239, 232, 214, .7); }
+.pk-mini-face { transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: var(--card-face); color: var(--card-ink); box-shadow: 0 2px 6px rgba(0, 0, 0, .4); }
+.pk-mini-face b { font: 400 11px/1 'Dela Gothic One', sans-serif; }
+.pk-mini.is-red .pk-mini-face { color: var(--card-red); }
+.pk-mini:hover .pk-mini-in, .pk-mini.is-here .pk-mini-in { translate: 0 -3px; }
+.pk-mini.is-here .pk-mini-face { box-shadow: 0 0 0 1.5px var(--pk-accent), 0 4px 10px rgba(0, 0, 0, .5); }
+.pk-board-read { min-width: 15ch; font: 500 12px/1.2 var(--pk-mono); color: var(--pk-muted); white-space: nowrap; }
+
+/* ---- a section's street: its number, its name, the cards it deals ------------------------ */
+.pk-page .pk-eyebrow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin: 0 0 14px; font: 500 12.5px/1.4 var(--pk-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--pk-muted); }
+.pk-eyebrow-n { color: var(--pk-accent); }
+.pk-eyebrow-n::after { content: ''; display: inline-block; width: 26px; height: 1px; margin-left: 12px; vertical-align: middle; background: var(--pk-line); }
+.pk-eyebrow-cards { display: inline-flex; gap: 4px; letter-spacing: 0; }
+.pk-eyebrow-cards span { padding: 2px 6px; border-radius: 3px; background: var(--card-face); color: var(--card-ink); font-weight: 600; }
+.pk-eyebrow-cards span.r { color: var(--card-red); }
 
 /* ---- hero --------------------------------------------------------------------------------- */
-.pk-hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 36px; align-items: center; padding: 64px 0 52px; }
+.pk-hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 36px; align-items: center; padding: 60px 0 52px; }
 .pk-hero h1 { margin: 0; font-size: clamp(56px, 8.6vw, 116px); line-height: .92; letter-spacing: -0.01em; color: var(--pk-text); }
-.pk-role { margin: 14px 0 0; font: 400 clamp(22px, 2.6vw, 30px)/1.2 'Yusei Magic', 'Zen Kaku Gothic New', sans-serif; color: var(--pk-accent); }
-.pk-facts { margin: 30px 0 28px; display: grid; }
-.pk-facts div { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 14px; align-items: baseline; border-top: 1px solid var(--pk-line); padding: 11px 0; }
+.pk-role { margin: 26px 0 0; font: 500 clamp(18px, 1.9vw, 23px)/1.3 var(--pk-mono); color: var(--pk-accent); letter-spacing: -.01em; }
+.pk-caret { display: inline-block; width: .58em; height: 1.08em; margin-left: .25em; vertical-align: -0.18em; background: var(--pk-accent); animation: pk-blink 1.15s steps(1) infinite; }
+@keyframes pk-blink { 50% { opacity: 0; } }
+.pk-facts { margin: 28px 0 28px; display: grid; }
+.pk-facts div { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 14px; align-items: baseline; border-top: 1px solid var(--pk-line); padding: 10px 0; }
 .pk-facts div:last-child { border-bottom: 1px solid var(--pk-line); }
-.pk-facts dt { font-size: 14px; color: var(--pk-muted); }
+.pk-facts dt { font: 500 13px/1.5 var(--pk-mono); color: var(--pk-accent); }
 .pk-facts dd { margin: 0; font-size: 17px; line-height: 1.55; }
 .pk-facts b { font-weight: 700; }
-.pk-hero-cards { position: relative; height: 360px; }
-.pk-fan { position: absolute; width: min(200px, 46%); top: 24px; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .55)); }
-.pk-fan.a { left: 8%; transform: rotate(-8deg); }
-.pk-fan.b { left: 47%; top: 44px; transform: rotate(7deg); }
+
+/* the range chart behind the hero: near-invisible until the pointer lights it */
+.pk-range { position: absolute; z-index: -1; top: 26px; bottom: 26px; right: -12px; width: 61%; pointer-events: none; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 36%); mask-image: linear-gradient(90deg, transparent 0, #000 36%); }
+.pk-range-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); grid-template-rows: repeat(13, minmax(0, 1fr)); gap: 3px; }
+.pk-range-grid span { display: grid; place-items: center; border-radius: 3px; font: 500 10.5px/1 var(--pk-mono); letter-spacing: -.03em; }
+.pk-range-grid.base span { color: rgba(236, 229, 214, .085); background: rgba(236, 229, 214, .02); }
+.pk-range-grid.base span.is-you { color: var(--pk-text); background: rgba(232, 85, 62, .5); box-shadow: 0 0 0 1px var(--pk-accent), 0 0 18px rgba(232, 85, 62, .35); }
+.pk-range-grid.lit { opacity: 0; transition: opacity .45s; -webkit-mask-image: radial-gradient(circle 230px at var(--mx, -500px) var(--my, -500px), #000 0, rgba(0, 0, 0, .55) 42%, transparent 100%); mask-image: radial-gradient(circle 230px at var(--mx, -500px) var(--my, -500px), #000 0, rgba(0, 0, 0, .55) 42%, transparent 100%); }
+.pk-range.is-lit .pk-range-grid.lit { opacity: 1; }
+.pk-range-grid.lit span { color: rgba(236, 229, 214, calc(.4 + var(--h) * .6)); background: rgba(232, 85, 62, calc(.08 + var(--h) * var(--h) * .58)); box-shadow: inset 0 0 0 1px rgba(236, 229, 214, .06); }
+.pk-range-grid.lit span.is-you { background: transparent; color: transparent; }
+
+/* the two hole cards: they lean toward the pointer and catch the light */
+.pk-hero-cards { position: relative; height: 390px; }
+.pk-fan { position: absolute; width: min(205px, 46%); top: 18px; filter: drop-shadow(0 18px 24px rgba(0, 0, 0, .55)); }
+.pk-fan.a { left: 1%; transform: rotate(-8deg); }
+.pk-fan.b { left: 51%; top: 40px; transform: rotate(7deg); }
+.pk-fan:hover, .pk-fan:focus-within { z-index: 3; }
+.pk-card.is-hero { transform: perspective(820px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px)); transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.pk-card.is-hero:hover, .pk-card.is-hero:focus-visible { --lift: -14px; }
+.pk-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 2; opacity: 0; transition: opacity .35s; background: radial-gradient(circle at var(--gx, 30%) var(--gy, 10%), rgba(255, 255, 255, .55), rgba(255, 255, 255, .12) 32%, transparent 58%); mix-blend-mode: soft-light; }
+.pk-card.is-hero:hover .pk-glare, .pk-card.is-hero:focus-visible .pk-glare { opacity: 1; }
+.pk-hero-note { position: absolute; left: 6%; right: 0; bottom: 0; margin: 0; font: 400 13px/1.5 var(--pk-mono); color: var(--pk-muted); }
+.pk-hero-note span { color: var(--pk-text); margin-right: .5em; }
 
 /* ---- buttons ------------------------------------------------------------------------------ */
 .pk-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
@@ -107,77 +163,132 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-stack { border-top: 1px solid var(--pk-line); border-bottom: 1px solid var(--pk-line); padding: 26px 0 30px; }
 .pk-stack h2 { margin: 0 0 16px; font-size: 22px; }
 .pk-stack-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 30px; }
-.pk-stack-grid h3 { margin: 0 0 4px; font-size: 14px; font-weight: 500; color: var(--pk-muted); }
-.pk-stack-grid p { margin: 0; font-size: 15.5px; line-height: 1.6; }
+.pk-stack-grid h3 { margin: 0 0 6px; font: 500 12.5px/1.4 var(--pk-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--pk-accent); }
+.pk-stack-grid p { margin: 0; font-size: 15.5px; line-height: 1.65; }
+/* each separator stays on the line of the item before it */
+.pk-stack-grid p span { white-space: nowrap; }
+.pk-stack-grid p span:not(:last-child)::after { content: ' ·'; color: var(--pk-muted); }
 
 /* ---- sections ----------------------------------------------------------------------------- */
 .pk-section { padding-top: 96px; }
 .pk-section > h2 { margin: 0 0 8px; font-size: clamp(36px, 5vw, 56px); line-height: 1; }
 .pk-lede { margin: 12px 0 30px; max-width: 68ch; color: var(--pk-muted); font-size: 17px; }
-.pk-stackline { margin: 12px 0 16px; font-size: 14.5px; color: var(--pk-muted); }
+.pk-stackline { margin: 12px 0 16px; font: 400 13.5px/1.6 var(--pk-mono); color: var(--pk-muted); }
 
 /* ---- projects ----------------------------------------------------------------------------- */
 .pk-project { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: 46px; align-items: center; padding: 34px 0 48px; scroll-margin-top: 72px; }
 .pk-project + .pk-project { border-top: 1px solid var(--pk-line); padding-top: 48px; }
 .pk-project.is-flip .pk-media { order: 2; }
 .pk-project-text { min-width: 0; }
-.pk-kicker { display: flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 14.5px; color: var(--pk-accent); }
+.pk-kicker { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; font-size: 14.5px; color: var(--pk-muted); }
 .pk-project h3 { margin: 0 0 12px; font-size: clamp(28px, 3.2vw, 38px); line-height: 1.08; }
 .pk-project p { margin: 0 0 12px; max-width: 62ch; }
 .pk-project b { font-weight: 700; color: var(--pk-text); }
+/* the flagship project gets the full width: its picture is a stage, the text sits under it in two columns */
+.pk-project.is-stage { grid-template-columns: minmax(0, 1fr); gap: 30px; padding-top: 22px; }
+.pk-project.is-stage .pk-project-text { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); gap: 20px 46px; align-items: start; }
+.pk-project.is-stage h3 { font-size: clamp(32px, 4vw, 48px); margin-bottom: 20px; }
+/* a card's printed corner, used as each project's marker */
+.pk-index { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; flex: none; width: 32px; height: 44px; border-radius: 4px; background: var(--card-face); color: var(--card-ink); box-shadow: 0 6px 14px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(23, 21, 15, .2); transform: rotate(-5deg); }
+.pk-index.is-red { color: var(--card-red); }
+.pk-project .pk-index b, .pk-index b { font: 400 16px/1 'Dela Gothic One', sans-serif; color: inherit; }
+.pk-index svg { width: 12px !important; height: 12px !important; }
 
-/* a panel: a black frame, the real picture, one caption box */
-.pk-media { position: relative; margin: 0; min-width: 0; border: 3px solid #050504; background: #050504; box-shadow: 0 24px 50px rgba(0, 0, 0, .5); }
+/* a panel: a black frame, the real picture */
+.pk-media { position: relative; margin: 0; min-width: 0; border: 1px solid rgba(236, 229, 214, .12); border-radius: 8px; overflow: hidden; background: #08080a; box-shadow: 0 24px 50px rgba(0, 0, 0, .5), 0 0 60px rgba(120, 160, 255, .04); }
 .pk-media img, .pk-media video { display: block; width: 100%; height: auto; }
-.pk-media.is-chart { background: var(--card-face); color: var(--card-ink); }
-.pk-media figcaption { position: absolute; left: 12px; bottom: 12px; max-width: calc(100% - 24px); font: 400 14px/1.3 'Yusei Magic', 'Zen Kaku Gothic New', sans-serif; background: var(--card-face); color: var(--card-ink); border: 2px solid #050504; padding: 4px 9px; }
-.pk-media.is-chart figcaption { position: static; display: inline-block; margin: 0 0 12px 14px; }
+.pk-media.is-chart { --ink: #ece5d6; --paper: #171513; --red: #e8553e; border: 1px solid rgba(236, 229, 214, .1); border-radius: 8px; overflow: hidden; color: var(--pk-text); background: linear-gradient(180deg, rgba(34, 31, 28, .9), rgba(17, 16, 14, .92)); box-shadow: 0 24px 50px rgba(0, 0, 0, .45); }
+.pk-media > figcaption { margin: 0; font: 400 13px/1.5 var(--pk-mono); color: var(--pk-muted); }
+.pk-media.is-chart > figcaption { display: block; margin: 0; padding: 0 22px 18px; color: var(--pk-muted); }
 
-/* ---- experience --------------------------------------------------------------------------- */
-.pk-timeline { display: grid; gap: 28px; margin-top: 24px; }
-.pk-timeline article { border-left: 2px solid var(--pk-line); padding: 2px 0 2px 22px; max-width: 80ch; }
-.pk-timeline article:first-child { border-left-color: var(--pk-accent); }
-.pk-when { margin: 0; font-size: 14px; color: var(--pk-muted); }
-.pk-timeline h3 { margin: 2px 0 6px; font-size: 23px; line-height: 1.2; }
-.pk-timeline p { margin: 0 0 6px; }
-.pk-also { margin: 0; padding-left: 24px; font-size: 15px; color: var(--pk-muted); max-width: 80ch; }
+/* ---- CruxPack: real cards and the slides they cite --------------------------------------- */
+.pk-media.is-cruxpack { border: 0; background: none; box-shadow: none; }
+.pk-media.is-cruxpack figcaption { margin-top: 14px; text-align: center; }
+.cx-scene { position: relative; width: 100%; min-height: 200px; }
+.cx-glow { position: absolute; inset: -4% -2%; pointer-events: none; background: radial-gradient(ellipse 52% 62% at 50% 50%, rgba(255, 232, 196, .075), transparent 72%); }
+.cx-slide { position: absolute; display: block; z-index: 1; border-radius: 2.5% / 3.1%; box-shadow: 0 32px 64px rgba(0, 0, 0, .6), 0 8px 18px rgba(0, 0, 0, .4); user-select: none; }
+.cx-deck { position: absolute; z-index: 2; }
+.cx-under { position: absolute; inset: 0; border-radius: 6.6% / 9.8%; box-shadow: inset 0 0 0 1px rgba(23, 21, 15, .12), 0 8px 16px rgba(0, 0, 0, .35); }
+.cx-under.a { transform: translate(7px, 7px); background: #e6e1d4; }
+.cx-under.b { transform: translate(14px, 14px); background: #cfc9ba; }
+.cx-card { position: absolute; inset: 0; perspective: 1600px; }
+.cx-flip { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+.cx-face { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border-radius: 6.6% / 9.8%; -webkit-backface-visibility: hidden; backface-visibility: hidden; box-shadow: 0 24px 46px rgba(0, 0, 0, .5), 0 4px 10px rgba(0, 0, 0, .3); user-select: none; }
+.cx-face.a { transform: rotateY(180deg); }
+.cx-link { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; overflow: visible; }
+.cx-link rect, .cx-link path { fill: none; stroke: var(--pk-accent); stroke-width: 2; stroke-linecap: round; }
 
-/* ---- the room and the table --------------------------------------------------------------- */
+/* ---- experience: the two hole cards, side by side ----------------------------------------- */
+.pk-hole { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 28px; }
+.pk-hole-card { padding: 24px 26px 22px; }
+.pk-hole-top { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
+.pk-hole-mini { flex: none; width: 66px; transform: rotate(-4deg); filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .5)); }
+.pk-hole-card:nth-child(2) .pk-hole-mini { transform: rotate(4deg); }
+.pk-hole-card h3 { margin: 2px 0 0; font-size: 22px; line-height: 1.2; }
+.pk-hole-card p { margin: 0 0 8px; }
+.pk-when { margin: 0; font: 400 13px/1.6 var(--pk-mono); color: var(--pk-muted); }
+.pk-also { margin: 18px 0 0; font-size: 15px; color: var(--pk-muted); max-width: 80ch; }
+
+/* ---- glass panels that light up under the pointer ----------------------------------------- */
+.pk-hole-card, .pk-side li, .pk-log {
+  position: relative; isolation: isolate; border-radius: 8px;
+  background: linear-gradient(180deg, rgba(38, 35, 31, .62), rgba(24, 22, 20, .55));
+  border: 1px solid rgba(236, 229, 214, .09); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 18px 40px rgba(0, 0, 0, .25);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+[data-glow]::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(300px circle at var(--gx, -300px) var(--gy, -300px), rgba(232, 85, 62, .14), transparent 70%); }
+[data-glow]:hover::before { opacity: 1; }
+[data-glow]:hover { border-color: rgba(236, 229, 214, .2); }
+
+/* ---- the room: a darker band under one lamp ---------------------------------------------- */
+.pk-hand-band { position: relative; isolation: isolate; margin-top: 60px; padding-top: 80px; padding-bottom: 56px; }
+.pk-hand-band::before {
+  content: ''; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); pointer-events: none;
+  background:
+    radial-gradient(ellipse 46% 42% at 50% 58%, rgba(255, 206, 150, .09), transparent 72%),
+    linear-gradient(180deg, var(--pk-bg), var(--pk-room) 90px, var(--pk-room) calc(100% - 90px), var(--pk-bg));
+}
+
+/* ---- the table ---------------------------------------------------------------------------- */
 .pk-room { position: relative; --pk-cw: 11.5%; margin-top: 10px; }
 .pk-stage { perspective: 1150px; perspective-origin: 50% 0%; padding: 0 0 10px; }
 .pk-table {
-  position: relative; aspect-ratio: 1.95 / 1; border-radius: 999px; padding: clamp(14px, 2vw, 26px);
+  position: relative; aspect-ratio: 1.95 / 1; border-radius: 999px; padding: clamp(15px, 2.1vw, 28px);
   transform: rotateX(calc(31deg + var(--rxd, 0deg))) rotateY(var(--ry, 0deg)); transform-origin: 50% 70%; transform-style: preserve-3d; transition: transform .4s ease-out;
-  background: linear-gradient(180deg, var(--pk-rail), var(--pk-rail-deep));
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .08), inset 0 -3px 8px rgba(0, 0, 0, .45), 0 40px 80px rgba(0, 0, 0, .6), 0 10px 20px rgba(0, 0, 0, .4);
+  background: radial-gradient(120% 150% at 50% -10%, #8c2935 0%, var(--pk-rail) 38%, var(--pk-rail-deep) 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .12), inset 0 -4px 10px rgba(0, 0, 0, .5), 0 46px 90px rgba(0, 0, 0, .7), 0 10px 20px rgba(0, 0, 0, .45);
 }
 /* stitching on the rail */
-.pk-table::before { content: ''; position: absolute; inset: clamp(6px, .8vw, 10px); border-radius: 999px; border: 1.5px dashed rgba(236, 229, 214, .35); pointer-events: none; }
+.pk-table::before { content: ''; position: absolute; inset: clamp(5px, .7vw, 9px); border-radius: 999px; border: 1.5px dashed rgba(236, 229, 214, .3); pointer-events: none; }
 .pk-felt {
   position: relative; width: 100%; height: 100%; border-radius: 999px; transform-style: preserve-3d; cursor: crosshair;
   background-color: var(--pk-felt);
-  background-image: radial-gradient(circle, rgba(236, 229, 214, .06) 0 1px, transparent 1.5px);
-  background-size: 6px 6px;
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .6), inset 0 8px 30px rgba(0, 0, 0, .5);
+  /* the light pooled in the middle, and the nap of the cloth */
+  background-image:
+    radial-gradient(ellipse 62% 58% at 50% 50%, rgba(255, 236, 205, .055), transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* the walnut racetrack between the rail and the cloth */
+  box-shadow: 0 0 0 clamp(4px, .55vw, 7px) #2b1a10, 0 0 0 calc(clamp(4px, .55vw, 7px) + 1.5px) rgba(255, 210, 160, .2), inset 0 0 0 2px rgba(0, 0, 0, .6), inset 0 10px 34px rgba(0, 0, 0, .55);
 }
-/* the printed line, and the seat's name printed on it */
-.pk-felt::after { content: ''; position: absolute; inset: 9% 7%; border-radius: 999px; border: 1.5px solid rgba(236, 229, 214, .16); pointer-events: none; }
-.pk-lamp { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(circle at var(--lx, 50%) var(--ly, 58%), rgba(255, 214, 160, .14), rgba(255, 214, 160, .05) 24%, transparent 50%); }
+/* the printed line */
+.pk-felt::after { content: ''; position: absolute; inset: 9% 7%; border-radius: 999px; border: 1.5px solid rgba(236, 229, 214, .14); pointer-events: none; }
+.pk-lamp { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(circle at var(--lx, 50%) var(--ly, 58%), rgba(255, 214, 160, .13), rgba(255, 214, 160, .045) 24%, transparent 50%); }
 /* the card layer covers the felt (3D makes it the cards' containing block) but lets clicks reach the felt */
 .pk-cards { position: absolute; inset: 0; transform-style: preserve-3d; transform: translateZ(3px); pointer-events: none; z-index: 3; }
-.pk-cards .pk-slot { pointer-events: auto; }
+/* only the card itself takes the pointer: its positioning box must never win a hit test against it, or a
+   press lands on the box, the release on the card, and the click goes to neither */
+.pk-cards .pk-slot { pointer-events: none; }
+.pk-cards .pk-slot .pk-card { pointer-events: auto; }
 .pk-tossed { position: absolute; z-index: 2; pointer-events: none; }
-.pk-deck, .pk-dealer, .pk-pot, .pk-lamp, .pk-print, .pk-showdown-pos { pointer-events: none; }
-.pk-print { pointer-events: none; position: absolute; left: 50%; top: 9%; transform: translate(-50%, -50%); z-index: 1; margin: 0; padding: 0 14px; background: var(--pk-felt); white-space: nowrap; font: 700 clamp(9px, .95vw, 13px)/1 'Zen Kaku Gothic New', sans-serif; letter-spacing: .32em; color: rgba(236, 229, 214, .3); }
-.pk-focus { position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; overflow: hidden; animation: pk-focus-in .35s ease-out both; }
-.pk-focus .ink-focus { position: absolute; inset: 0; width: 100%; height: 100%; }
-.pk-focus .ink-focus path { fill: rgba(236, 229, 214, .5); }
-.pk-focus .ink-focus path.r { fill: var(--pk-accent); }
-@keyframes pk-focus-in { from { opacity: 0; transform: scale(1.12); } to { opacity: 1; transform: scale(1); } }
+.pk-deck, .pk-dealer, .pk-pot, .pk-lamp, .pk-print, .pk-showdown-pos, .pk-burn { pointer-events: none; }
+.pk-print { position: absolute; left: 50%; top: 9%; transform: translate(-50%, -50%); z-index: 1; margin: 0; padding: 0 14px; background: transparent; white-space: nowrap; font: 500 clamp(8px, .85vw, 12px)/1 var(--pk-mono); letter-spacing: .3em; color: rgba(236, 229, 214, .3); }
+.pk-print::before { content: ''; position: absolute; inset: -4px 0; z-index: -1; background: var(--pk-felt); }
 .pk-deck { position: absolute; width: calc(var(--pk-cw) * .8); aspect-ratio: 5 / 7; transform: translate(-50%, -50%) rotate(-14deg); z-index: 2; }
 .pk-deck span { position: absolute; inset: 0; border-radius: 6% / 4.3%; background: var(--back); border: 2px solid var(--card-face); box-shadow: 0 2px 4px rgba(0, 0, 0, .4); }
 .pk-deck span:nth-child(2) { transform: translate(2px, -2px); }
 .pk-deck span:nth-child(3) { transform: translate(4px, -4px); background: repeating-linear-gradient(45deg, var(--back) 0 4px, #4a1219 4px 7px); }
+.pk-burn { position: absolute; z-index: 2; width: calc(var(--pk-cw) * .8); aspect-ratio: 5 / 7; border-radius: 6% / 4.3%; overflow: hidden; border: 2px solid var(--card-face); background: var(--back); box-shadow: 0 2px 5px rgba(0, 0, 0, .45); }
+.pk-burn svg { display: block; width: 100%; height: 100%; }
 .pk-dealer { position: absolute; transform: translate(-50%, -50%); width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--card-face); color: var(--card-ink); font: 400 14px 'Dela Gothic One', sans-serif; box-shadow: inset 0 0 0 3px var(--card-face), inset 0 0 0 4.5px var(--card-ink), 0 3px 0 #9d9480, 0 6px 10px rgba(0, 0, 0, .5); z-index: 4; }
 .pk-pot { position: absolute; z-index: 2; pointer-events: none; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .45)); }
 .pk-pot-chips { display: flex; gap: 4px; align-items: flex-end; }
@@ -192,11 +303,14 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-card.is-up:not(.is-still) { cursor: pointer; }
 .pk-card-inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.3, .7, .2, 1); }
 .pk-card.is-up .pk-card-inner { transform: rotateY(180deg); }
-.pk-card.is-up:not(.is-still):hover, .pk-card.is-up:not(.is-still):focus-visible { transform: translateZ(70px) rotateX(-31deg) scale(1.04); }
-.pk-card.is-up:not(.is-still):hover .pk-face { box-shadow: 0 30px 40px rgba(0, 0, 0, .55), 0 6px 10px rgba(0, 0, 0, .35); }
+/* on the table a hovered card stands up off the tilted felt to face you */
+.pk-slot .pk-card.is-up:hover, .pk-slot .pk-card.is-up:focus-visible { transform: translateZ(70px) rotateX(-31deg) scale(1.04); }
+.pk-slot .pk-card.is-up:hover .pk-face { box-shadow: 0 30px 40px rgba(0, 0, 0, .55), 0 6px 10px rgba(0, 0, 0, .35); }
 .pk-slot:hover, .pk-slot:focus-within { z-index: 20 !important; }
-.pk-slot.is-out .pk-card { transform: scale(.82); filter: brightness(.72) saturate(.7); }
-.pk-slot.is-out .pk-card:hover { filter: none; }
+/* the side cards at showdown: smaller and dimmed (on the face, so the card keeps its 3D context) */
+.pk-slot.is-out .pk-card { transform: scale(.82); }
+.pk-slot.is-out .pk-face { filter: brightness(.72) saturate(.7); transition: filter .25s; }
+.pk-slot.is-out .pk-card:hover .pk-face, .pk-slot.is-out .pk-card:focus-visible .pk-face { filter: none; }
 .pk-back, .pk-face { position: absolute; inset: 0; display: block; border-radius: 6% / 4.3%; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 10px 18px rgba(0, 0, 0, .5), 0 2px 4px rgba(0, 0, 0, .4); }
 .pk-back { background: var(--back); border: 3cqw solid var(--card-face); }
 .pk-face {
@@ -213,8 +327,12 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-corner svg { width: 10cqw !important; height: 10cqw !important; }
 .pk-corner.tl { top: 3cqw; left: 3.5cqw; }
 .pk-corner.br { bottom: 3cqw; right: 3.5cqw; transform: rotate(180deg); }
-.pk-art { display: block; width: 84%; aspect-ratio: 6 / 5; margin: 0 auto 5cqw; }
+/* one large pip, printed; the ace's is the big ornamental one */
+.pk-pip { display: block; width: 34cqw; margin: 2cqw auto 9cqw; filter: drop-shadow(0 .6cqw 0 rgba(23, 21, 15, .12)); }
+.pk-pip svg { width: 100% !important; height: auto !important; }
+.pk-face.is-ace .pk-pip { width: 46cqw; margin: 0 auto 7cqw; }
 .pk-title { display: block; font: 700 12.5cqw/1.05 'Zen Kaku Gothic New', sans-serif; color: var(--card-ink); letter-spacing: -.01em; }
+.pk-sub { display: block; margin-top: 2.6cqw; font: 500 6.2cqw/1.25 var(--pk-mono); letter-spacing: .02em; color: var(--card-muted); }
 .pk-card.is-glow .pk-card-inner { transform: rotateY(180deg) translateY(-7%); }
 .pk-card.is-glow .pk-face { box-shadow: 0 0 0 .8cqw rgba(255, 236, 200, .55), 0 0 26px rgba(255, 214, 160, .18), 0 18px 28px rgba(0, 0, 0, .6); }
 .pk-card.is-glow .pk-face::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(112deg, transparent 40%, rgba(255, 255, 255, .55) 48%, transparent 56%); mix-blend-mode: soft-light; background-size: 320% 100%; background-position: 110% 0; animation: pk-sheen 1.5s ease-out 1s both; }
@@ -226,68 +344,95 @@ body:has(.pk-page) { background: var(--pk-bg); }
 /* ---- showdown ----------------------------------------------------------------------------- */
 .pk-showdown-pos { position: absolute; left: 50%; top: 15%; transform: translate(-50%, -50%); z-index: 8; pointer-events: none; }
 .pk-showdown { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
-.pk-showdown-k { font: 700 11px/1 'Zen Kaku Gothic New', sans-serif; letter-spacing: .34em; text-transform: uppercase; color: rgba(236, 229, 214, .55); }
+.pk-showdown-k { font: 500 11px/1 var(--pk-mono); letter-spacing: .34em; text-transform: uppercase; color: rgba(236, 229, 214, .55); }
 .pk-showdown strong { font: 400 clamp(24px, 2.6vw, 36px)/1.1 'Dela Gothic One', sans-serif; color: var(--card-face); letter-spacing: .01em; white-space: nowrap; }
 
-/* ---- under the table ---------------------------------------------------------------------- */
-.pk-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin: 30px 0 0; }
+/* ---- under the table: the hand history, the equity meter, the actions ------------------- */
+.pk-bar { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 22px 40px; margin: 30px 0 0; align-items: start; }
+.pk-log { position: relative; margin: 0; height: 214px; overflow: auto; padding: 14px 18px; background: rgba(0, 0, 0, .38); border: 1px solid var(--pk-line); border-radius: 6px; font: 400 13px/1.75 var(--pk-mono); color: var(--pk-text); scrollbar-width: thin; scrollbar-color: var(--pk-line) transparent; }
+.pk-log p { margin: 0; }
+.pk-log-cards { margin-left: .65em; color: #fff7e8; font-weight: 600; white-space: nowrap; }
+.pk-log-cards .r { color: #ff7563; }
+.pk-log-note { margin-left: .65em; color: var(--pk-muted); }
+.pk-log-note::before { content: '// '; color: #6d665c; }
+.pk-log-caret { display: inline-block; width: .55em; height: 1.05em; margin-top: 2px; background: var(--pk-accent); vertical-align: -0.2em; animation: pk-blink 1.15s steps(1) infinite; }
+.pk-panel { display: grid; gap: 18px; }
 .pk-street { display: flex; flex-direction: column; }
 .pk-street-k { font-weight: 700; font-size: 20px; }
 .pk-street-hint { font-size: 15px; color: var(--pk-muted); }
+.pk-equity { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; }
+.pk-equity-k { grid-column: 1 / -1; font: 500 11.5px/1 var(--pk-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--pk-muted); }
+.pk-meter { height: 8px; border-radius: 99px; background: var(--pk-raised); box-shadow: inset 0 0 0 1px var(--pk-line); overflow: hidden; }
+.pk-meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #8e2119, var(--pk-accent)); transition: width 1s cubic-bezier(.2, .8, .2, 1) .9s; }
+.pk-equity b { font: 600 15px/1 var(--pk-mono); white-space: nowrap; }
+.pk-equity em { font-style: normal; font-weight: 400; color: var(--pk-accent); margin-left: .5em; }
 .pk-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
 /* ---- the card sheet ----------------------------------------------------------------------- */
 .pk-sheet-wrap { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: rgba(5, 5, 4, .7); backdrop-filter: blur(2px); }
-.pk-sheet { position: relative; width: min(700px, 100%); max-height: 88vh; overflow: auto; background: var(--pk-surface); color: var(--pk-text); border: 1px solid var(--pk-line); border-radius: 4px; box-shadow: 0 40px 80px rgba(0, 0, 0, .6); padding: 24px 28px 26px; }
+.pk-sheet { position: relative; width: min(720px, 100%); max-height: 88vh; overflow: auto; background: var(--pk-surface); color: var(--pk-text); border: 1px solid var(--pk-line); border-radius: 4px; box-shadow: 0 40px 80px rgba(0, 0, 0, .6); padding: 24px 28px 26px; }
 .pk-sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.pk-sheet-kicker { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--pk-accent); }
+.pk-sheet-kicker { display: inline-flex; align-items: center; gap: 6px; font: 400 13px/1.4 var(--pk-mono); color: var(--pk-accent); }
 .pk-sheet-close { border: 1px solid var(--pk-line); background: transparent; color: var(--pk-text); border-radius: 3px; padding: 5px 12px; font: 700 14px 'Zen Kaku Gothic New', sans-serif; cursor: pointer; }
 .pk-sheet-close:hover { border-color: var(--pk-text); }
 .pk-sheet h2 { margin: 10px 0 10px; font-size: 32px; line-height: 1.05; }
 .pk-sheet p { margin: 0 0 12px; }
 .pk-sheet .pk-media { margin: 8px 0 14px; box-shadow: none; }
+.pk-sheet .pk-media.is-cruxpack { margin: 18px 0 18px; }
 
 /* ---- side projects ------------------------------------------------------------------------ */
 .pk-side { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
-.pk-side li { display: flex; flex-direction: column; gap: 5px; background: var(--pk-surface); border: 1px solid var(--pk-line); border-radius: 4px; padding: 16px 18px; transition: border-color .15s, transform .15s; }
-.pk-side li:hover { border-color: #5a544c; transform: translateY(-2px); }
+.pk-side li { display: flex; flex-direction: column; gap: 5px; padding: 18px 20px; transition: border-color .15s, transform .2s; }
+.pk-side li:hover { transform: translateY(-3px); }
 .pk-side p { margin: 0; font-size: 15px; line-height: 1.5; }
 .pk-side h3 { margin: 0; font-size: 18px; line-height: 1.2; }
-.pk-side-y { font-size: 13.5px !important; color: var(--pk-muted); }
-.pk-side-tech { color: var(--pk-muted); font-size: 13.5px !important; }
+.pk-side-y { font: 400 12.5px/1.5 var(--pk-mono) !important; color: var(--pk-muted); }
+.pk-side-tech { color: var(--pk-muted); font: 400 12.5px/1.6 var(--pk-mono) !important; }
 .pk-side-links { display: flex; gap: 16px; margin-top: auto !important; padding-top: 6px; font-weight: 700; }
 .pk-side-links a { color: var(--pk-accent); text-decoration: none; }
 .pk-side-links a:hover { text-decoration: underline; }
 .pk-sheet .pk-side { grid-template-columns: 1fr; gap: 10px; margin-bottom: 8px; }
-.pk-sheet .pk-side li { background: var(--pk-raised); }
+.pk-sheet .pk-side li { background: var(--pk-raised); -webkit-backdrop-filter: none; backdrop-filter: none; }
 .pk-sheet .pk-side li:hover { transform: none; }
 
 /* ---- contact and footer ------------------------------------------------------------------- */
-.pk-contact { margin: 110px 0 0; border-top: 1px solid var(--pk-line); padding: 56px 0 10px; }
+.pk-contact { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 30px; align-items: center; margin: 110px 0 0; border-top: 1px solid var(--pk-line); padding: 56px 0 10px; }
 .pk-contact h2 { margin: 0 0 12px; font-size: clamp(44px, 7vw, 86px); line-height: .95; }
-.pk-contact p { margin: 0 0 14px; font-size: 18px; color: var(--pk-muted); }
-.pk-addr { display: inline-block; font-weight: 700; font-size: 20px; color: var(--pk-text) !important; user-select: all; border-bottom: 2px solid var(--pk-accent); }
-.pk-foot { max-width: 1180px; margin: 0 auto; padding: 50px max(20px, env(safe-area-inset-right, 0px)) 100px max(20px, env(safe-area-inset-left, 0px)); font-size: 14px; color: var(--pk-muted); }
+.pk-contact .pk-contact-text > p:not(.pk-eyebrow) { margin: 0 0 14px; font-size: 18px; color: var(--pk-muted); }
+.pk-contact .pk-contact-text > p.pk-row { margin: 0; }
+/* the showdown: the five spades laid down in a fan */
+.pk-flush { position: relative; display: flex; justify-content: center; padding: 30px 0 20px; }
+.pk-flush-card { width: 104px; margin-left: -34px; filter: drop-shadow(0 14px 18px rgba(0, 0, 0, .55)); transform: rotate(calc((var(--i) - 2) * 7deg)) translateY(calc(var(--d) * 1px)); transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.pk-flush-card:first-child { margin-left: 0; }
+.pk-flush-card:nth-child(1) { --i: 0; --d: 18; } .pk-flush-card:nth-child(2) { --i: 1; --d: 5; } .pk-flush-card:nth-child(3) { --i: 2; --d: 0; } .pk-flush-card:nth-child(4) { --i: 3; --d: 5; } .pk-flush-card:nth-child(5) { --i: 4; --d: 18; }
+.pk-flush:hover .pk-flush-card { transform: rotate(calc((var(--i) - 2) * 9deg)) translateY(calc(var(--d) * 1.4px - 6px)); }
+.pk-addr { display: inline-block; font: 500 19px/1.4 var(--pk-mono); color: var(--pk-text) !important; user-select: all; border-bottom: 2px solid var(--pk-accent); }
+.pk-foot { max-width: 1180px; margin: 0 auto; padding: 50px max(20px, env(safe-area-inset-right, 0px)) 100px max(20px, env(safe-area-inset-left, 0px)); font: 400 13px/1.5 var(--pk-mono); color: var(--pk-muted); }
 
 /* ---- the paper's chart, on a cream panel -------------------------------------------------- */
-.ink-chart { margin: 0; padding: 16px 16px 8px; }
+.ink-chart { margin: 0; padding: 20px 20px 10px; }
 .ink-chart svg { display: block; width: 100%; height: auto; }
-.ink-chart .frame { fill: none; stroke: var(--ink); stroke-width: 2.2; }
-.ink-chart .zone { fill: var(--red); opacity: .1; }
-.ink-chart .fair { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 5 6; }
-.ink-chart .fit { fill: none; stroke: var(--red); stroke-width: 4; stroke-linecap: round; }
-.ink-chart .p15 { fill: var(--red); stroke: var(--ink); stroke-width: 1.8; cursor: help; }
-.ink-chart .p27 { fill: var(--paper); stroke: var(--ink); stroke-width: 1.8; cursor: help; }
+.ink-chart .frame { fill: none; stroke: rgba(236, 229, 214, .28); stroke-width: 1.2; }
+.ink-chart .zone { fill: var(--red); opacity: .09; }
+.ink-chart .fair { stroke: rgba(236, 229, 214, .45); stroke-width: 1.2; stroke-dasharray: 4 6; }
+.ink-chart .fit { fill: none; stroke: var(--red); stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(232, 85, 62, .45)); }
+.ink-chart .p15 { fill: var(--red); stroke: var(--paper); stroke-width: 2; cursor: help; }
+.ink-chart .p27 { fill: var(--paper); stroke: var(--ink); stroke-width: 1.6; cursor: help; }
 .ink-chart circle:hover { r: 9px; }
-.ink-chart .tick { font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 12px; fill: var(--ink); }
-.ink-chart .lab { font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 700; font-size: 14px; fill: var(--ink); }
-.ink-chart figcaption { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 6px; font-size: 13.5px; color: var(--ink); }
-.ink-chart figcaption i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: -1px; }
-.ink-chart .k15 { background: var(--red); }
+.ink-chart .tick { font: 400 11px var(--pk-mono); fill: var(--pk-muted); }
+.ink-chart .lab { font: 500 12px var(--pk-mono); fill: var(--ink); }
+.ink-chart figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin-top: 8px; font: 400 12px/1.5 var(--pk-mono); color: var(--pk-muted); }
+.ink-chart figcaption i { display: inline-block; width: 11px; height: 11px; margin-right: 6px; border-radius: 50%; border: 2px solid var(--ink); vertical-align: -1px; }
+.ink-chart .k15 { background: var(--red); border-color: var(--red) !important; }
 .ink-chart .k27 { background: var(--paper); }
 
 /* ---- the site-wide widgets on this page --------------------------------------------------- */
 :root:has(.pk-page) .site-term-btn { background-color: var(--pk-raised) !important; color: var(--pk-text) !important; border: 1px solid var(--pk-line); }
+/* the egg hunt's joker: a card tucked under the lower-left edge of the page, not floating mid-page */
+:root:has(.pk-page) .egg-peek { top: auto; bottom: 110px; left: -30px; }
+:root:has(.pk-page) .egg-peek img { height: 76px; transform: rotate(24deg); filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .55)); }
+:root:has(.pk-page) .egg-hint span:first-child { color: var(--pk-accent) !important; }
+:root:has(.pk-page) .egg-hint span:last-child { background: rgba(29, 27, 25, .9) !important; color: var(--pk-text) !important; border: 1px solid var(--pk-accent); box-shadow: none; }
 
 /* ---- phones: the table turns portrait ----------------------------------------------------- */
 .pk-room.is-tall { --pk-cw: 22%; }
@@ -296,23 +441,49 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-room.is-tall .pk-felt { border-radius: 104px / 146px; }
 .pk-room.is-tall .pk-felt::after { inset: 5% 7%; border-radius: 90px / 130px; }
 .pk-room.is-tall .pk-table::before { border-radius: 114px / 154px; }
-.pk-room.is-tall .pk-print { top: 5%; font-size: 8px; letter-spacing: .22em; padding: 0 8px; }
+.pk-room.is-tall .pk-print { top: 5%; font-size: 7.5px; letter-spacing: .2em; padding: 0 8px; }
 .pk-room.is-tall .pk-showdown-pos { top: 11.5%; }
 .pk-room.is-tall .pk-showdown strong { font-size: 22px; }
-.pk-room.is-tall .pk-bar { flex-direction: column; align-items: stretch; }
+.pk-room.is-tall .pk-bar { grid-template-columns: 1fr; margin-top: 18px; }
+/* on a phone the deal buttons sit right under the table, so the card can be seen landing */
+.pk-room.is-tall .pk-panel { order: -1; gap: 14px; }
+.pk-room.is-tall .pk-actions { order: -1; }
+.pk-room.is-tall .pk-log { height: 196px; font-size: 12px; padding: 12px 14px; }
 .pk-room.is-tall .pk-actions .pk-btn { flex: 1 1 auto; justify-content: center; }
+@media (max-width: 960px) {
+  .pk-project.is-stage .pk-project-text { grid-template-columns: 1fr; }
+  .pk-project.is-stage h3 { margin-bottom: 14px; }
+}
+@media (max-width: 1060px) {
+  .pk-board-read { display: none; }
+}
 @media (max-width: 760px) {
   .pk-page { font-size: 16px; }
-  .pk-top nav { gap: 2px 16px; }
-  .pk-top nav a { font-size: 14px; }
+  .pk-top { grid-template-columns: auto minmax(0, 1fr); gap: 8px 12px; padding-top: 8px; padding-bottom: 8px; }
+  .pk-board { justify-self: end; }
+  .pk-board ol { gap: 3px; }
+  .pk-board li.is-gap { margin-left: 6px; }
+  .pk-mini { width: 20px; height: 28px; }
+  .pk-mini-face b { font-size: 9.5px; }
+  .pk-nav { grid-column: 1 / -1; justify-content: flex-start; gap: 2px 18px; }
+  .pk-nav a { font-size: 14px; }
+  .pk-hole { grid-template-columns: 1fr; }
+  .pk-contact { grid-template-columns: 1fr; gap: 10px; }
+  .pk-flush { padding: 18px 0 0; }
+  .pk-flush-card { width: 66px; margin-left: -20px; }
+  .pk-hole-card { padding: 20px 18px 18px; }
+  .pk-hole-mini { width: 56px; }
   .pk-hero { grid-template-columns: 1fr; padding: 36px 0 30px; gap: 8px; }
-  .pk-hero-cards { height: 190px; margin-top: 18px; }
-  .pk-fan { width: 112px; top: 6px; }
-  .pk-fan.a { left: calc(50% - 116px); }
+  .pk-range { display: none; }
+  .pk-hero-cards { height: 232px; margin-top: 18px; }
+  .pk-fan { width: 116px; top: 6px; }
+  .pk-fan.a { left: calc(50% - 120px); }
   .pk-fan.b { left: calc(50% + 4px); top: 14px; }
+  .pk-hero-note { left: 0; text-align: center; font-size: 12px; }
   .pk-facts div { grid-template-columns: 1fr; gap: 0; }
   .pk-stack-grid { grid-template-columns: 1fr 1fr; }
   .pk-section { padding-top: 70px; }
+  .pk-hand-band { margin-top: 40px; padding-top: 60px; }
   .pk-project, .pk-project.is-flip { grid-template-columns: 1fr; gap: 22px; }
   .pk-project.is-flip .pk-media { order: 0; }
   .pk-sheet { padding: 20px 18px 20px; }
@@ -321,7 +492,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 }
 @media (max-width: 420px) { .pk-stack-grid { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) {
-  .pk-card-inner, .pk-card, .pk-btn, .pk-side li, .pk-table { transition: none; }
+  .pk-card-inner, .pk-card, .pk-btn, .pk-side li, .pk-table, .pk-meter i { transition: none; }
   .pk-card.is-glow .pk-face::after { animation: none; display: none; }
-  .pk-btn.is-idle, .pk-focus, .pk-slot.is-peek .pk-card { animation: none; }
+  .pk-btn.is-idle, .pk-slot.is-peek .pk-card, .pk-caret, .pk-log-caret { animation: none; }
 }

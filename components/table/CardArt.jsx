@@ -1,7 +1,4 @@
-import ART from '../../data/card-art.json';
-
-// Card faces drawn the way a pen draws them: wobbly strokes and hatched fills, generated once by
-// scripts/card-art.mjs (roughjs, seeded) into data/card-art.json. Ink and card red come from CSS variables.
+// The suits, drawn as one path each, and the card back. Ink and card red come from CSS variables.
 export function SuitIcon({ suit, size = 16, color }) {
   const fill = color || (suit === 'heart' || suit === 'diamond' ? 'var(--card-red)' : 'var(--card-ink)');
   const paths = {
@@ -13,18 +10,6 @@ export function SuitIcon({ suit, size = 16, color }) {
   return (
     <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ display: 'block' }}>
       <path d={paths[suit]} style={{ fill }} />
-    </svg>
-  );
-}
-
-export default function CardArt({ art }) {
-  const paths = ART[art];
-  if (!paths) return null;
-  return (
-    <svg viewBox="0 0 120 100" width="100%" height="100%" aria-hidden="true">
-      {paths.map((p, i) => (
-        <path key={i} d={p.d} style={{ stroke: p.s, strokeWidth: p.w, fill: p.f ?? 'none', strokeLinecap: 'round', strokeLinejoin: 'round' }} />
-      ))}
     </svg>
   );
 }

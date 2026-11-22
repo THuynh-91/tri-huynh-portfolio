@@ -5,6 +5,7 @@ import projects from '../../data/projects.json';
 import { SIDE } from '../../data/hand';
 import { InkChart } from '../ink/Drawings';
 import { SuitIcon } from './CardArt';
+import CruxScene from './CruxScene';
 
 // Demos that live in this site (public/demos) rather than at an outside URL.
 const LOCAL_DEMOS = { 12: '/demos/pendulum/index.html', 14: '/demos/roulette/index.html' };
@@ -27,7 +28,7 @@ export function SideList({ basePath, group }) {
   return (
     <ul className="pk-side">
       {sideProjects(basePath, group).map((p) => (
-        <li key={p.id}>
+        <li key={p.id} data-glow>
           <p className="pk-side-y">{p.year}{p.here ? ' · plays on this site' : ''}</p>
           <h3>{p.title}</h3>
           <p>{p.tagline}</p>
@@ -56,6 +57,14 @@ export function ProjectMedia({ media, basePath }) {
     return () => io.disconnect();
   }, []);
   if (!media) return null;
+  if (media.kind === 'cruxpack') {
+    return (
+      <figure className="pk-media is-cruxpack">
+        <CruxScene cards={media.cards} alt={media.alt} basePath={basePath} />
+        {media.caption && <figcaption>{media.caption}</figcaption>}
+      </figure>
+    );
+  }
   return (
     <figure className={`pk-media is-${media.kind}`}>
       {media.kind === 'image' && <img src={`${basePath}${media.src}`} alt={media.alt} loading="lazy" />}
