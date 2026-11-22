@@ -45,7 +45,7 @@ export default function EggHunt() {
   return (
     <>
       {!found && (
-        <div className="fixed -left-5 top-[42%] z-40 flex items-center">
+        <div className="egg-peek fixed -left-5 top-[42%] z-40 flex items-center">
           <motion.button
             onClick={collect}
             data-cursor="hover"

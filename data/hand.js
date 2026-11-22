@@ -61,7 +61,7 @@ export const BOARD = [
       title: 'CruxPack',
       what: 'A study tool, live at cruxpack.io. Upload a lecture PDF and it builds notes, flashcards, practice problems and a chat that answers from your own slides. Every card and note links back to the slide it came from.',
       how: 'A Next.js app with SQLite on Fly.io. A pipeline of Gemini calls plans the topics, writes each part in parallel and audits the draft against the source; a second model re-solves every practice problem before the pack is shown. Stripe runs the paid plan.',
-      media: { kind: 'image', src: '/images/shots/cruxpack-notes.png', alt: 'CruxPack notes view: cue questions beside notes, each section linked to its source page' },
+      media: { kind: 'image', src: '/images/shots/cruxpack-card.png', alt: "A CruxPack flashcard from its sample deck, with a link to the lecture page it came from (Lec 04, p. 3)" },
       stack: ['TypeScript', 'Next.js', 'SQLite', 'Gemini', 'Stripe', 'Fly.io'],
       links: [{ label: 'Try cruxpack.io', href: 'https://cruxpack.io' }],
     },

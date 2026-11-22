@@ -164,9 +164,10 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-felt::after { content: ''; position: absolute; inset: 9% 7%; border-radius: 999px; border: 1.5px solid rgba(236, 229, 214, .16); pointer-events: none; }
 .pk-lamp { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(circle at var(--lx, 50%) var(--ly, 58%), rgba(255, 214, 160, .14), rgba(255, 214, 160, .05) 24%, transparent 50%); }
 /* the card layer covers the felt (3D makes it the cards' containing block) but lets clicks reach the felt */
-.pk-cards { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; z-index: 3; }
+.pk-cards { position: absolute; inset: 0; transform-style: preserve-3d; transform: translateZ(3px); pointer-events: none; z-index: 3; }
 .pk-cards .pk-slot { pointer-events: auto; }
-.pk-tossed, .pk-burst { position: absolute; z-index: 2; pointer-events: none; }
+.pk-tossed { position: absolute; z-index: 2; pointer-events: none; }
+.pk-deck, .pk-dealer, .pk-pot, .pk-lamp, .pk-print, .pk-showdown-pos { pointer-events: none; }
 .pk-print { pointer-events: none; position: absolute; left: 50%; top: 9%; transform: translate(-50%, -50%); z-index: 1; margin: 0; padding: 0 14px; background: var(--pk-felt); white-space: nowrap; font: 700 clamp(9px, .95vw, 13px)/1 'Zen Kaku Gothic New', sans-serif; letter-spacing: .32em; color: rgba(236, 229, 214, .3); }
 .pk-focus { position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit; overflow: hidden; animation: pk-focus-in .35s ease-out both; }
 .pk-focus .ink-focus { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -215,8 +216,8 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-art { display: block; width: 84%; aspect-ratio: 6 / 5; margin: 0 auto 5cqw; }
 .pk-title { display: block; font: 700 12.5cqw/1.05 'Zen Kaku Gothic New', sans-serif; color: var(--card-ink); letter-spacing: -.01em; }
 .pk-card.is-glow .pk-card-inner { transform: rotateY(180deg) translateY(-7%); }
-.pk-card.is-glow .pk-face { box-shadow: 0 0 0 1.4cqw var(--pk-accent), 0 18px 28px rgba(0, 0, 0, .6); }
-.pk-card.is-glow .pk-face::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(112deg, transparent 36%, rgba(255, 243, 214, .8) 46%, rgba(232, 85, 62, .3) 52%, transparent 62%); background-size: 320% 100%; background-position: 110% 0; animation: pk-sheen 1.5s ease-out 1s both; }
+.pk-card.is-glow .pk-face { box-shadow: 0 0 0 .8cqw rgba(255, 236, 200, .55), 0 0 26px rgba(255, 214, 160, .18), 0 18px 28px rgba(0, 0, 0, .6); }
+.pk-card.is-glow .pk-face::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(112deg, transparent 40%, rgba(255, 255, 255, .55) 48%, transparent 56%); mix-blend-mode: soft-light; background-size: 320% 100%; background-position: 110% 0; animation: pk-sheen 1.5s ease-out 1s both; }
 .pk-card.is-glow:hover .pk-face::after { animation: pk-sheen-again 1s ease-out both; }
 @keyframes pk-sheen { from { background-position: 110% 0; } to { background-position: -15% 0; } }
 @keyframes pk-sheen-again { from { background-position: 110% 0; } to { background-position: -15% 0; } }
@@ -224,10 +225,9 @@ body:has(.pk-page) { background: var(--pk-bg); }
 
 /* ---- showdown ----------------------------------------------------------------------------- */
 .pk-showdown-pos { position: absolute; left: 50%; top: 15%; transform: translate(-50%, -50%); z-index: 8; pointer-events: none; }
-.pk-showdown { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
-.pk-showdown strong { display: flex; gap: .02em; font: 400 clamp(30px, 4.4vw, 60px)/1 'Dela Gothic One', sans-serif; color: var(--pk-accent); -webkit-text-stroke: .06em #050504; paint-order: stroke fill; text-shadow: 0 .06em 0 #050504, 0 10px 24px rgba(0, 0, 0, .6); white-space: nowrap; }
-.pk-showdown strong span { display: inline-block; min-width: .3em; }
-.pk-showdown-line { font: 400 15px 'Yusei Magic', sans-serif; color: var(--pk-text); }
+.pk-showdown { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.pk-showdown-k { font: 700 11px/1 'Zen Kaku Gothic New', sans-serif; letter-spacing: .34em; text-transform: uppercase; color: rgba(236, 229, 214, .55); }
+.pk-showdown strong { font: 400 clamp(24px, 2.6vw, 36px)/1.1 'Dela Gothic One', sans-serif; color: var(--card-face); letter-spacing: .01em; white-space: nowrap; }
 
 /* ---- under the table ---------------------------------------------------------------------- */
 .pk-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin: 30px 0 0; }
@@ -298,8 +298,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
 .pk-room.is-tall .pk-table::before { border-radius: 114px / 154px; }
 .pk-room.is-tall .pk-print { top: 5%; font-size: 8px; letter-spacing: .22em; padding: 0 8px; }
 .pk-room.is-tall .pk-showdown-pos { top: 11.5%; }
-.pk-room.is-tall .pk-showdown strong { font-size: 26px; }
-.pk-room.is-tall .pk-showdown-line { font-size: 13px; }
+.pk-room.is-tall .pk-showdown strong { font-size: 22px; }
 .pk-room.is-tall .pk-bar { flex-direction: column; align-items: stretch; }
 .pk-room.is-tall .pk-actions .pk-btn { flex: 1 1 auto; justify-content: center; }
 @media (max-width: 760px) {
@@ -318,7 +317,7 @@ body:has(.pk-page) { background: var(--pk-bg); }
   .pk-project.is-flip .pk-media { order: 0; }
   .pk-sheet { padding: 20px 18px 20px; }
   .pk-sheet h2 { font-size: 26px; }
-  :root:has(.pk-page) .site-term-btn, :root:has(.pk-page) .egg-hint { display: none; }
+  :root:has(.pk-page) .site-term-btn, :root:has(.pk-page) .egg-hint, :root:has(.pk-page) .egg-peek { display: none; }
 }
 @media (max-width: 420px) { .pk-stack-grid { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) {

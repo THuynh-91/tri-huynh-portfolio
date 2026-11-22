@@ -12,7 +12,7 @@ export function ChipTop({ color = 'red', size = 30 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" style={{ display: 'block', overflow: 'visible' }}>
       <circle cx="20" cy="22" r="18" style={{ fill: 'rgba(0,0,0,.35)' }} />
-      <circle cx="20" cy="20" r="18" style={{ fill: face, stroke: 'var(--pk-ink)', strokeWidth: 1.4 }} />
+      <circle cx="20" cy="20" r="18" style={{ fill: face, stroke: color === 'ink' ? 'rgba(236,229,214,.45)' : 'var(--pk-ink)', strokeWidth: 1.4 }} />
       <circle cx="20" cy="20" r="18" style={{ fill: 'none', stroke: spot, strokeWidth: 4.5, strokeDasharray: '6.3 7.8' }} />
       <circle cx="20" cy="20" r="11" style={{ fill: face, stroke: spot, strokeWidth: 1.2, strokeDasharray: '2 2' }} />
     </svg>

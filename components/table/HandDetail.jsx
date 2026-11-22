@@ -95,7 +95,7 @@ export default function HandDetail({ card, onClose }) {
   return (
     <AnimatePresence>
       {card && (
-        <motion.div className="pk-sheet-wrap" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
+        <motion.div className="pk-sheet-wrap" initial={{ opacity: 0 }} animate={{ opacity: 1, pointerEvents: 'auto' }} exit={{ opacity: 0, pointerEvents: 'none', transition: { duration: 0.14 } }} onClick={onClose}>
           <motion.div
             ref={sheetRef}
             className="pk-sheet"
@@ -104,7 +104,7 @@ export default function HandDetail({ card, onClose }) {
             aria-labelledby="pk-sheet-title"
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 24, opacity: 0 }}
+            exit={{ y: 12, opacity: 0, transition: { duration: 0.14 } }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             onClick={(e) => e.stopPropagation()}
           >

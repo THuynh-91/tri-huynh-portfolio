@@ -4,8 +4,6 @@ import { useRouter } from 'next/router';
 import PlayingCard from './PlayingCard';
 import { ChipStack, ChipTop } from './Chips';
 import HandDetail from './HandDetail';
-import { Focus } from '../ink/Ink';
-import { rng } from '../ink/fx';
 import { HOLE, BOARD, CONTACT } from '../../data/hand';
 
 // One hand of no-limit hold'em on a table you look down at. The hole cards (A♠ the co-op, K♠ the school)
@@ -18,9 +16,6 @@ const ACTION = ['Deal the flop', 'Deal the turn', 'Deal the river', 'Showdown', 
 const STREET_NAME = ['Pre-flop', 'The flop', 'The turn', 'The river', 'Showdown'];
 const ROYAL_ORDER = ['biogen', 'northeastern', 'cruxpack', 'predictions', 'gittimeline'];
 const ROYAL = new Set(ROYAL_ORDER);
-const TITLE = 'ROYAL FLUSH';
-// a hand-lettered wobble for each letter (fixed, so every render matches)
-const WOBBLE = [[-4, 2], [3, -3], [-2, 1], [5, -2], [-3, 3], [0, 0], [2, -4], [-5, 1], [4, 2], [-2, -2], [3, 3]];
 
 const LAYOUT = {
   wide: {
@@ -43,12 +38,6 @@ const LAYOUT = {
 };
 
 const pct = ([x, y]) => ({ left: `${x}%`, top: `${y}%` });
-
-// the burst at showdown: chips thrown from the pot, fixed so every render matches
-const BURST = (() => {
-  const r = rng(77);
-  return Array.from({ length: 22 }, (_, i) => ({ i, dx: (r() - 0.5) * 70, dy: -(3 + r() * 9), land: (r() - 0.5) * 30, rot: (r() - 0.5) * 720, c: ['red', 'paper', 'ink'][i % 3], d: r() * 0.25 }));
-})();
 
 function DealtCard({ card, at, from, tilt, delay, faceUp, glow, out, onOpen, compact, peek }) {
   return (
@@ -152,16 +141,17 @@ export default function PokerTable() {
   const openCard = useCallback((card, el) => { opener.current = el; setOpen(card); }, []);
   const closeCard = useCallback(() => { setOpen(null); requestAnimationFrame(() => opener.current?.focus()); }, []);
 
-  // a click on bare felt tosses a chip that lands where you clicked (inside the felt's rounded shape)
+  // a click on bare felt tosses a chip that lands where you clicked. offsetX/offsetY are in the felt's own
+  // (untilted) coordinates, so the chip lands under the cursor however the table leans.
   const toss = (e) => {
     if (e.target !== e.currentTarget) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-    const rad = Math.min(r.width, r.height) / 2;
-    const px = e.clientX - r.left, py = e.clientY - r.top;
-    const cx = Math.min(Math.max(px, rad), r.width - rad), cy = r.height / 2;
-    if (Math.hypot(px - cx, py - cy) > rad * 0.94) return;
-    setTossed((t) => [...t.slice(-29), { id: `${Date.now()}-${t.length}`, x: x * 100, y: y * 100, c: ['red', 'paper', 'ink'][t.length % 3], rot: Math.round((x * 997 + y * 389) % 360) }]);
+    const el = e.currentTarget;
+    const w = el.offsetWidth, h = el.offsetHeight;
+    const px = e.nativeEvent.offsetX, py = e.nativeEvent.offsetY;
+    const rad = Math.min(w, h) / 2;
+    const cx = Math.min(Math.max(px, rad), w - rad);
+    if (Math.hypot(px - cx, py - h / 2) > rad * 0.92) return;
+    setTossed((t) => [...t.slice(-11), { id: `${Date.now()}-${t.length}`, x: (px / w) * 100, y: (py / h) * 100, c: ['red', 'paper', 'red', 'ink'][t.length % 4], rot: Math.round((px * 7 + py * 3) % 360) }]);
   };
 
   const L = tall ? LAYOUT.tall : LAYOUT.wide;
@@ -180,7 +170,6 @@ export default function PokerTable() {
           <div className={`pk-felt${done ? ' is-showdown' : ''}`} onClick={toss}>
             <div className="pk-lamp" aria-hidden="true" />
             <p className="pk-print" aria-hidden="true">TRI HUYNH · SEAT 1 · NO LIMIT HOLD&apos;EM</p>
-            {done && <div className="pk-focus"><Focus seed={21} count={110} rx={0.36} ry={0.4} red={0.06} /></div>}
 
             <div className="pk-deck" style={pct(L.deck)} aria-hidden="true"><span /><span /><span /></div>
             <span className="pk-dealer" style={{ left: `${L.deck[0] + (tall ? 15 : 8.5)}%`, top: `${L.deck[1] + (tall ? 0 : 2)}%` }} aria-hidden="true">D</span>
@@ -193,22 +182,13 @@ export default function PokerTable() {
               </motion.span>
             ))}
 
-            <motion.div className="pk-pot" style={{ ...pct(L.pot), x: '-50%', y: '-50%' }} animate={done ? { left: `${L.potEnd[0]}%`, top: `${L.potEnd[1]}%`, scale: tall ? 0.7 : 0.9 } : pct(L.pot)} transition={{ duration: 0.9, ease: 'easeInOut', delay: 0.4 }}>
+            <motion.div key={`pot${round}`} className="pk-pot" style={{ ...pct(L.pot), x: '-50%', y: '-50%' }} animate={done ? { left: `${L.potEnd[0]}%`, top: `${L.potEnd[1]}%`, scale: tall ? 0.7 : 0.9 } : pct(L.pot)} transition={{ duration: 0.9, ease: 'easeInOut', delay: 0.4 }}>
               <div className="pk-pot-chips">
                 <ChipStack color="paper" count={Math.ceil(potCount / 2)} width={34} />
                 <ChipStack color="red" count={potCount} width={34} />
                 <ChipStack color="ink" count={Math.max(1, potCount - 2)} width={34} />
               </div>
             </motion.div>
-
-            {done && BURST.slice(0, tall ? 10 : BURST.length).map((b) => (
-              <motion.span key={`b${b.i}-${round}`} className="pk-burst" style={{ ...pct(L.pot), x: '-50%', y: '-50%' }} aria-hidden="true"
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: [0, 1, 1, 0.95], scale: 1, left: [`${L.pot[0]}%`, `${L.pot[0] + b.dx * (tall ? 0.25 : 0.6)}%`, `${L.pot[0] + b.dx * (tall ? 0.4 : 1)}%`], top: [`${L.pot[1]}%`, `${L.pot[1] + b.dy}%`, `${L.potEnd[1] - (tall ? 3 : 8) + b.land * (tall ? 0.1 : 0.3)}%`], rotate: b.rot }}
-                transition={{ duration: 1.25, delay: 0.55 + b.d, ease: [0.2, 0.7, 0.3, 1], times: [0, 0.45, 1] }}>
-                <ChipTop color={b.c} />
-              </motion.span>
-            ))}
 
             <div key={`r${round}`} className="pk-cards">
               {HOLE.map((c, i) => (
@@ -225,13 +205,9 @@ export default function PokerTable() {
             <AnimatePresence>
               {done && (
                 <div className="pk-showdown-pos">
-                  <motion.div className="pk-showdown" initial={{ opacity: 0, scale: 1.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.45, type: 'spring', stiffness: 360, damping: 15 }}>
-                    <strong aria-label="Royal flush">
-                      {TITLE.split('').map((ch, i) => (
-                        <span key={i} aria-hidden="true" style={{ transform: `translateY(${WOBBLE[i][1]}%) rotate(${WOBBLE[i][0]}deg)` }}>{ch === ' ' ? ' ' : ch}</span>
-                      ))}
-                    </strong>
-                    <span className="pk-showdown-line">A K Q J 10, all spades</span>
+                  <motion.div className="pk-showdown" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.7, duration: 0.5, ease: 'easeOut' } }} exit={{ opacity: 0, transition: { duration: 0.12 } }}>
+                    <span className="pk-showdown-k">Showdown</span>
+                    <strong>Royal flush</strong>
                   </motion.div>
                 </div>
               )}
