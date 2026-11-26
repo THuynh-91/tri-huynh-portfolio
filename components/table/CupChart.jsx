@@ -31,11 +31,8 @@ export default function CupChart({ basePath = '' }) {
       done = true;
       fetch(`${basePath}/data/cup-vs-kalshi.json`).then((r) => r.json()).then((d) => {
         setData(d);
-        // open on the morning of election day, before any race was called
-        const target = Date.UTC(2026, 10, 3, 14) / 1000;
-        let k = 0;
-        d.t.forEach((t, i) => { if (Math.abs(t - target) < Math.abs(d.t[k] - target)) k = i; });
-        setPos(k);
+        // open on the first recorded hour, so Play runs the whole three weeks
+        setPos(0);
       }).catch(() => {});
     };
     if (typeof IntersectionObserver === 'undefined') { load(); return undefined; }
