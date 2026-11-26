@@ -50,17 +50,20 @@ export default function CupChart({ basePath = '' }) {
     if (!playing || !data) return undefined;
     let prev = performance.now();
     const step = (now) => {
-      const dt = now - prev; prev = now;
-      setPos((p) => {
-        const n = Math.min(last, (p ?? 0) + dt / 120);
-        if (n >= last) setPlaying(false);
-        return n;
-      });
+      // A frame's timestamp can be a little earlier than the performance.now() taken before it, so the first step
+      // could go backwards: from hour 0 (Replay) that made the position negative and the chart read hour -1.
+      const dt = Math.max(0, now - prev); prev = Math.max(prev, now);
+      setPos((p) => Math.max(0, Math.min(last, (p ?? 0) + dt / 120)));
       raf.current = requestAnimationFrame(step);
     };
     raf.current = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf.current);
   }, [playing, data, last]);
+
+  // stop at the end (outside the position's updater, which React may call twice)
+  useEffect(() => {
+    if (playing && data && pos !== null && pos >= last) setPlaying(false);
+  }, [playing, data, pos, last]);
 
   const play = () => {
     if (!data) return;
@@ -72,14 +75,16 @@ export default function CupChart({ basePath = '' }) {
   // the races at this (fractional) hour, eased between the recorded hours
   const races = useMemo(() => {
     if (!data || pos === null) return [];
-    const a = Math.floor(pos), b = Math.min(last, a + 1), f = pos - a;
+    // every frame index stays inside the recorded hours, whatever the position
+    const p = Math.max(0, Math.min(last, Number(pos) || 0));
+    const a = Math.floor(p), b = Math.min(last, a + 1), f = p - a;
     const at = (arr, i) => (arr[a][i] === null || arr[b][i] === null ? arr[a][i] : arr[a][i] + (arr[b][i] - arr[a][i]) * f);
     return data.names.map((name, i) => ({ i, name, cup: at(data.cup, i), kal: at(data.kalshi, i) })).filter((r) => r.cup !== null && r.kal !== null);
   }, [data, pos, last]);
   const widest = useMemo(() => races.reduce((m, r) => (!m || Math.abs(r.cup - r.kal) > Math.abs(m.cup - m.kal) ? r : m), null), [races]);
   const meanGap = races.length ? races.reduce((s, r) => s + Math.abs(r.cup - r.kal), 0) / races.length / 10 : 0;
   const shown = hover !== null ? races.find((r) => r.i === hover) : null;
-  const when = data && pos !== null ? fmtWhen(data.t[Math.round(pos)]) : '';
+  const when = data && pos !== null ? fmtWhen(data.t[Math.max(0, Math.min(last, Math.round(Number(pos) || 0)))]) : '';
 
   const scrub = useCallback((e) => { setPlaying(false); setPos(Number(e.target.value)); }, []);
 
